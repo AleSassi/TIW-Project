@@ -1,13 +1,21 @@
 package com.asassi.tiwproject.controllers;
 
+import com.asassi.tiwproject.beans.UserBean;
 import com.asassi.tiwproject.constants.SignupConstants;
+import com.asassi.tiwproject.crypto.Hasher;
+import com.asassi.tiwproject.dao.UserDAO;
+import com.asassi.tiwproject.exceptions.UserAlreadyRegisteredException;
 import org.thymeleaf.*;
 import org.thymeleaf.context.*;
 import org.thymeleaf.templatemode.*;
 import org.thymeleaf.templateresolver.*;
 
 import java.io.*;
-import java.util.Objects;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.servlet.*;
@@ -17,6 +25,7 @@ public class SignUpController extends HttpServlet {
 
     private TemplateEngine templateEngine;
     private final String signupPage = "/signup.html";
+    private Connection dbConnection;
 
     @Override
     public void init() throws ServletException {
@@ -28,6 +37,19 @@ public class SignUpController extends HttpServlet {
         this.templateEngine = new TemplateEngine();
         this.templateEngine.setTemplateResolver(templateResolver);
         templateResolver.setSuffix(".html");
+
+        try {
+            String driver = servletContext.getInitParameter("dbDriver");
+            String url = servletContext.getInitParameter("dbUrl");
+            String user = servletContext.getInitParameter("dbUser");
+            String password = servletContext.getInitParameter("dbPassword");
+            Class.forName(driver);
+            dbConnection = DriverManager.getConnection(url, user, password);
+        } catch (ClassNotFoundException e) {
+            throw new UnavailableException("Can't load database driver");
+        } catch (SQLException e) {
+            throw new UnavailableException("Couldn't get db connection");
+        }
     }
 
     @Override
@@ -78,10 +100,24 @@ public class SignUpController extends HttpServlet {
             ctx.setVariable(SignupConstants.RepeatPasswordErrorInfo.getRawValue(), error);
         }
 
+        boolean registrationSucceeded = true;
         if (error == null) {
-            //TODO: Register the user
+            try {
+                registerUser(username, password);
+            } catch (UserAlreadyRegisteredException e) {
+                error = "Username already chosen by another user";
+                ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
+                registrationSucceeded = false;
+            } catch (SQLException e) {
+                throw new UnavailableException("Couldn't perform command");
+            }
+        } else {
+            registrationSucceeded = false;
+        }
+
+        if (registrationSucceeded) {
             //TODO: Forward to the Home Page
-            System.out.println("No errors! user " + username + "successfully registered with password " + password);
+            System.out.println("No errors! user " + username + " successfully registered with password " + password);
         } else {
             if (isUsernameValid) {
                 ctx.setVariable(SignupConstants.ValidatedUsername.getRawValue(), username);
@@ -89,6 +125,18 @@ public class SignUpController extends HttpServlet {
             // We show the Signup page with the errors
             templateEngine.process(signupPage, ctx, resp.getWriter());
         }
+    }
+
+    private void registerUser(String username, String password) throws UserAlreadyRegisteredException, SQLException {
+        //Hash the Password to store it in the database
+        String usernameHash = Hasher.getHash(username);
+        String passwordHash = Hasher.getHash(password);
+        //Check if the User is already in the database
+        UserDAO userDAO = new UserDAO(dbConnection);
+        List<UserBean> registeredUsersWithSameName = userDAO.findUsersByNameHash(usernameHash);
+        if (!registeredUsersWithSameName.isEmpty()) throw new UserAlreadyRegisteredException();
+        //Add the User to the database
+        userDAO.registerUser(new UserBean(usernameHash, passwordHash));
     }
 
     @Override
