@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>WebDoc Sign Up</title>
+    <link rel="stylesheet" type="text/css" href="CSS/global.css" th:href="@{/CSS/global.css}">
+    <link rel="stylesheet" type="text/css" href="CSS/login.css" th:href="@{/CSS/login.css}">
+</head>
+<body>
+<form action="signup" method="post" autocapitalize="none" autocomplete="off">
+    <div class="loginFormContainer">
+        <div class="loginForm">
+            <label class="title">Create your WebDoc account</label>
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" class="fullHeightElement textField" placeholder="Enter your Username" th:value="#{validatedUsername != null} ? ${validatedUsername}" required>
+                <label for="username" class="errorLabel" th:hidden="${usernameError == null}" th:text="${usernameError}">Username Error goes here</label>
+            </div>
+            <div>
+                <label for="password">Password (at least 8 characters):</label>
+                <input type="password" name="password" id="password" class="fullHeightElement textField" placeholder="Enter your Password" minlength="8" required>
+                <label for="password" class="errorLabel" th:hidden="${passwordError == null}" th:text="${passwordError}">Password Error goes here</label>
+            </div>
+            <div>
+                <label for="passwordRepeat">Repeat Password:</label>
+                <input type="password" name="passwordRepeat" id="passwordRepeat" class="fullHeightElement textField" placeholder="Repeat Password" required>
+                <label for="passwordRepeat" class="errorLabel" th:hidden="${passwordRepeatError == null}" th:text="${passwordRepeatError}">Password Repeat Error goes here</label>
+            </div>
+            <input class="fullHeightElement filledButton" type="submit" value="Create Account">
+            <label class="registerPrompt">Already registered? <a href="/" class="link">Login now.</a></label>
+        </div>
+    </div>
+</form>
+</body>
+</html>
