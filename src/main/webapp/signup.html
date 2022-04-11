@@ -12,7 +12,7 @@
             <label class="title">Create your WebDoc account</label>
             <div>
                 <label for="username">Username:</label>
-                <input type="text" name="username" id="username" class="fullHeightElement textField" placeholder="Enter your Username" th:value="#{validatedUsername != null} ? ${validatedUsername}" required>
+                <input type="text" name="username" id="username" class="fullHeightElement textField" placeholder="Enter your Username" th:value="${validatedUsername}" required>
                 <label for="username" class="errorLabel" th:hidden="${usernameError == null}" th:text="${usernameError}">Username Error goes here</label>
             </div>
             <div>
