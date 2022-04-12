@@ -18,12 +18,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.servlet.*;
 
-@WebServlet("/")
+@WebServlet("")
 public class SignInController extends DBConnectedServlet {
 
     @Override
     protected String getTemplatePage() {
-        return "/login.html";
+        return "/loginPage.html";
     }
 
     @Override

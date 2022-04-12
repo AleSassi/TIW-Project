@@ -21,7 +21,7 @@ public class SignUpController extends DBConnectedServlet {
 
     @Override
     protected String getTemplatePage() {
-        return "/signup.html";
+        return "/signupPage.html";
     }
 
     @Override

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>WebDoc Home Page</title>
+    <link rel="stylesheet" type="text/css" href="CSS/globalStyle.css" th:href="@{/CSS/globalStyle.css}">
+    <link rel="stylesheet" type="text/css" href="CSS/homeStyle.css">
+</head>
+<body>
+<ul class="navBar">
+    <li><a class="navBar-element active" href="">Home</a></li>
+    <li><a class="navBar-element"  href="">Create...</a></li>
+    <li>
+        <div class="navBar-element rightAnchor">
+            <label class="usernameDisplayer" th:text="${'Hi @'+username}">Hi @Username</label>
+            <a class="logoutButton" href="/logout">Logout</a>
+        </div>
+    </li>
+</ul>
+<img alt="svgImg" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iNjAiIGhlaWdodD0iNjAiCnZpZXdCb3g9IjAgMCAxNzIgMTcyIgpzdHlsZT0iIGZpbGw6IzAwMDAwMDsiPjxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJub25lIiBmb250LXdlaWdodD0ibm9uZSIgZm9udC1zaXplPSJub25lIiB0ZXh0LWFuY2hvcj0ibm9uZSIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0wLDE3MnYtMTcyaDE3MnYxNzJ6IiBmaWxsPSJub25lIj48L3BhdGg+PGcgZmlsbD0iIzM0OThkYiI+PHBhdGggZD0iTTE3LjIsMTMuNzZjLTUuNjg5NzYsMCAtMTAuMzIsNC42MzAyNCAtMTAuMzIsMTAuMzJ2MjAuNjRoMy40NGgxNTEuMzZoMy40NHYtNi44OGMwLC01LjY4OTc2IC00LjYzMDI0LC0xMC4zMiAtMTAuMzIsLTEwLjMybC05Mi43MjU0NywwLjAyMDE2Yy0wLjk1OTc2LC0wLjM0NzQ0IC0yLjk0NDcsLTMuNTA3NjcgLTQuMDExMSwtNS4yMDcwM2MtMi42Mzg0OCwtNC4yMTA1NiAtNS4zNzI5NiwtOC41NzMxMiAtOS45MDM0NCwtOC41NzMxMnpNMTAuMzIsNTEuNmMtMS44OTg4OCwwIC0zLjQ0LDEuNTQxMTIgLTMuNDQsMy40NHY5Mi44OGMwLDUuNzAwMDggNC42MTk5MiwxMC4zMiAxMC4zMiwxMC4zMmgxMzcuNmM1LjcwMDA4LDAgMTAuMzIsLTQuNjE5OTIgMTAuMzIsLTEwLjMydi05Mi44OGMwLC0xLjg5ODg4IC0xLjU0MTEyLC0zLjQ0IC0zLjQ0LC0zLjQ0eiI+PC9wYXRoPjwvZz48L2c+PC9zdmc+"/>
+</body>
+</html>

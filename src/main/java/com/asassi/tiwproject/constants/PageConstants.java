@@ -4,7 +4,8 @@ public enum PageConstants {
 
     Default("/"),
     SignUp("/signup"),
-    Home("/home");
+    Home("/home"),
+    Logout("/logout");
 
     private final String rawValue;
 

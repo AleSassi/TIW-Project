@@ -26,7 +26,7 @@ public class HomeController extends DBConnectedServlet {
 
     @Override
     protected String getTemplatePage() {
-        return "/home.html";
+        return "/homePage.html";
     }
 
     @Override
