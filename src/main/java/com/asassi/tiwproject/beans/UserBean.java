@@ -15,7 +15,7 @@ public class UserBean {
         this.passwordHash = passwordHash;
     }
 
-    public String getNameHash() {
+    public String getName() {
         return nameHash;
     }
 

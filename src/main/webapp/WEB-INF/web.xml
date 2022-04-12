@@ -27,7 +27,4 @@
         <param-name>testPassword</param-name>
         <param-value>MyDifficultPassword</param-value>
     </context-param>
-    <welcome-file-list>
-        <welcome-file>login.html</welcome-file>
-    </welcome-file-list>
 </web-app>

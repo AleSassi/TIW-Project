@@ -1,19 +1,15 @@
 package com.asassi.tiwproject.controllers;
 
 import com.asassi.tiwproject.beans.UserBean;
+import com.asassi.tiwproject.constants.PageConstants;
+import com.asassi.tiwproject.constants.SessionConstants;
 import com.asassi.tiwproject.constants.SignupConstants;
 import com.asassi.tiwproject.crypto.Hasher;
 import com.asassi.tiwproject.dao.UserDAO;
 import com.asassi.tiwproject.exceptions.UserAlreadyRegisteredException;
-import org.thymeleaf.*;
 import org.thymeleaf.context.*;
-import org.thymeleaf.templatemode.*;
-import org.thymeleaf.templateresolver.*;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -21,42 +17,21 @@ import javax.servlet.http.*;
 import javax.servlet.*;
 
 @WebServlet("/signup")
-public class SignUpController extends HttpServlet {
-
-    private TemplateEngine templateEngine;
-    private final String signupPage = "/signup.html";
-    private Connection dbConnection;
+public class SignUpController extends DBConnectedServlet {
 
     @Override
-    public void init() throws ServletException {
-        ServletContext servletContext = getServletContext();
-
-        ServletContextTemplateResolver templateResolver = new
-                ServletContextTemplateResolver(servletContext);
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        this.templateEngine = new TemplateEngine();
-        this.templateEngine.setTemplateResolver(templateResolver);
-        templateResolver.setSuffix(".html");
-
-        try {
-            String driver = servletContext.getInitParameter("dbDriver");
-            String url = servletContext.getInitParameter("dbUrl");
-            String user = servletContext.getInitParameter("dbUser");
-            String password = servletContext.getInitParameter("dbPassword");
-            Class.forName(driver);
-            dbConnection = DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException e) {
-            throw new UnavailableException("Can't load database driver");
-        } catch (SQLException e) {
-            throw new UnavailableException("Couldn't get db connection");
-        }
+    protected String getTemplatePage() {
+        return "/signup.html";
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ServletContext servletContext = getServletContext();
-        final WebContext ctx = new WebContext(req, resp, servletContext, req.getLocale());
-        templateEngine.process(signupPage, ctx, resp.getWriter());
+    protected void handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws IOException {
+        //If the User is already logged in, send the user to the Home Page
+        HttpSession session = req.getSession();
+        String username = (String) session.getAttribute(SessionConstants.UserHash.getRawValue());
+        if (username != null) {
+            resp.sendRedirect(PageConstants.Home.getRawValue());
+        }
     }
 
     @Override
@@ -64,8 +39,6 @@ public class SignUpController extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String passwordRepeat = req.getParameter("passwordRepeat");
-
-        System.out.println(username + " " + password + " " + passwordRepeat);
 
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(req, resp, servletContext, req.getLocale());
@@ -101,9 +74,10 @@ public class SignUpController extends HttpServlet {
         }
 
         boolean registrationSucceeded = true;
+        String registeredUsername = null;
         if (error == null) {
             try {
-                registerUser(username, password);
+                registeredUsername = registerUser(username, password);
             } catch (UserAlreadyRegisteredException e) {
                 error = "Username already chosen by another user";
                 ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
@@ -116,31 +90,28 @@ public class SignUpController extends HttpServlet {
         }
 
         if (registrationSucceeded) {
-            //TODO: Forward to the Home Page
-            System.out.println("No errors! user " + username + " successfully registered with password " + password);
+            HttpSession session = req.getSession(true);
+            session.setAttribute(registeredUsername, SessionConstants.UserHash.getRawValue());
+            //Forward to the Home Page
+            resp.sendRedirect(PageConstants.Home.getRawValue());
         } else {
             if (isUsernameValid) {
                 ctx.setVariable(SignupConstants.ValidatedUsername.getRawValue(), username);
             }
             // We show the Signup page with the errors
-            templateEngine.process(signupPage, ctx, resp.getWriter());
+            showTemplatePage(ctx, resp);
         }
     }
 
-    private void registerUser(String username, String password) throws UserAlreadyRegisteredException, SQLException {
+    private String registerUser(String username, String password) throws UserAlreadyRegisteredException, SQLException {
         //Hash the Password to store it in the database
-        String usernameHash = Hasher.getHash(username);
         String passwordHash = Hasher.getHash(password);
         //Check if the User is already in the database
-        UserDAO userDAO = new UserDAO(dbConnection);
-        List<UserBean> registeredUsersWithSameName = userDAO.findUsersByNameHash(usernameHash);
+        UserDAO userDAO = new UserDAO(getDBConnection());
+        List<UserBean> registeredUsersWithSameName = userDAO.findUsersByName(username);
         if (!registeredUsersWithSameName.isEmpty()) throw new UserAlreadyRegisteredException();
         //Add the User to the database
-        userDAO.registerUser(new UserBean(usernameHash, passwordHash));
-    }
-
-    @Override
-    public void destroy() {
-        super.destroy();
+        userDAO.registerUser(new UserBean(username, passwordHash));
+        return username;
     }
 }
