@@ -2,7 +2,7 @@ package com.asassi.tiwproject.constants;
 
 public enum SessionConstants {
 
-    UserHash("username");
+    Username("username");
 
     private final String rawValue;
 

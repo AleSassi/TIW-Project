@@ -28,7 +28,7 @@ public class SignUpController extends DBConnectedServlet {
     protected void handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws IOException {
         //If the User is already logged in, send the user to the Home Page
         HttpSession session = req.getSession();
-        String username = (String) session.getAttribute(SessionConstants.UserHash.getRawValue());
+        String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
         if (username != null) {
             resp.sendRedirect(PageConstants.Home.getRawValue());
         }
@@ -91,7 +91,7 @@ public class SignUpController extends DBConnectedServlet {
 
         if (registrationSucceeded) {
             HttpSession session = req.getSession(true);
-            session.setAttribute(registeredUsername, SessionConstants.UserHash.getRawValue());
+            session.setAttribute(registeredUsername, SessionConstants.Username.getRawValue());
             //Forward to the Home Page
             resp.sendRedirect(PageConstants.Home.getRawValue());
         } else {

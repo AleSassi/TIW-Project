@@ -1,7 +1,6 @@
 package com.asassi.tiwproject.controllers;
 
 import com.asassi.tiwproject.beans.UserBean;
-import com.asassi.tiwproject.constants.HomeConstants;
 import com.asassi.tiwproject.constants.PageConstants;
 import com.asassi.tiwproject.constants.SessionConstants;
 import com.asassi.tiwproject.constants.SignupConstants;
@@ -30,7 +29,7 @@ public class SignInController extends DBConnectedServlet {
     protected void handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws IOException {
         //If the User is already logged in, send the user to the Home Page
         HttpSession session = req.getSession();
-        String username = (String) session.getAttribute(SessionConstants.UserHash.getRawValue());
+        String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
         if (username != null) {
             resp.sendRedirect(PageConstants.Home.getRawValue());
         }
@@ -75,7 +74,7 @@ public class SignInController extends DBConnectedServlet {
 
         if (loginSucceeded) {
             HttpSession session = req.getSession(true);
-            session.setAttribute(SessionConstants.UserHash.getRawValue(), registeredUsername);
+            session.setAttribute(SessionConstants.Username.getRawValue(), registeredUsername);
             //Forward to the Home Page
             resp.sendRedirect(PageConstants.Home.getRawValue());
         } else {

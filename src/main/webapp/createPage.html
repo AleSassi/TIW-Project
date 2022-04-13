@@ -20,30 +20,33 @@
     <label class="pageTitle">Create content</label>
     <div class="contentCreator">
         <label for="contentTypeSelector" class="contentTypeSelector-title">Select the content type to create:</label>
-        <form action="/create" id="chooseContentTypeForm">
+        <form action="/create" method="get" id="chooseContentTypeForm">
             <select name="contentType" id="contentTypeSelector" class="contentTypeSelector">
-                <option value="0">Folder</option>
-                <option value="1">Subfolder</option>
-                <option value="2">Document</option>
+                <option value="0" th:selected="${selectedContentType == 0}">Folder</option>
+                <option value="1" th:selected="${selectedContentType == 1}">Subfolder</option>
+                <option value="2" th:selected="${selectedContentType == 2}">Document</option>
             </select>
             <input type="submit" class="filledButton contentTypeFormButton" value="Submit">
         </form>
-        <div>
-            <form action="/create" class="dataForm" id="mainFolderNameForm">
-                <label for="mainFolderName">Folder Name:</label>
-                <input type="text" id="mainFolderName" class="fullHeightElement textField" placeholder="Folder Name...">
-                <label for="parentFolderSelector">Parent Folder:</label>
-                <select name="parentFolder" id="parentFolderSelector" class="contentTypeSelector" required>
-                    <option value="">Choose a Parent Folder...</option>
-                    <option value="0">Folder 1</option>
-                    <option value="1">Folder 2</option>
-                    <option value="2">Folder 3</option>
-                </select>
+        <div th:hidden="${selectedContentType == 2}">
+            <form action="/create" method="post" class="dataForm" id="mainFolderNameForm">
+                <label for="folderName">Folder Name:</label>
+                <input type="text" id="folderName" name="folderName" class="fullHeightElement textField" placeholder="Folder Name...">
+                <label for="folderName" class="errorLabel" th:hidden="${folderNameError == null}" th:text="${folderNameError}">Folder Name Error goes here</label>
+                <div th:hidden="${selectedContentType == 0}">
+                    <label for="parentFolderSelector">Parent Folder:</label>
+                    <select name="parentFolder" id="parentFolderSelector" class="contentTypeSelector" th:required="${selectedContentType != 0}" required>
+                        <option value="">Choose a Parent Folder...</option>
+                        <option th:each="folder : ${parentFolders}" th:value="${folder.getName()}" th:text="${folder.getName()}">Folder 1</option>
+                    </select>
+                    <label for="parentFolderSelector" class="errorLabel" th:hidden="${parentFolderNameError == null}" th:text="${parentFolderNameError}">Parent Folder Name Error goes here</label>
+                </div>
+                <input type="hidden" name="contentType" th:value="${selectedContentType}">
                 <input type="submit" class="filledButton contentTypeFormButton" value="Create Folder">
             </form>
         </div>
-        <div>
-            <form action="/create" class="dataForm" id="documentDataForm">
+        <div th:hidden="${!(selectedContentType == 2)}">
+            <form action="/create" method="post" class="dataForm" id="documentDataForm">
                 <label for="documentName">Document Name:</label>
                 <input type="text" id="documentName" class="fullHeightElement textField" placeholder="Document Name...">
                 <label for="documentContent">Document Content</label>
@@ -61,6 +64,7 @@
                     <option value="0">Subfolder 1</option>
                     <option value="1">Subfolder 2</option>
                 </select>
+                <input type="hidden" name="contentType" th:value="${selectedContentType}">
                 <input type="submit" class="filledButton contentTypeFormButton" value="Create Document">
             </form>
         </div>

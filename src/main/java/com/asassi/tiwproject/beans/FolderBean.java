@@ -12,9 +12,9 @@ public class FolderBean {
     private Date creationDate;
     private FolderType folderType;
     private String parentFolder_username;
-    private int parentFolder_folderNumber;
+    private Integer parentFolder_folderNumber;
 
-    public FolderBean(String username, int folderNumber, String name, Date creationDate, int folderType, String parentFolder_username, int parentFolder_folderNumber) {
+    public FolderBean(String username, int folderNumber, String name, Date creationDate, int folderType, String parentFolder_username, Integer parentFolder_folderNumber) {
         this.username = username;
         this.folderNumber = folderNumber;
         this.name = name;
@@ -76,11 +76,11 @@ public class FolderBean {
         this.parentFolder_username = parentFolder_username;
     }
 
-    public int getParentFolder_folderNumber() {
+    public Integer getParentFolder_folderNumber() {
         return parentFolder_folderNumber;
     }
 
-    public void setParentFolder_folderNumber(int parentFolder_folderNumber) {
+    public void setParentFolder_folderNumber(Integer parentFolder_folderNumber) {
         this.parentFolder_folderNumber = parentFolder_folderNumber;
     }
 }
