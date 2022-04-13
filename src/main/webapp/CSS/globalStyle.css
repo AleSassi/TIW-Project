@@ -49,6 +49,7 @@ body {
 }
 
 .link {
+    text-decoration: none;
     color: #007aff;
 }
 
@@ -131,4 +132,8 @@ body {
 @media screen and (max-width: 600px) {
     .navBar .navBar-element.right,
     .navBar .navBar-element {float: none;}
+}
+
+.pageContent {
+    margin-top: 60px;
 }

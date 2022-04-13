@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Create Folder/Doc</title>
+    <link rel="stylesheet" type="text/css" href="CSS/globalStyle.css" th:href="@{/CSS/globalStyle.css}">
+    <link rel="stylesheet" type="text/css" href="CSS/createStyle.css">
+</head>
+<body>
+<ul class="navBar">
+    <li><a class="navBar-element" href="/home">Home</a></li>
+    <li><a class="navBar-element active" href="/create">Create...</a></li>
+    <li>
+        <div class="navBar-element rightAnchor">
+            <label class="usernameDisplayer" th:text="${'Hi @'+username}">Hi @Username</label>
+            <a class="logoutButton" href="/logout">Logout</a>
+        </div>
+    </li>
+</ul>
+<div class="pageContent">
+    <label class="pageTitle">Create content</label>
+    <div class="contentCreator">
+        <label for="contentTypeSelector" class="contentTypeSelector-title">Select the content type to create:</label>
+        <form action="/create" id="chooseContentTypeForm">
+            <select name="contentType" id="contentTypeSelector" class="contentTypeSelector">
+                <option value="0">Folder</option>
+                <option value="1">Subfolder</option>
+                <option value="2">Document</option>
+            </select>
+            <input type="submit" class="filledButton contentTypeFormButton" value="Submit">
+        </form>
+        <div>
+            <form action="/create" class="dataForm" id="mainFolderNameForm">
+                <label for="mainFolderName">Folder Name:</label>
+                <input type="text" id="mainFolderName" class="fullHeightElement textField" placeholder="Folder Name...">
+                <label for="parentFolderSelector">Parent Folder:</label>
+                <select name="parentFolder" id="parentFolderSelector" class="contentTypeSelector" required>
+                    <option value="">Choose a Parent Folder...</option>
+                    <option value="0">Folder 1</option>
+                    <option value="1">Folder 2</option>
+                    <option value="2">Folder 3</option>
+                </select>
+                <input type="submit" class="filledButton contentTypeFormButton" value="Create Folder">
+            </form>
+        </div>
+        <div>
+            <form action="/create" class="dataForm" id="documentDataForm">
+                <label for="documentName">Document Name:</label>
+                <input type="text" id="documentName" class="fullHeightElement textField" placeholder="Document Name...">
+                <label for="documentContent">Document Content</label>
+                <textarea class="textField resizableInput fullHeightElement" id="documentContent" name="documentContent" placeholder="Document Content..."></textarea>
+                <label for="parentFolderDocSelector">Parent Folder:</label>
+                <select name="parentFolder" id="parentFolderDocSelector" class="contentTypeSelector" required>
+                    <option value="">Choose a Parent Folder...</option>
+                    <option value="0">Folder 1</option>
+                    <option value="1">Folder 2</option>
+                    <option value="2">Folder 3</option>
+                </select>
+                <label for="parentSubfolderSelector">Parent Subfolder:</label>
+                <select name="parentFolder" id="parentSubfolderSelector" class="contentTypeSelector" required>
+                    <option value="">Choose a Parent Subfolder...</option>
+                    <option value="0">Subfolder 1</option>
+                    <option value="1">Subfolder 2</option>
+                </select>
+                <input type="submit" class="filledButton contentTypeFormButton" value="Create Document">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
