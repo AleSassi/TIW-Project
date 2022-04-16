@@ -29,7 +29,7 @@
             <div class="folderIconSeparator"></div>
             <label th:text="${document.getName()}">Document 1</label>
             <div class="folderIconSeparator"></div>
-            <a href="/show?document=" th:href="@{/show(document=${document.getDocumentNumber()})}" class="link">Open</a>
+            <a href="/show?document=&fid=" th:href="@{/show(document=${document.getDocumentNumber()}, fid=${folderID})}" class="link">Open</a>
             <div class="folderIconSeparator"></div>
             <a href="" class="link">Move</a>
             <label class="creationDateLabelTallIcon" th:text="${document.getCreationDateString()}">Creation Date Here</label>
@@ -55,6 +55,9 @@
         </li>
     </ul>
     <p class="emptyMessage" th:remove="${documents == null || documents.isEmpty()} ? 'none' : 'all'">Click on <label class="emptyMessage bold">Create</label> to create a new Document</p>
+    <div class="pageContent">
+        <a href="/home" class="backLink">Back</a>
+    </div>
 </div>
 </body>
 </html>

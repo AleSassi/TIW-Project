@@ -8,7 +8,8 @@ public enum DocumentInfoConstants {
     DocumentContents("documentContents"),
     DocumentCreationDate("documentCreationDate"),
     DocumentOwner("ownerUsername"),
-    ParentFolder("parentFolderName");
+    ParentFolder("parentFolderName"),
+    ParentFolderNumber("parentFolderNumber");
 
     private final String rawValue;
 

@@ -137,3 +137,14 @@ body {
 .pageContent {
     margin-top: 60px;
 }
+
+.backLink {
+    text-decoration: none;
+    color: #ffffff;
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    background-color: #007aff;
+    padding: 10px;
+    border-radius: 8px;
+}

@@ -35,6 +35,7 @@ public class DocumentInfoController extends DBConnectedServlet {
             DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
             try {
                 int documentIDInt = Integer.parseInt(documentID);
+                int folderIDInt = Integer.parseInt(req.getParameter("fid"));
                 List<DocumentBean> documents = documentDAO.findDocument(username, documentIDInt);
                 if (!documents.isEmpty()) {
                     DocumentBean document = documents.get(0);
@@ -49,6 +50,7 @@ public class DocumentInfoController extends DBConnectedServlet {
                         ctx.setVariable(DocumentInfoConstants.DocumentCreationDate.getRawValue(), document.getCreationDateString());
                         ctx.setVariable(DocumentInfoConstants.DocumentOwner.getRawValue(), document.getOwnerUsername());
                         ctx.setVariable(DocumentInfoConstants.ParentFolder.getRawValue(), folder.getName());
+                        ctx.setVariable(DocumentInfoConstants.ParentFolderNumber.getRawValue(), folderIDInt);
                         hasErrorFindingDocument = false;
                     }
                 }

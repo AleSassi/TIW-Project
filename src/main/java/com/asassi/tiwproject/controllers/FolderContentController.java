@@ -41,6 +41,7 @@ public class FolderContentController extends DBConnectedServlet {
                     ctx.setVariable(SubfolderDetailConstants.Username.getRawValue(), username);
                     ctx.setVariable(SubfolderDetailConstants.FolderName.getRawValue(), folder.getName());
                     ctx.setVariable(SubfolderDetailConstants.Documents.getRawValue(), documents);
+                    ctx.setVariable(SubfolderDetailConstants.FolderID.getRawValue(), folderIDInt);
                     hasErrorFindingFolder = false;
                 }
             } catch (SQLException e) {

@@ -4,6 +4,7 @@ public enum SubfolderDetailConstants {
 
     Username("username"),
     FolderName("folderName"),
+    FolderID("folderID"),
     Documents("documents");
 
     private final String rawValue;
