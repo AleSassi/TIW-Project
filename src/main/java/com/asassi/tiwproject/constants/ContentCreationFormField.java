@@ -4,8 +4,7 @@ public enum ContentCreationFormField {
 
     ContentType("contentType"),
     FolderName("folderName"),
-    ParentFolderName("parentFolder"),
-    SubfolderNumber("subfolderNumber"),
+    ParentFolderNumber("parentFolder"),
     DocumentName("documentName"),
     DocumentFileType("documentFileType"),
     DocumentContent("documentContent");

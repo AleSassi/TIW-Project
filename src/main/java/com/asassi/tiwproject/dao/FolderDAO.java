@@ -7,18 +7,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FolderDAO {
-
-    private final Connection dbConnection;
+public class FolderDAO extends DAO {
 
     public FolderDAO(Connection connection) {
-        this.dbConnection = connection;
+        super(connection);
     }
 
     public List<FolderBean> findFoldersByUsername(String username, FolderType folderType) throws SQLException {
         List<FolderBean> folders = new ArrayList<>();
-        String query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND FolderType = ? ORDER BY (FolderNumber)";
-        PreparedStatement statement = dbConnection.prepareStatement(query);
+        String query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND FolderType = ? ORDER BY (CreationDate)";
+        PreparedStatement statement = getDbConnection().prepareStatement(query);
         statement.setString(1, username);
         statement.setInt(2, folderType.getRawValue());
         ResultSet result = statement.executeQuery();
@@ -31,13 +29,29 @@ public class FolderDAO {
         return folders;
     }
 
-    public List<FolderBean> findFoldersByUsernameAndFolderName(String username, String folderName, FolderType folderType) throws SQLException {
+    public List<FolderBean> findFoldersByUsernameAndFolderNumber(String username, int folderNumber, FolderType folderType) throws SQLException {
         List<FolderBean> folders = new ArrayList<>();
-        String query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND Name = ? AND FolderType = ? ORDER BY (FolderNumber)";
-        PreparedStatement statement = dbConnection.prepareStatement(query);
+        String query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND FolderNumber = ? AND FolderType = ? ORDER BY (CreationDate)";
+        PreparedStatement statement = getDbConnection().prepareStatement(query);
         statement.setString(1, username);
-        statement.setString(2, folderName);
+        statement.setInt(2, folderNumber);
         statement.setInt(3, folderType.getRawValue());
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            folders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getDate("CreationDate"), result.getInt("FolderType"), result.getString("ParentFolder_OwnerUsername"), result.getInt("ParentFolder_FolderNumber")));
+        }
+        result.close();
+        statement.close();
+
+        return folders;
+    }
+
+    public List<FolderBean> findSubfoldersOfFolder(String username, int parentFolderNumber) throws SQLException {
+        List<FolderBean> folders = new ArrayList<>();
+        String query = "SELECT * FROM Folders WHERE ParentFolder_OwnerUsername = ? AND ParentFolder_FolderNumber = ? ORDER BY (CreationDate)";
+        PreparedStatement statement = getDbConnection().prepareStatement(query);
+        statement.setString(1, username);
+        statement.setInt(2, parentFolderNumber);
         ResultSet result = statement.executeQuery();
         while (result.next()) {
             folders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getDate("CreationDate"), result.getInt("FolderType"), result.getString("ParentFolder_OwnerUsername"), result.getInt("ParentFolder_FolderNumber")));
@@ -51,7 +65,7 @@ public class FolderDAO {
     public void addFolder(FolderBean folder) throws SQLException {
         String query = "INSERT INTO Folders VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        PreparedStatement statement = dbConnection.prepareStatement(query);
+        PreparedStatement statement = getDbConnection().prepareStatement(query);
         statement.setString(1, folder.getUsername());
         statement.setInt(2, folder.getFolderNumber());
         statement.setString(3, folder.getName());

@@ -4,9 +4,12 @@ public enum CreateConstants {
 
     Username("username"),
     FileType("selectedContentType"),
-    ParentFolders("parentFolders"),
+    ParentFolders("folders"),
     InvalidMainFolderNameError("folderNameError"),
-    InvalidParentFolderNameError("parentFolderNameError");
+    InvalidParentFolderNameError("parentFolderNameError"),
+    InvalidDocNameError("docNameError"),
+    InvalidDocTypeError("docTypeError"),
+    InvalidDocContentError("docContentError");
 
     private final String rawValue;
 

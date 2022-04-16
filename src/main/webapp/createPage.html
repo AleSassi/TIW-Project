@@ -4,6 +4,7 @@
     <title>Create Folder/Doc</title>
     <link rel="stylesheet" type="text/css" href="CSS/globalStyle.css" th:href="@{/CSS/globalStyle.css}">
     <link rel="stylesheet" type="text/css" href="CSS/createStyle.css">
+    <link rel="stylesheet" type="text/css" href="CSS/loginStyle.css">
 </head>
 <body>
 <ul class="navBar">
@@ -31,13 +32,13 @@
         <div th:hidden="${selectedContentType == 2}">
             <form action="/create" method="post" class="dataForm" id="mainFolderNameForm">
                 <label for="folderName">Folder Name:</label>
-                <input type="text" id="folderName" name="folderName" class="fullHeightElement textField" placeholder="Folder Name...">
+                <input type="text" id="folderName" name="folderName" class="fullHeightElement textField" placeholder="Folder Name..." required>
                 <label for="folderName" class="errorLabel" th:hidden="${folderNameError == null}" th:text="${folderNameError}">Folder Name Error goes here</label>
                 <div th:hidden="${selectedContentType == 0}">
                     <label for="parentFolderSelector">Parent Folder:</label>
                     <select name="parentFolder" id="parentFolderSelector" class="contentTypeSelector" th:required="${selectedContentType != 0}" required>
                         <option value="">Choose a Parent Folder...</option>
-                        <option th:each="folder : ${parentFolders}" th:value="${folder.getName()}" th:text="${folder.getName()}">Folder 1</option>
+                        <option th:each="folder : ${folders}" th:value="${folder.key.getFolderNumber()}" th:text="${folder.key.getName()}">Folder 1</option>
                     </select>
                     <label for="parentFolderSelector" class="errorLabel" th:hidden="${parentFolderNameError == null}" th:text="${parentFolderNameError}">Parent Folder Name Error goes here</label>
                 </div>
@@ -48,22 +49,22 @@
         <div th:hidden="${!(selectedContentType == 2)}">
             <form action="/create" method="post" class="dataForm" id="documentDataForm">
                 <label for="documentName">Document Name:</label>
-                <input type="text" id="documentName" class="fullHeightElement textField" placeholder="Document Name...">
+                <input type="text" id="documentName" name="documentName" class="fullHeightElement textField" placeholder="Document Name..." required>
+                <label for="documentName" class="errorLabel" th:hidden="${docNameError == null}" th:text="${docNameError}">Document Name Error goes here</label>
+                <label for="documentType">Document Extension:</label>
+                <input type="text" id="documentType" name="documentFileType" class="fullHeightElement textField" placeholder="Document Extension..." required>
+                <label for="documentType" class="errorLabel" th:hidden="${docTypeError == null}" th:text="${docTypeError}">Document Extension Error goes here</label>
                 <label for="documentContent">Document Content</label>
-                <textarea class="textField resizableInput fullHeightElement" id="documentContent" name="documentContent" placeholder="Document Content..."></textarea>
-                <label for="parentFolderDocSelector">Parent Folder:</label>
-                <select name="parentFolder" id="parentFolderDocSelector" class="contentTypeSelector" required>
+                <textarea class="textField resizableInput fullHeightElement" id="documentContent" name="documentContent" placeholder="Document Content..." required></textarea>
+                <label for="documentContent" class="errorLabel" th:hidden="${docContentError == null}" th:text="${docContentError}">Document Content Error goes here</label>
+                <label for="parentFolderSelector_doc">Parent Folder:</label>
+                <select name="parentFolder" id="parentFolderSelector_doc" class="contentTypeSelector" th:required="${selectedContentType == 2}" required>
                     <option value="">Choose a Parent Folder...</option>
-                    <option value="0">Folder 1</option>
-                    <option value="1">Folder 2</option>
-                    <option value="2">Folder 3</option>
+                    <optgroup label="Optgroup" th:each="folder : ${folders}" th:value="${folder.key.getFolderNumber()}" th:label="${folder.key.getName()}">
+                        <option th:each="subfolder : ${folder.value}" th:value="${subfolder.getFolderNumber()}" th:text="${subfolder.getName()}">Folder 1</option>
+                    </optgroup>
                 </select>
-                <label for="parentSubfolderSelector">Parent Subfolder:</label>
-                <select name="parentFolder" id="parentSubfolderSelector" class="contentTypeSelector" required>
-                    <option value="">Choose a Parent Subfolder...</option>
-                    <option value="0">Subfolder 1</option>
-                    <option value="1">Subfolder 2</option>
-                </select>
+                <label for="parentFolderSelector_doc" class="errorLabel" th:hidden="${folderNameError == null}" th:text="${folderNameError}">Parent Folder Name Error goes here</label>
                 <input type="hidden" name="contentType" th:value="${selectedContentType}">
                 <input type="submit" class="filledButton contentTypeFormButton" value="Create Document">
             </form>

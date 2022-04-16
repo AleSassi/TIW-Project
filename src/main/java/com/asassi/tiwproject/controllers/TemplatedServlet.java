@@ -40,6 +40,10 @@ public abstract class TemplatedServlet extends HttpServlet {
 
     protected abstract String getTemplatePage();
 
+    protected TemplateEngine getTemplateEngine() {
+        return templateEngine;
+    }
+
     protected void showTemplatePage(WebContext ctx, HttpServletResponse resp) throws IOException {
         templateEngine.process(getTemplatePage(), ctx, resp.getWriter());
     }
