@@ -29,12 +29,12 @@
             </select>
             <input type="submit" class="filledButton contentTypeFormButton" value="Submit">
         </form>
-        <div th:hidden="${selectedContentType == 2}">
+        <div th:remove="${selectedContentType == 2} ? 'all' : 'none'">
             <form action="/create" method="post" class="dataForm" id="mainFolderNameForm">
                 <label for="folderName">Folder Name:</label>
                 <input type="text" id="folderName" name="folderName" class="fullHeightElement textField" placeholder="Folder Name..." required>
                 <label for="folderName" class="errorLabel" th:hidden="${folderNameError == null}" th:text="${folderNameError}">Folder Name Error goes here</label>
-                <div th:hidden="${selectedContentType == 0}">
+                <div th:remove="${selectedContentType == 0} ? 'all' : 'none'">
                     <label for="parentFolderSelector">Parent Folder:</label>
                     <select name="parentFolder" id="parentFolderSelector" class="contentTypeSelector" th:required="${selectedContentType != 0}" required>
                         <option value="">Choose a Parent Folder...</option>
@@ -46,7 +46,7 @@
                 <input type="submit" class="filledButton contentTypeFormButton" value="Create Folder">
             </form>
         </div>
-        <div th:hidden="${!(selectedContentType == 2)}">
+        <div th:remove="${!(selectedContentType == 2)} ? 'all' : 'none'">
             <form action="/create" method="post" class="dataForm" id="documentDataForm">
                 <label for="documentName">Document Name:</label>
                 <input type="text" id="documentName" name="documentName" class="fullHeightElement textField" placeholder="Document Name..." required>

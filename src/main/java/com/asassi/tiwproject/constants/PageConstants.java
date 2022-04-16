@@ -6,7 +6,9 @@ public enum PageConstants {
     SignUp("/signup"),
     Home("/home"),
     Create("/create"),
-    Logout("/logout");
+    Logout("/logout"),
+    FolderDetail("/folder"),
+    DocumentInfo("/show");
 
     private final String rawValue;
 

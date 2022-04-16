@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>WebDoc Document List</title>
+    <link rel="stylesheet" type="text/css" href="CSS/globalStyle.css" th:href="@{/CSS/globalStyle.css}">
+    <link rel="stylesheet" type="text/css" href="CSS/homeStyle.css">
+</head>
+<body>
+<ul class="navBar">
+    <li><a class="navBar-element" href="/home">Home</a></li>
+    <li><a class="navBar-element" href="/create">Create...</a></li>
+    <li>
+        <div class="navBar-element rightAnchor">
+            <label class="usernameDisplayer" th:text="${'Hi @'+username}">Hi @Username</label>
+            <a class="logoutButton" href="/logout">Logout</a>
+        </div>
+    </li>
+</ul>
+<div class="pageContent">
+    <label class="pageTitle" th:text="${folderName}">Subfolder 1</label>
+    <ul class="folderList" th:remove="all-but-first">
+        <li class="folderRow" th:each="document : ${documents}">
+            <span class="folderIcon">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                     width="30" height="30"
+                     viewBox="0 0 172 172"
+                     style=" fill:#000000;"><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" style="mix-blend-mode: normal"><path d="M0,172v-172h172v172z" fill="none"></path><g fill="#3498db"><path d="M141.65347,50.4132l-37.26667,-37.26667c-1.07787,-1.07787 -2.53413,-1.67987 -4.05347,-1.67987h-60.2c-6.33533,0 -11.46667,5.13133 -11.46667,11.46667v126.13333c0,6.33533 5.13133,11.46667 11.46667,11.46667h91.73333c6.33533,0 11.46667,-5.13133 11.46667,-11.46667v-94.6c0,-1.51933 -0.602,-2.9756 -1.67987,-4.05347zM103.2,57.33333c-3.1648,0 -5.73333,-2.56853 -5.73333,-5.73333v-29.21707l34.9504,34.9504z"></path></g></g></svg>
+            </span>
+            <div class="folderIconSeparator"></div>
+            <label th:text="${document.getName()}">Document 1</label>
+            <div class="folderIconSeparator"></div>
+            <a href="/show?document=" th:href="@{/show(document=${document.getDocumentNumber()})}" class="link">Open</a>
+            <div class="folderIconSeparator"></div>
+            <a href="" class="link">Move</a>
+            <label class="creationDateLabelTallIcon" th:text="${document.getCreationDateString()}">Creation Date Here</label>
+        </li>
+        <li class="folderRow">
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                 width="24" height="24"
+                 viewBox="0 0 172 172"
+                 style=" fill:#000000;"
+                 class="folderIcon">
+                <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+                    <path d="M0,172v-172h172v172z" fill="none">
+                    </path>
+                    <g fill="#007aff">
+                        <path d="M22.93333,17.2c-6.33533,0 -11.46667,5.13133 -11.46667,11.46667v17.2h63.06667h86v-5.73333c0,-6.33533 -5.13133,-11.46667 -11.46667,-11.46667h-84.85781l-3.53854,-5.9013c-2.06973,-3.45147 -5.80124,-5.56536 -9.83177,-5.56536zM17.2,57.33333c-3.1648,0 -5.73333,2.56853 -5.73333,5.73333v68.8c0,6.33533 5.13133,11.46667 11.46667,11.46667h126.13333c6.33533,0 11.46667,-5.13133 11.46667,-11.46667v-68.8c0,-3.1648 -2.56853,-5.73333 -5.73333,-5.73333z">
+                        </path>
+                    </g>
+                </g>
+            </svg>
+            <div class="folderIconSeparator"></div>
+            Folder 2
+            <label class="creationDateLabel">Creation Date Here</label>
+        </li>
+    </ul>
+    <p class="emptyMessage" th:remove="${documents == null || documents.isEmpty()} ? 'none' : 'all'">Click on <label class="emptyMessage bold">Create</label> to create a new Document</p>
+</div>
+</body>
+</html>

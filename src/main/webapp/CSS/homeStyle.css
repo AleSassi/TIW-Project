@@ -38,6 +38,14 @@
     color: #666666;
 }
 
+.creationDateLabelTallIcon {
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+    text-align: right;
+    color: #666666;
+}
+
 .folderRow {
     display: block;
     border-radius: 5px;

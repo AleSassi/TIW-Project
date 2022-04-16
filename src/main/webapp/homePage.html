@@ -54,7 +54,7 @@
                         </g>
                     </svg>
                     <div class="folderIconSeparator"></div>
-                    <a href="" class="link" th:text="${subfolder.getName()}">Subfolder 1</a>
+                    <a href="/folder?fid=" th:href="@{/folder(fid=${subfolder.getFolderNumber()})}" class="link" th:text="${subfolder.getName()}">Subfolder 1</a>
                     <label class="creationDateLabel" th:text="${subfolder.getCreationDateString()}">Creation Date Here</label>
                 </li>
                 <li class="folderRow">
@@ -98,7 +98,7 @@
             <label class="creationDateLabel">Creation Date Here</label>
         </li>
     </ul>
-    <p class="emptyMessage">Click on <label class="emptyMessage bold">Create</label> to create a new Folder</p>
+    <p class="emptyMessage" th:remove="${mainFolders == null || mainFolders.isEmpty()} ? 'none' : 'all'">Click on <label class="emptyMessage bold">Create</label> to create a new Folder</p>
 </div>
 </body>
 </html>
