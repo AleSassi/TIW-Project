@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,13 +42,14 @@ public class HomeController extends DBConnectedServlet {
             //Find the Folders of the User
             try {
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                HashMap<FolderBean, List<FolderBean>> folderMap = new HashMap<>();
                 List<FolderBean> mainFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
+                List<List<FolderBean>> subfolderHierarchy = new ArrayList<>();
                 for (FolderBean mainFolder: mainFolders) {
                     List<FolderBean> subfolders = folderDAO.findSubfoldersOfFolder(username, mainFolder.getFolderNumber());
-                    folderMap.put(mainFolder, subfolders);
+                    subfolderHierarchy.add(subfolders);
                 }
-                ctx.setVariable(HomeConstants.FolderHierarchy.getRawValue(), folderMap);
+                ctx.setVariable(HomeConstants.MainFolders.getRawValue(), mainFolders);
+                ctx.setVariable(HomeConstants.Subfolders.getRawValue(), subfolderHierarchy);
             } catch (SQLException e) {
                 e.printStackTrace();
                 throw new ServletException("Could not perform query");

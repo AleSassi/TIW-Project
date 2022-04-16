@@ -3,7 +3,8 @@ package com.asassi.tiwproject.constants;
 public enum HomeConstants {
 
     Username("username"),
-    FolderHierarchy("folders");
+    MainFolders("mainFolders"),
+    Subfolders("subfolders");
 
     private final String rawValue;
 

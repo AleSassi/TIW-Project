@@ -15,7 +15,7 @@ public class FolderDAO extends DAO {
 
     public List<FolderBean> findFoldersByUsername(String username, FolderType folderType) throws SQLException {
         List<FolderBean> folders = new ArrayList<>();
-        String query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND FolderType = ? ORDER BY (CreationDate)";
+        String query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND FolderType = ? ORDER BY CreationDate";
         PreparedStatement statement = getDbConnection().prepareStatement(query);
         statement.setString(1, username);
         statement.setInt(2, folderType.getRawValue());
@@ -31,7 +31,7 @@ public class FolderDAO extends DAO {
 
     public List<FolderBean> findFoldersByUsernameAndFolderNumber(String username, int folderNumber, FolderType folderType) throws SQLException {
         List<FolderBean> folders = new ArrayList<>();
-        String query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND FolderNumber = ? AND FolderType = ? ORDER BY (CreationDate)";
+        String query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND FolderNumber = ? AND FolderType = ? ORDER BY CreationDate";
         PreparedStatement statement = getDbConnection().prepareStatement(query);
         statement.setString(1, username);
         statement.setInt(2, folderNumber);
@@ -48,7 +48,7 @@ public class FolderDAO extends DAO {
 
     public List<FolderBean> findSubfoldersOfFolder(String username, int parentFolderNumber) throws SQLException {
         List<FolderBean> folders = new ArrayList<>();
-        String query = "SELECT * FROM Folders WHERE ParentFolder_OwnerUsername = ? AND ParentFolder_FolderNumber = ? ORDER BY (CreationDate)";
+        String query = "SELECT * FROM Folders WHERE ParentFolder_OwnerUsername = ? AND ParentFolder_FolderNumber = ? ORDER BY CreationDate";
         PreparedStatement statement = getDbConnection().prepareStatement(query);
         statement.setString(1, username);
         statement.setInt(2, parentFolderNumber);
@@ -69,7 +69,7 @@ public class FolderDAO extends DAO {
         statement.setString(1, folder.getUsername());
         statement.setInt(2, folder.getFolderNumber());
         statement.setString(3, folder.getName());
-        statement.setDate(4, folder.getCreationDate());
+        statement.setTimestamp(4, new Timestamp(folder.getCreationDate().getTime()));
         statement.setInt(5, folder.getFolderType().getRawValue());
         statement.setString(6, folder.getParentFolder_username());
         Integer parentFolder_number = folder.getParentFolder_folderNumber();

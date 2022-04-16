@@ -19,7 +19,7 @@
 <div class="pageContent">
     <label class="pageTitle">My Folders</label>
     <ul class="folderList" th:remove="all-but-first">
-        <li class="folderRow" th:each="mainFolder : ${folders}">
+        <li class="folderRow" th:each="mainFolder, iter : ${mainFolders}">
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                  width="24" height="24"
                  viewBox="0 0 172 172"
@@ -35,9 +35,9 @@
                 </g>
             </svg>
             <div class="folderIconSeparator"></div>
-            <label th:text="${mainFolder.key.getName()}">Folder 1</label>
+            <label th:text="${mainFolder.getName()}">Folder 1</label>
             <ul class="subfolderList" th:remove="all-but-first">
-                <li class="folderRow" th:each="subfolder : ${mainFolder.value}">
+                <li class="folderRow" th:each="subfolder : ${subfolders.get(iter.index)}">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                          width="24" height="24"
                          viewBox="0 0 172 172"

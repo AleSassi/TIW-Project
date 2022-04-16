@@ -1,6 +1,7 @@
 package com.asassi.tiwproject.beans;
 
-import java.sql.*;
+import java.util.*;
+import java.sql.Timestamp;
 
 public class DocumentBean {
 

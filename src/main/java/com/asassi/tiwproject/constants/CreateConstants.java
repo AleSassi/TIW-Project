@@ -4,7 +4,8 @@ public enum CreateConstants {
 
     Username("username"),
     FileType("selectedContentType"),
-    ParentFolders("folders"),
+    MainFolders("mainFolders"),
+    Subfolders("subfolders"),
     InvalidMainFolderNameError("folderNameError"),
     InvalidParentFolderNameError("parentFolderNameError"),
     InvalidDocNameError("docNameError"),

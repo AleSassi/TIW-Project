@@ -53,15 +53,14 @@ public class ContentCreationController extends DBConnectedServlet {
             ctx.setVariable(CreateConstants.Username.getRawValue(), username);
             ctx.setVariable(CreateConstants.FileType.getRawValue(), selectedFileType);
             try {
-                HashMap<FolderBean, List<FolderBean>> folderMap = new HashMap<>();
                 List<FolderBean> mainFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
+                List<List<FolderBean>> subfolderHierarchy = new ArrayList<>();
                 for (FolderBean mainFolder: mainFolders) {
                     List<FolderBean> subfolders = folderDAO.findSubfoldersOfFolder(username, mainFolder.getFolderNumber());
-                    if (!subfolders.isEmpty()) {
-                        folderMap.put(mainFolder, subfolders);
-                    }
+                    subfolderHierarchy.add(subfolders);
                 }
-                ctx.setVariable(CreateConstants.ParentFolders.getRawValue(), folderMap);
+                ctx.setVariable(CreateConstants.MainFolders.getRawValue(), mainFolders);
+                ctx.setVariable(CreateConstants.Subfolders.getRawValue(), subfolderHierarchy);
             } catch (SQLException e) {
                 throw new ServletException(e.getMessage());
             }

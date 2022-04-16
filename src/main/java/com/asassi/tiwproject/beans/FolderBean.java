@@ -2,7 +2,7 @@ package com.asassi.tiwproject.beans;
 
 import com.asassi.tiwproject.constants.FolderType;
 
-import java.sql.Date;
+import java.util.*;
 
 public class FolderBean {
 

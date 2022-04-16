@@ -16,7 +16,7 @@ public class DocumentDAO extends DAO {
 
     public List<DocumentBean> findDocumentsByUserAndFolder(String username, int folderNumber) throws SQLException {
         List<DocumentBean> documents = new ArrayList<>();
-        String query = "SELECT * FROM Documents WHERE OwnerUsername = ? AND ParentFolderNumber = ? ORDER BY (CreationDate)";
+        String query = "SELECT * FROM Documents WHERE OwnerUsername = ? AND ParentFolderNumber = ? ORDER BY CreationDate";
         PreparedStatement statement = getDbConnection().prepareStatement(query);
         statement.setString(1, username);
         statement.setInt(2, folderNumber);
@@ -39,7 +39,7 @@ public class DocumentDAO extends DAO {
         statement.setInt(3, document.getDocumentNumber());
         statement.setString(4, document.getName());
         statement.setString(5, document.getFileType());
-        statement.setDate(6, document.getCreationDate());
+        statement.setTimestamp(6, new Timestamp(document.getCreationDate().getTime()));
         statement.setString(7, document.getContents());
         statement.executeUpdate();
         statement.close();
