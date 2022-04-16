@@ -8,18 +8,13 @@ import com.asassi.tiwproject.dao.FolderDAO;
 import com.asassi.tiwproject.exceptions.IncorrectFormDataException;
 import org.thymeleaf.context.WebContext;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.time.*;
 
 @WebServlet("/create")
 public class ContentCreationController extends DBConnectedServlet {
@@ -118,7 +113,7 @@ public class ContentCreationController extends DBConnectedServlet {
                 }
                 //Create the folder
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, new java.sql.Date((new java.util.Date()).getTime()), FolderType.Main.getRawValue(), null, null));
+                folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), FolderType.Main.getRawValue(), null, null));
             }
             case Subfolder -> {
                 //We need to have valid strings from: folderName, parentFolder
@@ -138,7 +133,7 @@ public class ContentCreationController extends DBConnectedServlet {
                         throw new IncorrectFormDataException();
                     }
                     //Create the subfolder
-                    folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, new java.sql.Date((new java.util.Date()).getTime()), FolderType.Subfolder.getRawValue(), username, userFolders.get(0).getFolderNumber()));
+                    folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), FolderType.Subfolder.getRawValue(), username, userFolders.get(0).getFolderNumber()));
                 } catch (NumberFormatException e) {
                     //Send an error
                     ctx.setVariable(CreateConstants.InvalidParentFolderNameError.getRawValue(), "You must specify a valid parent folder");
@@ -176,7 +171,7 @@ public class ContentCreationController extends DBConnectedServlet {
                         throw new IncorrectFormDataException();
                     }
                     //Create the Document
-                    documentDAO.addDocument(new DocumentBean(username, parentSubfolderNumber, randomizer.nextInt(0, Integer.MAX_VALUE), docName, docExtension, new java.sql.Date((new java.util.Date()).getTime()), docContent));
+                    documentDAO.addDocument(new DocumentBean(username, parentSubfolderNumber, randomizer.nextInt(0, Integer.MAX_VALUE), docName, docExtension, LocalDateTime.now(), docContent));
                 } catch (NumberFormatException e) {
                     //Send an error
                     ctx.setVariable(CreateConstants.InvalidMainFolderNameError.getRawValue(), "You must specify a valid parent Folder");

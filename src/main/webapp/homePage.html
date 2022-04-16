@@ -36,6 +36,7 @@
             </svg>
             <div class="folderIconSeparator"></div>
             <label th:text="${mainFolder.getName()}">Folder 1</label>
+            <label class="creationDateLabel" th:text="${mainFolder.getCreationDateString()}">Creation Date Here</label>
             <ul class="subfolderList" th:remove="all-but-first">
                 <li class="folderRow" th:each="subfolder : ${subfolders.get(iter.index)}">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
@@ -54,6 +55,7 @@
                     </svg>
                     <div class="folderIconSeparator"></div>
                     <a href="" class="link" th:text="${subfolder.getName()}">Subfolder 1</a>
+                    <label class="creationDateLabel" th:text="${subfolder.getCreationDateString()}">Creation Date Here</label>
                 </li>
                 <li class="folderRow">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
@@ -72,6 +74,7 @@
                     </svg>
                     <div class="folderIconSeparator"></div>
                     <a href="" class="link">Subfolder 2</a>
+                    <label class="creationDateLabel">Creation Date Here</label>
                 </li>
             </ul>
         </li>
@@ -92,6 +95,7 @@
             </svg>
             <div class="folderIconSeparator"></div>
             Folder 2
+            <label class="creationDateLabel">Creation Date Here</label>
         </li>
     </ul>
     <p class="emptyMessage">Click on <label class="emptyMessage bold">Create</label> to create a new Folder</p>

@@ -22,7 +22,7 @@ public class DocumentDAO extends DAO {
         statement.setInt(2, folderNumber);
         ResultSet result = statement.executeQuery();
         while (result.next()) {
-            documents.add(new DocumentBean(result.getString("OwnerUsername"), result.getInt("ParentFolderNumber"), result.getInt("DocumentNumber"), result.getString("Name"), result.getString("FileType"), result.getDate("CreationDate"), result.getString("Contents")));
+            documents.add(new DocumentBean(result.getString("OwnerUsername"), result.getInt("ParentFolderNumber"), result.getInt("DocumentNumber"), result.getString("Name"), result.getString("FileType"), result.getTimestamp("CreationDate").toLocalDateTime(), result.getString("Contents")));
         }
         result.close();
         statement.close();
@@ -39,7 +39,7 @@ public class DocumentDAO extends DAO {
         statement.setInt(3, document.getDocumentNumber());
         statement.setString(4, document.getName());
         statement.setString(5, document.getFileType());
-        statement.setTimestamp(6, new Timestamp(document.getCreationDate().getTime()));
+        statement.setTimestamp(6, Timestamp.valueOf(document.getCreationDate()));
         statement.setString(7, document.getContents());
         statement.executeUpdate();
         statement.close();

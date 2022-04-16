@@ -2,6 +2,9 @@ package com.asassi.tiwproject.beans;
 
 import com.asassi.tiwproject.constants.FolderType;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class FolderBean {
@@ -9,12 +12,12 @@ public class FolderBean {
     private String username;
     private int folderNumber;
     private String name;
-    private Date creationDate;
+    private LocalDateTime creationDate;
     private FolderType folderType;
     private String parentFolder_username;
     private Integer parentFolder_folderNumber;
 
-    public FolderBean(String username, int folderNumber, String name, Date creationDate, int folderType, String parentFolder_username, Integer parentFolder_folderNumber) {
+    public FolderBean(String username, int folderNumber, String name, LocalDateTime creationDate, int folderType, String parentFolder_username, Integer parentFolder_folderNumber) {
         this.username = username;
         this.folderNumber = folderNumber;
         this.name = name;
@@ -52,11 +55,15 @@ public class FolderBean {
         this.name = name;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public String getCreationDateString() {
+        return DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(getCreationDate());
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

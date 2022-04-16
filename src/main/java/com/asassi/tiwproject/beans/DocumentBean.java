@@ -1,7 +1,9 @@
 package com.asassi.tiwproject.beans;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.sql.Timestamp;
 
 public class DocumentBean {
 
@@ -10,10 +12,10 @@ public class DocumentBean {
     private int documentNumber;
     private String name;
     private String fileType;
-    private Date creationDate;
+    private LocalDateTime creationDate;
     private String contents;
 
-    public DocumentBean(String ownerUsername, int parentFolderNumber, int documentNumber, String name, String fileType, Date creationDate, String contents) {
+    public DocumentBean(String ownerUsername, int parentFolderNumber, int documentNumber, String name, String fileType, LocalDateTime creationDate, String contents) {
         this.ownerUsername = ownerUsername;
         this.parentFolderNumber = parentFolderNumber;
         this.documentNumber = documentNumber;
@@ -63,11 +65,15 @@ public class DocumentBean {
         this.fileType = fileType;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public String getCreationDateString() {
+        return DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(getCreationDate());
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

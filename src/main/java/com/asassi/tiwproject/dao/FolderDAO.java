@@ -21,7 +21,7 @@ public class FolderDAO extends DAO {
         statement.setInt(2, folderType.getRawValue());
         ResultSet result = statement.executeQuery();
         while (result.next()) {
-            folders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getDate("CreationDate"), result.getInt("FolderType"), result.getString("ParentFolder_OwnerUsername"), result.getInt("ParentFolder_FolderNumber")));
+            folders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getTimestamp("CreationDate").toLocalDateTime(), result.getInt("FolderType"), result.getString("ParentFolder_OwnerUsername"), result.getInt("ParentFolder_FolderNumber")));
         }
         result.close();
         statement.close();
@@ -38,7 +38,7 @@ public class FolderDAO extends DAO {
         statement.setInt(3, folderType.getRawValue());
         ResultSet result = statement.executeQuery();
         while (result.next()) {
-            folders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getDate("CreationDate"), result.getInt("FolderType"), result.getString("ParentFolder_OwnerUsername"), result.getInt("ParentFolder_FolderNumber")));
+            folders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getTimestamp("CreationDate").toLocalDateTime(), result.getInt("FolderType"), result.getString("ParentFolder_OwnerUsername"), result.getInt("ParentFolder_FolderNumber")));
         }
         result.close();
         statement.close();
@@ -54,7 +54,7 @@ public class FolderDAO extends DAO {
         statement.setInt(2, parentFolderNumber);
         ResultSet result = statement.executeQuery();
         while (result.next()) {
-            folders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getDate("CreationDate"), result.getInt("FolderType"), result.getString("ParentFolder_OwnerUsername"), result.getInt("ParentFolder_FolderNumber")));
+            folders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getTimestamp("CreationDate").toLocalDateTime(), result.getInt("FolderType"), result.getString("ParentFolder_OwnerUsername"), result.getInt("ParentFolder_FolderNumber")));
         }
         result.close();
         statement.close();
@@ -69,7 +69,7 @@ public class FolderDAO extends DAO {
         statement.setString(1, folder.getUsername());
         statement.setInt(2, folder.getFolderNumber());
         statement.setString(3, folder.getName());
-        statement.setTimestamp(4, new Timestamp(folder.getCreationDate().getTime()));
+        statement.setTimestamp(4, Timestamp.valueOf(folder.getCreationDate()));
         statement.setInt(5, folder.getFolderType().getRawValue());
         statement.setString(6, folder.getParentFolder_username());
         Integer parentFolder_number = folder.getParentFolder_folderNumber();
