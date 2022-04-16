@@ -1,10 +1,7 @@
 package com.asassi.tiwproject.controllers;
 
 import com.asassi.tiwproject.beans.FolderBean;
-import com.asassi.tiwproject.constants.FolderType;
-import com.asassi.tiwproject.constants.HomeConstants;
-import com.asassi.tiwproject.constants.PageConstants;
-import com.asassi.tiwproject.constants.SessionConstants;
+import com.asassi.tiwproject.constants.*;
 import com.asassi.tiwproject.dao.FolderDAO;
 import org.thymeleaf.context.WebContext;
 
@@ -16,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 @WebServlet("/home")
@@ -43,9 +41,13 @@ public class HomeController extends DBConnectedServlet {
             //Find the Folders of the User
             try {
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                //folderDAO.addMainFolder(new FolderBean(username, 0, "First Dynamic Folder", new Date(new java.util.Date().getTime()), FolderType.Main.getRawValue(), username, 0));
-                List<FolderBean> userFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
-                ctx.setVariable("mainFolders", userFolders);
+                HashMap<FolderBean, List<FolderBean>> folderMap = new HashMap<>();
+                List<FolderBean> mainFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
+                for (FolderBean mainFolder: mainFolders) {
+                    List<FolderBean> subfolders = folderDAO.findSubfoldersOfFolder(username, mainFolder.getFolderNumber());
+                    folderMap.put(mainFolder, subfolders);
+                }
+                ctx.setVariable(HomeConstants.FolderHierarchy.getRawValue(), folderMap);
             } catch (SQLException e) {
                 e.printStackTrace();
                 throw new ServletException("Could not perform query");
