@@ -43,6 +43,11 @@ public class FolderBean {
         return folderNumber;
     }
 
+    public String getFolderNumberStr() {
+        int a = getFolderNumber();
+        return Integer.toString(a);
+    }
+
     public void setFolderNumber(int folderNumber) {
         this.folderNumber = folderNumber;
     }

@@ -1,8 +1,19 @@
 .pageTitle {
+    display: inline-block;
     font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
     color: #333333;
     font-weight: bold;
     font-size: 30px;
+    padding-left: 60px;
+    position: relative;
+    top: 30px;
+}
+
+.pageTitle-move {
+    display: inline-block;
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+    color: #333333;
+    font-size: 20px;
     padding-left: 60px;
     position: relative;
     top: 30px;
@@ -66,4 +77,8 @@
 
 .bold {
     font-weight: bold;
+}
+
+.notClickable {
+    color: darkred;
 }

@@ -1,7 +1,9 @@
 package com.asassi.tiwproject.controllers;
 
+import com.asassi.tiwproject.beans.DocumentBean;
 import com.asassi.tiwproject.beans.FolderBean;
 import com.asassi.tiwproject.constants.*;
+import com.asassi.tiwproject.dao.DocumentDAO;
 import com.asassi.tiwproject.dao.FolderDAO;
 import org.thymeleaf.context.WebContext;
 
@@ -53,6 +55,35 @@ public class HomeController extends DBConnectedServlet {
             } catch (SQLException e) {
                 e.printStackTrace();
                 throw new ServletException("Could not perform query");
+            }
+            //Check the additional parameters for the Move operation
+            String documentIDToMove = req.getParameter("document");
+            String srcFolderID = req.getParameter("fid");
+            if (documentIDToMove != null && srcFolderID != null) {
+                //Validate the parameters
+                try {
+                    int documentID = Integer.parseInt(documentIDToMove);
+                    int folderID = Integer.parseInt(srcFolderID);
+                    FolderDAO folderDAO = new FolderDAO(getDBConnection());
+                    DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
+                    List<DocumentBean> ownedDocsWithSameID = documentDAO.findDocument(username, documentID);
+                    List<FolderBean> parentFolders = folderDAO.findFoldersByUsernameAndFolderNumber(username, folderID, FolderType.Subfolder);
+                    if (!ownedDocsWithSameID.isEmpty() && !parentFolders.isEmpty()) {
+                        //Check that the folder is the same
+                        DocumentBean document = ownedDocsWithSameID.get(0);
+                        FolderBean parentFolder = parentFolders.get(0);
+                        if (document.getParentFolderNumber() == folderID) {
+                            ctx.setVariable(HomeConstants.DocToMoveID.getRawValue(), documentID);
+                            ctx.setVariable(HomeConstants.DocToMoveName.getRawValue(), document.getName());
+                            ctx.setVariable(HomeConstants.DocToMoveSrcFolderID.getRawValue(), folderID);
+                            ctx.setVariable(HomeConstants.DocToMoveSrcFolderName.getRawValue(), parentFolder.getName());
+                        }
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    throw new ServletException("Could not perform query");
+                } catch (NumberFormatException ignored) {
+                }
             }
         }
     }

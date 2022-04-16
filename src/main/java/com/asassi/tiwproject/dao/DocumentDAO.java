@@ -60,4 +60,19 @@ public class DocumentDAO extends DAO {
         statement.executeUpdate();
         statement.close();
     }
+
+    public void moveDocument(DocumentBean document, int targetFolderNumber) throws SQLException {
+        String deleteQuery = "DELETE FROM Documents WHERE DocumentNumber = ?";
+
+        getDbConnection().setAutoCommit(false);
+        PreparedStatement deleteStatement = getDbConnection().prepareStatement(deleteQuery);
+
+        deleteStatement.setInt(1, document.getDocumentNumber());
+        deleteStatement.executeUpdate();
+        deleteStatement.close();
+        document.setParentFolderNumber(targetFolderNumber);
+        addDocument(document);
+
+        getDbConnection().setAutoCommit(true);
+    }
 }

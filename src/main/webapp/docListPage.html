@@ -31,7 +31,7 @@
             <div class="folderIconSeparator"></div>
             <a href="/show?document=&fid=" th:href="@{/show(document=${document.getDocumentNumber()}, fid=${folderID})}" class="link">Open</a>
             <div class="folderIconSeparator"></div>
-            <a href="" class="link">Move</a>
+            <a href="/home?document=&fid=" th:href="@{/home(document=${document.getDocumentNumber()}, fid=${folderID})}" class="link">Move</a>
             <label class="creationDateLabelTallIcon" th:text="${document.getCreationDateString()}">Creation Date Here</label>
         </li>
         <li class="folderRow">
