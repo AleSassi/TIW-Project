@@ -3,9 +3,11 @@ package com.asassi.tiwproject.constants;
 public enum SignupConstants {
 
     UsernameErrorInfo("usernameError"),
+    EmailErrorInfo("emailError"),
     PasswordErrorInfo("passwordError"),
     RepeatPasswordErrorInfo("passwordRepeatError"),
-    ValidatedUsername("validatedUsername");
+    ValidatedUsername("validatedUsername"),
+    ValidatedEmail("validatedEmail");
 
     private final String rawValue;
 

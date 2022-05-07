@@ -22,7 +22,7 @@ public class UserDAO extends DAO {
         statement.setString(1, username);
         ResultSet result = statement.executeQuery();
         while (result.next()) {
-            UserBean user = new UserBean(result.getString("NameHash"), result.getString("PasswordHash"));
+            UserBean user = new UserBean(result.getString("NameHash"), result.getString("PasswordHash"), result.getString("MailAddr"));
             users.add(user);
         }
         result.close();
@@ -32,11 +32,12 @@ public class UserDAO extends DAO {
     }
 
     public void registerUser(UserBean user) throws SQLException {
-        String query = "INSERT INTO Users VALUES (?, ?)";
+        String query = "INSERT INTO Users VALUES (?, ?, ?)";
 
         PreparedStatement statement = getDbConnection().prepareStatement(query);
-        statement.setString(1, user.getName());
+        statement.setString(1, user.getUsername());
         statement.setString(2, user.getPasswordHash());
+        statement.setString(3, user.getEmail());
         statement.executeUpdate();
         statement.close();
     }

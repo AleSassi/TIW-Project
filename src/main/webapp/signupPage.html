@@ -16,6 +16,11 @@
                 <label for="username" class="errorLabel" th:hidden="${usernameError == null}" th:text="${usernameError}">Username Error goes here</label>
             </div>
             <div>
+                <label for="email">Email Address:</label>
+                <input type="text" name="email" id="email" class="fullHeightElement textField" placeholder="Enter your Email" th:value="${validatedEmail}" required>
+                <label for="email" class="errorLabel" th:hidden="${emailError == null}" th:text="${emailError}">Email Error goes here</label>
+            </div>
+            <div>
                 <label for="password">Password (at least 8 characters):</label>
                 <input type="password" name="password" id="password" class="fullHeightElement textField" placeholder="Enter your Password" minlength="8" required>
                 <label for="password" class="errorLabel" th:hidden="${passwordError == null}" th:text="${passwordError}">Password Error goes here</label>

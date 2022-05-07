@@ -12,6 +12,8 @@ import org.thymeleaf.context.*;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.servlet.*;
@@ -37,17 +39,25 @@ public class SignUpController extends DBConnectedServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
+        String email = req.getParameter("email");
         String password = req.getParameter("password");
         String passwordRepeat = req.getParameter("passwordRepeat");
+
+        Pattern emailPattern = Pattern.compile("^[A-Za-z0-9._]{1,16}+@[a-z]{1,7}\\.[a-z]{1,3}$");
 
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(req, resp, servletContext, req.getLocale());
 
         String error = null;
         boolean isUsernameValid = false;
+        boolean isEmailValid = false;
         if (username == null) {
             error = "You have to enter a Username to create an account";
             ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
+        }
+        if (email == null) {
+            error = "You have to enter a valid Email address to create an account";
+            ctx.setVariable(SignupConstants.EmailErrorInfo.getRawValue(), error);
         }
         if (password == null) {
             error = "You have to enter a Password to create an account";
@@ -64,6 +74,15 @@ public class SignUpController extends DBConnectedServlet {
         } else if (username != null) {
             isUsernameValid = true;
         }
+        if (email != null) {
+            Matcher matcher = emailPattern.matcher(email);
+            if (matcher.find()) {
+                isEmailValid = true;
+            } else {
+                error = "Invalid Email address";
+                ctx.setVariable(SignupConstants.EmailErrorInfo.getRawValue(), error);
+            }
+        }
         if (password != null && password.length() < 8) {
             error = "Password must be at least 8 chars long";
             ctx.setVariable(SignupConstants.PasswordErrorInfo.getRawValue(), error);
@@ -77,7 +96,7 @@ public class SignUpController extends DBConnectedServlet {
         String registeredUsername = null;
         if (error == null) {
             try {
-                registeredUsername = registerUser(username, password);
+                registeredUsername = registerUser(username, password, email);
             } catch (UserAlreadyRegisteredException e) {
                 error = "Username already chosen by another user";
                 ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
@@ -98,12 +117,15 @@ public class SignUpController extends DBConnectedServlet {
             if (isUsernameValid) {
                 ctx.setVariable(SignupConstants.ValidatedUsername.getRawValue(), username);
             }
+            if (isEmailValid) {
+                ctx.setVariable(SignupConstants.ValidatedEmail.getRawValue(), email);
+            }
             // We show the Signup page with the errors
             showTemplatePage(ctx, resp);
         }
     }
 
-    private String registerUser(String username, String password) throws UserAlreadyRegisteredException, SQLException {
+    private String registerUser(String username, String password, String email) throws UserAlreadyRegisteredException, SQLException {
         //Hash the Password to store it in the database
         String passwordHash = Hasher.getHash(password);
         //Check if the User is already in the database
@@ -111,7 +133,7 @@ public class SignUpController extends DBConnectedServlet {
         List<UserBean> registeredUsersWithSameName = userDAO.findUsersByName(username);
         if (!registeredUsersWithSameName.isEmpty()) throw new UserAlreadyRegisteredException();
         //Add the User to the database
-        userDAO.registerUser(new UserBean(username, passwordHash));
+        userDAO.registerUser(new UserBean(username, passwordHash, email));
         return username;
     }
 }
