@@ -4,21 +4,22 @@
     <title>WebDoc Sign In</title>
     <link rel="stylesheet" type="text/css" href="CSS/globalStyle.css">
     <link rel="stylesheet" type="text/css" href="CSS/loginStyle.css">
+    <script src="javascript/loginFormChecker.js"></script>
 </head>
 <body>
-<form action="/" method="post" autocapitalize="none" autocomplete="off">
+<form id="loginForm" action="/" method="post" autocapitalize="none" autocomplete="off">
     <div class="loginFormContainer">
         <div class="loginForm">
             <label class="title">Sign in to WebDoc</label>
             <div>
                 <label for="username">Username:</label>
                 <input type="text" name="username" id="username" class="fullHeightElement textField" placeholder="Enter your Username" th:value="${validatedUsername}" required>
-                <label for="username" class="errorLabel" th:hidden="${usernameError == null}" th:text="${usernameError}">Username Error goes here</label>
+                <label for="username" class="errorLabel" id="usernameError" th:hidden="${usernameError == null}" th:text="${usernameError}">Username Error goes here</label>
             </div>
             <div>
                 <label for="password">Password:</label>
                 <input type="password" name="password" id="password" class="fullHeightElement textField" placeholder="Enter your Password" required>
-                <label for="password" class="errorLabel" th:hidden="${passwordError == null}" th:text="${passwordError}">Password Error goes here</label>
+                <label for="password" class="errorLabel" id="passwordError" th:hidden="${passwordError == null}" th:text="${passwordError}">Password Error goes here</label>
             </div>
             <input class="fullHeightElement filledButton" type="submit" value="Sign In">
             <label class="registerPrompt">Not yet registered? <a href="signup" class="link">Create your account.</a></label>
