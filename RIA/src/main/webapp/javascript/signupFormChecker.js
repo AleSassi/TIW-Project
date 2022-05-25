@@ -17,13 +17,11 @@ window.addEventListener('load', function () {
             emailErrorLabel.textContent = "You must enter your email to sign up";
             emailErrorLabel.hidden = false;
             isValid = false;
-            e.preventDefault();
         } else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailField.value))) {
             // Show the Error Message for Email
             emailErrorLabel.textContent = "Invalid Email address";
             emailErrorLabel.hidden = false;
             isValid = false;
-            e.preventDefault();
         } else {
             emailErrorLabel.hidden = true;
         }
@@ -32,23 +30,24 @@ window.addEventListener('load', function () {
             pwdErrorLabel.textContent = "You must enter a Password at least 8 characters long";
             pwdErrorLabel.hidden = false;
             isValid = false;
-            e.preventDefault();
         } else if (!repeatPasswordField.value || repeatPasswordField.value.size < 1) {
             pwdErrorLabel.hidden = true
             repeatPWDLabel.textContent = "You must repeat your password to sign up";
             repeatPWDLabel.hidden = false;
             isValid = false;
-            e.preventDefault();
         } else if (passwordField.value !== repeatPasswordField.value) {
             // Show the Error Message for RepeatPassword
             pwdErrorLabel.hidden = true
             repeatPWDLabel.textContent = "The \"Password\" and \"Repeat Password\" fields do not match";
             repeatPWDLabel.hidden = false;
             isValid = false;
-            e.preventDefault();
         } else {
             repeatPWDLabel.hidden = true;
             pwdErrorLabel.hidden = true;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
         }
         return isValid;
     })

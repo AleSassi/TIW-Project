@@ -15,7 +15,6 @@ window.addEventListener('load', function () {
             usernameErrorLabel.textContent = "You must enter your username to sign in";
             usernameErrorLabel.hidden = false;
             isValid = false;
-            e.preventDefault();
         } else {
             usernameErrorLabel.hidden = true;
         }
@@ -24,9 +23,11 @@ window.addEventListener('load', function () {
             pwdErrorLabel.textContent = "You must enter your password";
             pwdErrorLabel.hidden = false;
             isValid = false;
-            e.preventDefault();
         } else {
             pwdErrorLabel.hidden = true;
+        }
+        if (!isValid) {
+            e.preventDefault();
         }
         return isValid;
     })
