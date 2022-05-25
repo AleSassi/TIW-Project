@@ -1,0 +1,150 @@
+body {
+    background-color: #f0f0f0;
+}
+
+::placeholder {
+    color: #666;
+    font-size: 17px;
+}
+
+.fullHeightElement {
+    font-size: 17px;
+    line-height: 1.29412;
+    font-weight: 400;
+    letter-spacing: -.021em;
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+    display: inline-block;
+    box-sizing: border-box;
+    vertical-align: top;
+    width: 100%;
+    height: 34px;
+    margin-bottom: 14px;
+    padding-left: 8px;
+    padding-right: 15px;
+    background-clip: border-box;
+    box-shadow: none;
+}
+
+.textField {
+    color: #333;
+    text-align: left;
+    border: 1px solid #d6d6d6;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 1);
+}
+
+.textField:focus {
+    border-color: #007aff;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 6px rgba(0, 122, 255, 0.6);
+}
+
+.filledButton {
+    background-color: #007aff;
+    border-radius: 100px;
+    border: none;
+    text-align: center;
+    color: #fff;
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+.link {
+    text-decoration: none;
+    color: #007aff;
+}
+
+.navBar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #999999;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 6px rgba(100, 100, 100, 0.6);
+    background-color: #cfcfcf;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+
+.navBar-element {
+    float: left;
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+.navBar-element {
+    display: block;
+    color: #333333;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+.navBar-element:hover {
+    background-color: #dfdfdf;
+}
+
+.rightAnchor {
+    float: right;
+    padding: 0;
+}
+
+.usernameDisplayer {
+    display: block;
+    color: #333333;
+    padding: 5px 10px 2px;
+    text-align: right;
+    text-decoration: none;
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 14px;
+}
+
+.logoutButton {
+    display: block;
+    color: #007aff;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    text-align: right;
+    text-decoration: none;
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    background: none;
+    float: right;
+}
+
+.logoutButton:focus {
+    border: none;
+    outline: none;
+}
+
+.active {
+    background-color: rgb(48, 176, 199, 1);
+}
+
+.active:hover {
+    background-color: rgb(86, 212, 234);
+}
+
+@media screen and (max-width: 600px) {
+    .navBar .navBar-element.right,
+    .navBar .navBar-element {float: none;}
+}
+
+.pageContent {
+    margin-top: 60px;
+}
+
+.backLink {
+    text-decoration: none;
+    color: #ffffff;
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    background-color: #007aff;
+    padding: 10px;
+    border-radius: 8px;
+}

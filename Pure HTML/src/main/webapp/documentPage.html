@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>WebDoc Document Page</title>
+    <link rel="stylesheet" type="text/css" href="CSS/globalStyle.css" th:href="@{/CSS/globalStyle.css}">
+    <link rel="stylesheet" type="text/css" href="CSS/homeStyle.css">
+    <link rel="stylesheet" type="text/css" href="CSS/documentStyle.css">
+</head>
+<body>
+<ul class="navBar">
+    <li><a class="navBar-element" href="/home">Home</a></li>
+    <li><a class="navBar-element" href="/create">Create...</a></li>
+    <li>
+        <div class="navBar-element rightAnchor">
+            <label class="usernameDisplayer" th:text="${'Hi @'+username}">Hi @Username</label>
+            <a class="logoutButton" href="/logout">Logout</a>
+        </div>
+    </li>
+</ul>
+<div class="pageContent">
+    <label class="pageTitle">Document Info</label>
+    <div class="documentTableContainer">
+        <table class="documentTable">
+            <tbody>
+            <tr class="oddRow">
+                <td class="rowTitle">Owner</td>
+                <td th:text="${ownerUsername}">AleSassi</td>
+            </tr>
+            <tr class="evenRow">
+                <td class="rowTitle">Parent Folder</td>
+                <td th:text="${parentFolderName}">Folder 1</td>
+            </tr>
+            <tr class="oddRow">
+                <td class="rowTitle">Name</td>
+                <td th:text="${documentName}">Document 1</td>
+            </tr>
+            <tr class="evenRow">
+                <td class="rowTitle">File Type</td>
+                <td th:text="${documentExtension}">txt</td>
+            </tr>
+            <tr class="oddRow">
+                <td class="rowTitle">Creation Date</td>
+                <td th:text="${documentCreationDate}">Dummy Date</td>
+            </tr>
+            <tr class="evenRow">
+                <td class="rowTitle">Contents</td>
+                <td th:text="${documentContents}">Dummy Contents</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="pageContent">
+        <a href="/folder?fid=" th:href="@{/folder(fid=${parentFolderNumber})}" class="backLink">Back</a>
+    </div>
+</div>
+</body>
+</html>
