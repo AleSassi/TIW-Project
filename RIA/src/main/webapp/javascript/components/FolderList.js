@@ -11,17 +11,15 @@ function FolderList() {
         let username = sessionStorage.getItem("username");
         //Ask the server which folders are owned by the user and display
         get("GetFolderListData", function(request) {
-            if (request.readyState === 4) {
-                if (request.status === 200) {
-                    // We got the data from the server. Now parse it and show the list of folders to screen
-                    let folders = JSON.parse(request.responseText);
-                    // Show the folder list
-                    self.update(folders);
-                } else if (request.status === 403) {
-                    //TODO: Log the user out and show the login page
-                } else {
-                    //TODO: Show an error popup
-                }
+            if (request.status === 200) {
+                // We got the data from the server. Now parse it and show the list of folders to screen
+                let folders = JSON.parse(request.responseText);
+                // Show the folder list
+                self.update(folders);
+            } else if (request.status === 403) {
+                //TODO: Log the user out and show the login page
+            } else {
+                //TODO: Show an error popup
             }
         });
     }

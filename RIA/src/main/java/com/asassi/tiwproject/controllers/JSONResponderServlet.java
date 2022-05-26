@@ -33,11 +33,15 @@ public abstract class JSONResponderServlet extends DBConnectedServlet {
         Object responseObj = handleGet(req, resp, ctx, servletContext);
         if (responseObj != null) {
             //Send the response to the client
-            String json = gson.toJson(responseObj);
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().write(json);
+            sendAsJSON(responseObj, resp);
         }
+    }
+
+    protected void sendAsJSON(Object object, HttpServletResponse resp) throws IOException {
+        String json = gson.toJson(object);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(json);
     }
 
     protected abstract Object handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws ServletException, IOException;

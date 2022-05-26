@@ -1,5 +1,6 @@
 package com.asassi.tiwproject.controllers;
 
+import com.asassi.tiwproject.beans.LoginResponseBean;
 import com.asassi.tiwproject.beans.UserBean;
 import com.asassi.tiwproject.constants.PageConstants;
 import com.asassi.tiwproject.constants.SessionConstants;
@@ -9,50 +10,51 @@ import com.asassi.tiwproject.dao.UserDAO;
 import com.asassi.tiwproject.exceptions.IncorrectPasswordException;
 import com.asassi.tiwproject.exceptions.UserNotRegisteredException;
 import org.thymeleaf.context.WebContext;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.*;
 import java.sql.SQLException;
 import java.util.List;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.servlet.*;
 
 @WebServlet("")
-public class SignInController extends TemplatedServlet {
+@MultipartConfig
+public class SignInController extends JSONResponderServlet {
 
     @Override
-    protected String getTemplatePage() {
-        return "/loginPage.html";
-    }
-
-    @Override
-    protected void handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws IOException {
+    protected Object handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws IOException, ServletException {
         //If the User is already logged in, send the user to the Home Page
         HttpSession session = req.getSession();
         String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
         if (username != null) {
             resp.sendRedirect(PageConstants.Home.getRawValue());
+        } else {
+            //Serve the plain HTML - JS will handle the rest
+            req.getRequestDispatcher("/loginPage.html").forward(req, resp);
         }
+        return null;
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
+        String username = StringEscapeUtils.escapeJava(req.getParameter("username"));
+        String password = StringEscapeUtils.escapeJava(req.getParameter("password"));
 
-        ServletContext servletContext = getServletContext();
-        final WebContext ctx = new WebContext(req, resp, servletContext, req.getLocale());
+        LoginResponseBean responseBean = new LoginResponseBean();
 
         String error = null;
         boolean isUsernameValid = true;
         if (username == null) {
             error = "You have to enter a Username to log in";
-            ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
+            responseBean.setUsernameError(error);
             isUsernameValid = false;
         }
         if (password == null) {
             error = "You have to enter a Password to log in";
-            ctx.setVariable(SignupConstants.PasswordErrorInfo.getRawValue(), error);
+            responseBean.setPasswordError(error);
         }
 
         boolean loginSucceeded = false;
@@ -63,12 +65,9 @@ public class SignInController extends TemplatedServlet {
                 loginSucceeded = true;
             } catch (SQLException e) {
                 e.printStackTrace();
-            } catch (UserNotRegisteredException e) {
-                error = "The Username could not be found";
-                ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
-            } catch (IncorrectPasswordException e) {
-                error = "The Password is incorrect";
-                ctx.setVariable(SignupConstants.PasswordErrorInfo.getRawValue(), error);
+            } catch (UserNotRegisteredException | IncorrectPasswordException e) {
+                error = "Incorrect username or password";
+                responseBean.setUsernameError(error);
             }
         }
 
@@ -78,11 +77,9 @@ public class SignInController extends TemplatedServlet {
             //Forward to the Home Page
             resp.sendRedirect(PageConstants.Home.getRawValue());
         } else {
-            if (isUsernameValid) {
-                ctx.setVariable(SignupConstants.ValidatedUsername.getRawValue(), username);
-            }
-            // We show the Signup page with the errors
-            showTemplatePage(ctx, resp);
+            // Send the JSON with errors
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            sendAsJSON(responseBean, resp);
         }
     }
 

@@ -2,7 +2,7 @@ package com.asassi.tiwproject.constants;
 
 public enum SignupConstants {
 
-    UsernameErrorInfo("usernameError"),
+    UsernamePasswordErrorInfo("usernamePasswordError"),
     EmailErrorInfo("emailError"),
     PasswordErrorInfo("passwordError"),
     RepeatPasswordErrorInfo("passwordRepeatError"),

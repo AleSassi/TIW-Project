@@ -36,7 +36,6 @@ public class GetFolderListDataController extends JSONResponderServlet {
         } else {
             // Fetch the data from the DB
             try {
-                System.out.println(getDBConnection());
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
                 List<FolderBean> mainFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
                 List<List<FolderBean>> subfolderHierarchy = new ArrayList<>();

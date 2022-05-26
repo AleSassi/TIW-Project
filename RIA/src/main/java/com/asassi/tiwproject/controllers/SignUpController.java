@@ -53,7 +53,7 @@ public class SignUpController extends TemplatedServlet {
         boolean isEmailValid = false;
         if (username == null) {
             error = "You have to enter a Username to create an account";
-            ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
+            ctx.setVariable(SignupConstants.UsernamePasswordErrorInfo.getRawValue(), error);
         }
         if (email == null) {
             error = "You have to enter a valid Email address to create an account";
@@ -70,7 +70,7 @@ public class SignUpController extends TemplatedServlet {
 
         if (username != null && username.contains(" ")) {
             error = "Usernames must not have Spaces";
-            ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
+            ctx.setVariable(SignupConstants.UsernamePasswordErrorInfo.getRawValue(), error);
         } else if (username != null) {
             isUsernameValid = true;
         }
@@ -99,7 +99,7 @@ public class SignUpController extends TemplatedServlet {
                 registeredUsername = registerUser(username, password, email);
             } catch (UserAlreadyRegisteredException e) {
                 error = "Username already chosen by another user";
-                ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
+                ctx.setVariable(SignupConstants.UsernamePasswordErrorInfo.getRawValue(), error);
                 registrationSucceeded = false;
             } catch (SQLException e) {
                 throw new UnavailableException("Couldn't perform command");
