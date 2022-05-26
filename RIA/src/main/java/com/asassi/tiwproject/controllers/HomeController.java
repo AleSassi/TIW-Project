@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @WebServlet("/home")
-public class HomeController extends DBConnectedServlet {
+public class HomeController extends TemplatedServlet {
 
     @Override
     protected String getTemplatePage() {

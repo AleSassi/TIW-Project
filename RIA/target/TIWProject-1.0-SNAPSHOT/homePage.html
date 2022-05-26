@@ -4,6 +4,12 @@
     <title>WebDoc Home Page</title>
     <link rel="stylesheet" type="text/css" href="CSS/globalStyle.css" th:href="@{/CSS/globalStyle.css}">
     <link rel="stylesheet" type="text/css" href="CSS/homeStyle.css">
+    <script src="javascript/mainPage.js"></script>
+    <script src="javascript/PageController.js"></script>
+    <script src="javascript/FolderList.js"></script>
+    <script src="javascript/FolderDetail.js"></script>
+    <script src="javascript/DocumentDetail.js"></script>
+    <script src="javascript/AJAX.js"></script>
 </head>
 <body>
 <ul class="navBar">
@@ -11,64 +17,26 @@
     <li><a class="navBar-element" href="/create">Create...</a></li>
     <li>
         <div class="navBar-element rightAnchor">
-            <label class="usernameDisplayer" th:text="${'Hi @'+username}">Hi @Username</label>
+            <label class="usernameDisplayer" id="usernameDisplayer">Hi @Username</label>
             <a class="logoutButton" href="/logout">Logout</a>
         </div>
     </li>
 </ul>
 <div class="pageContent">
-    <label class="pageTitle" th:remove="${documentID == null || srcFolderID == null} ? 'none' : 'all'">My Folders</label>
-    <div class="pageTitle-move" th:remove="${documentID == null || srcFolderID == null} ? 'all' : 'none'">
-        <label>You are moving the document "</label>
-        <label th:text="${documentName}">A Document</label>
-        <label>" from the subfolder "</label>
-        <label th:text="${srcFolderName}">A Folder</label>
-        <label>". Choose the destination subfolder.</label>
-    </div>
-    <ul class="folderList" th:remove="all-but-first">
-        <li class="folderRow" th:each="mainFolder, iter : ${mainFolders}">
-            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                 width="24" height="24"
-                 viewBox="0 0 172 172"
-                 style=" fill:#000000;"
-                 class="folderIcon">
-                <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
-                    <path d="M0,172v-172h172v172z" fill="none">
-                    </path>
-                    <g fill="#007aff">
-                        <path d="M22.93333,17.2c-6.33533,0 -11.46667,5.13133 -11.46667,11.46667v17.2h63.06667h86v-5.73333c0,-6.33533 -5.13133,-11.46667 -11.46667,-11.46667h-84.85781l-3.53854,-5.9013c-2.06973,-3.45147 -5.80124,-5.56536 -9.83177,-5.56536zM17.2,57.33333c-3.1648,0 -5.73333,2.56853 -5.73333,5.73333v68.8c0,6.33533 5.13133,11.46667 11.46667,11.46667h126.13333c6.33533,0 11.46667,-5.13133 11.46667,-11.46667v-68.8c0,-3.1648 -2.56853,-5.73333 -5.73333,-5.73333z">
-                        </path>
-                    </g>
-                </g>
-            </svg>
-            <div class="folderIconSeparator"></div>
-            <label th:text="${mainFolder.getName()}">Folder 1</label>
-            <label class="creationDateLabel" th:text="${mainFolder.getCreationDateString()}">Creation Date Here</label>
-            <ul class="subfolderList" th:remove="all-but-first">
-                <li class="folderRow" th:each="subfolder : ${subfolders.get(iter.index)}">
-                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                         width="24" height="24"
-                         viewBox="0 0 172 172"
-                         style=" fill:#000000;"
-                         class="folderIcon">
-                        <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
-                            <path d="M0,172v-172h172v172z" fill="none">
-                            </path>
-                            <g fill="#007aff">
-                                <path d="M22.93333,17.2c-6.33533,0 -11.46667,5.13133 -11.46667,11.46667v17.2h63.06667h86v-5.73333c0,-6.33533 -5.13133,-11.46667 -11.46667,-11.46667h-84.85781l-3.53854,-5.9013c-2.06973,-3.45147 -5.80124,-5.56536 -9.83177,-5.56536zM17.2,57.33333c-3.1648,0 -5.73333,2.56853 -5.73333,5.73333v68.8c0,6.33533 5.13133,11.46667 11.46667,11.46667h126.13333c6.33533,0 11.46667,-5.13133 11.46667,-11.46667v-68.8c0,-3.1648 -2.56853,-5.73333 -5.73333,-5.73333z">
-                                </path>
-                            </g>
-                        </g>
-                    </svg>
-                    <div class="folderIconSeparator"></div>
-                    <a href="/folder?fid=" th:href="${documentID == null || srcFolderID == null} ? @{/folder(fid=${subfolder.getFolderNumber()})} : @{/folder(fid=${subfolder.getFolderNumber()}, documentMV=${documentID})}" class="link" th:text="${subfolder.getName()}" th:remove="${documentID != null && srcFolderID != null && subfolder.getFolderNumberStr() == srcFolderID} ? 'all' : 'none'">Subfolder 1</a>
-                    <label class="link notClickable" th:remove="${documentID != null && srcFolderID != null && subfolder.getFolderNumberStr() == srcFolderID} ? 'none' : 'all'" th:text="${subfolder.getName()}"></label>
-                    <label class="creationDateLabel" th:text="${subfolder.getCreationDateString()}">Creation Date Here</label>
-                </li>
-            </ul>
-        </li>
+    <label class="pageTitle">My Folders</label>
+    <!-- The container for the folders/subfolders list -->
+    <ul class="folderList" id="folderList">
     </ul>
-    <p class="emptyMessage" th:remove="${mainFolders == null || mainFolders.isEmpty()} ? 'none' : 'all'">Click on <label class="emptyMessage bold">Create</label> to create a new Folder</p>
+    <!-- The container for the documents list -->
+    <ul class="folderList" id="documentList">
+    </ul>
+    <div class="documentTableContainer">
+        <table class="documentTable">
+            <tbody id="documentTableBody">
+            </tbody>
+        </table>
+    </div>
+    <p class="emptyMessage" id="emptyMessage">Click on <label class="emptyMessage bold">Create</label> to create a new Folder</p>
 </div>
 </body>
 </html>

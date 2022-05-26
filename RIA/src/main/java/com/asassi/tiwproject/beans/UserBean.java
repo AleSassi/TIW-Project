@@ -1,6 +1,6 @@
 package com.asassi.tiwproject.beans;
 
-public class UserBean {
+public class UserBean extends JSONSendable {
 
     private String username;
     private String passwordHash;

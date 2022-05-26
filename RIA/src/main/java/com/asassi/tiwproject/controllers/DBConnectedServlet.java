@@ -1,17 +1,14 @@
 package com.asassi.tiwproject.controllers;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
+import javax.servlet.http.HttpServlet;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public abstract class DBConnectedServlet extends TemplatedServlet {
+public abstract class DBConnectedServlet extends HttpServlet {
 
     private Connection dbConnection;
 

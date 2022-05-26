@@ -12,12 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public abstract class TemplatedServlet extends HttpServlet {
+public abstract class TemplatedServlet extends DBConnectedServlet {
 
     private TemplateEngine templateEngine;
 
     @Override
     public void init() throws ServletException {
+        super.init();
         ServletContext servletContext = getServletContext();
 
         ServletContextTemplateResolver templateResolver = new

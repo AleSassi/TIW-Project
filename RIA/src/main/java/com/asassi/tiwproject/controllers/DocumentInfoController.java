@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/show")
-public class DocumentInfoController extends DBConnectedServlet {
+public class DocumentInfoController extends TemplatedServlet {
 
     @Override
     protected void handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws ServletException, IOException {

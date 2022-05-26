@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class FolderBean {
+public class FolderBean extends JSONSendable {
 
     private String username;
     private int folderNumber;

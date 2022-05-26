@@ -19,7 +19,7 @@ import javax.servlet.http.*;
 import javax.servlet.*;
 
 @WebServlet("/signup")
-public class SignUpController extends DBConnectedServlet {
+public class SignUpController extends TemplatedServlet {
 
     @Override
     protected String getTemplatePage() {

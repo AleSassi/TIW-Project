@@ -17,7 +17,7 @@ import java.util.*;
 import java.time.*;
 
 @WebServlet("/create")
-public class ContentCreationController extends DBConnectedServlet {
+public class ContentCreationController extends TemplatedServlet {
 
     @Override
     protected String getTemplatePage() {

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class DocumentBean {
+public class DocumentBean extends JSONSendable {
 
     private String ownerUsername;
     private int parentFolderNumber;

@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/folder")
-public class FolderContentController extends DBConnectedServlet {
+public class FolderContentController extends TemplatedServlet {
     @Override
     protected void handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws ServletException, IOException {
         //If the User is not registered (we cannot find the username in the Session), redirect to the Login page
