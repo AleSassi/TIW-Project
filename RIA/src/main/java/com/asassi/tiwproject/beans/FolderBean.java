@@ -2,12 +2,10 @@ package com.asassi.tiwproject.beans;
 
 import com.asassi.tiwproject.constants.FolderType;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 
-public class FolderBean extends JSONSendable {
+public class FolderBean {
 
     private String username;
     private int folderNumber;

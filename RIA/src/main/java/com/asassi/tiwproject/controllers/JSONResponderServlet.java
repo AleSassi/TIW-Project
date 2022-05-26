@@ -1,19 +1,13 @@
 package com.asassi.tiwproject.controllers;
 
-import com.asassi.tiwproject.beans.JSONSendable;
 import com.google.gson.*;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 
 public abstract class JSONResponderServlet extends DBConnectedServlet {

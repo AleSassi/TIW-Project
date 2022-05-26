@@ -5,7 +5,7 @@ import com.asassi.tiwproject.constants.FolderType;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class NestedFolderBean extends JSONSendable {
+public class NestedFolderBean {
 
     private String username;
     private int folderNumber;
