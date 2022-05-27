@@ -1,5 +1,6 @@
-package com.asassi.tiwproject.beans;
+package com.asassi.tiwproject.beans.responses;
 
+import com.asassi.tiwproject.beans.FolderBean;
 import com.asassi.tiwproject.constants.FolderType;
 
 import java.time.LocalDateTime;

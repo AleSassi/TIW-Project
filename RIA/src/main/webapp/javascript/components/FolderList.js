@@ -1,8 +1,9 @@
 function FolderList() {
 
-    this.init = function() {
+    this.init = function(pageController) {
         this.container = document.getElementById("folderList");
         this.emptyMessagePar = document.getElementById("emptyMessage");
+        this.pageController = pageController;
     }
 
     this.show = function () {
@@ -25,6 +26,8 @@ function FolderList() {
     }
 
     this.update = function(folders) {
+        const self = this;
+
         function createSVG(parent) {
             //Create the SVG icon
             let svgIcon = document.createElement("svg");
@@ -58,8 +61,20 @@ function FolderList() {
                 nameLink.setAttribute("href", "#");
                 nameLink.textContent = folder.name;
                 nameLink.addEventListener("click", (e) => {
-                    //TODO: Show the Folder Detail
-
+                    //Show the Folder Detail
+                    e.preventDefault();
+                    get("getFolderDetailData?fid=" + folder.folderNumber, function(request) {
+                        if (request.status === 200) {
+                            // We have the folder data as JSON - show
+                            let folderDetailData = JSON.parse(request.responseText);
+                            self.pageController.present(1, folderDetailData);
+                        } else {
+                            //Show an error alert
+                            let alert = new Alert();
+                            alert.variantID = 0;
+                            alert.present("The server encountered an error while processing the request.\n\n" + request.responseText);
+                        }
+                    })
                 })
                 parent.appendChild(nameLink);
             } else {
@@ -76,7 +91,6 @@ function FolderList() {
         if (folders.length > 0) {
             // Show the folder list
             this.container.innerHTML = "";
-            const self = this;
             folders.forEach((folder) => {
                 let row = document.createElement("li");
                 createFolderRow(row, folder, false);

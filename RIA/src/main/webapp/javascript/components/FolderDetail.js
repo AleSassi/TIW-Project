@@ -5,23 +5,8 @@ function FolderDetail() {
         this.emptyMessagePar = document.getElementById("emptyMessage");
     }
 
-    this.show = function (folderID) {
-        const self = this;
-        // Get the username from the Browser session
-        let username = sessionStorage.getItem("username");
-        //Ask the server which folders are owned by the user and display
-        get("GetFolderContentData", new function(request) {
-            if (request.status === 200) {
-                // We got the data from the server. Now parse it and show the list of folders to screen
-                let documents = JSON.parse(request.responseText);
-                // Show the folder list
-                self.update(documents);
-            } else if (request.status === 403) {
-                //TODO: Log the user out and show the login page
-            } else {
-                //TODO: Show an error popup
-            }
-        });
+    this.show = function () {
+        //We do nothing here, since the rendering is taken care of by the update method and the data is already pre-fetched by the FolderList component
     }
 
     this.update = function(documents) {
@@ -67,15 +52,15 @@ function FolderDetail() {
             parent.appendChild(iconSeparator.cloneNode());
             let creationDateLabel = document.createElement("label");
             creationDateLabel.setAttribute("class", "creationDateLabel");
-            creationDateLabel.textContent = folder.creationDate;
+            creationDateLabel.textContent = documentData.creationDate;
             parent.appendChild(creationDateLabel);
         }
 
-        if (documents.length > 0) {
+        if (documents.documents.length > 0) {
             // Show the folder list
             this.container.innerHTML = "";
             const self = this;
-            documents.forEach((documentData) => {
+            documents.documents.forEach((documentData) => {
                 let row = document.createElement("li");
                 createDocumentRow(row, documentData);
                 self.container.appendChild(row);

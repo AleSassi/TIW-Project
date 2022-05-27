@@ -1,4 +1,4 @@
-package com.asassi.tiwproject.beans;
+package com.asassi.tiwproject.beans.responses;
 
 public class SignupResponseBean extends LoginResponseBean {
 

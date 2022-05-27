@@ -1,10 +1,9 @@
 package com.asassi.tiwproject.controllers;
 
-import com.asassi.tiwproject.beans.SignupResponseBean;
+import com.asassi.tiwproject.beans.responses.SignupResponseBean;
 import com.asassi.tiwproject.beans.UserBean;
 import com.asassi.tiwproject.constants.PageConstants;
 import com.asassi.tiwproject.constants.SessionConstants;
-import com.asassi.tiwproject.constants.SignupConstants;
 import com.asassi.tiwproject.crypto.Hasher;
 import com.asassi.tiwproject.dao.UserDAO;
 import com.asassi.tiwproject.exceptions.UserAlreadyRegisteredException;

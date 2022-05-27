@@ -1,7 +1,7 @@
 package com.asassi.tiwproject.controllers;
 
 import com.asassi.tiwproject.beans.FolderBean;
-import com.asassi.tiwproject.beans.NestedFolderBean;
+import com.asassi.tiwproject.beans.responses.NestedFolderBean;
 import com.asassi.tiwproject.constants.FolderType;
 import com.asassi.tiwproject.constants.SessionConstants;
 import com.asassi.tiwproject.dao.FolderDAO;

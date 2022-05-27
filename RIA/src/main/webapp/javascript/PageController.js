@@ -6,10 +6,10 @@ function PageController() {
 
     this.start = function() {
         //Add the required event handlers for the single page
-        this.folderList.init();
-        this.folderDetail.init();
-        this.documentDetail.init();
-        this.navBar.init();
+        this.folderList.init(this);
+        this.folderDetail.init(this);
+        this.documentDetail.init(this);
+        this.navBar.init(this);
         this.navBar.show();
     }
 
@@ -23,7 +23,11 @@ function PageController() {
             this.folderList.show();
             this.navBar.update(0);
         } else if (viewID === 1) {
-            // Present the FolderDetail
+            // Present the FolderDetail - argument 1 will have the content of the folder to present
+            this.folderList.hide();
+            this.documentDetail.hide();
+            this.folderDetail.show();
+            this.folderDetail.update(arguments[1]);
             this.navBar.update(-1);
         } else if (viewID === 2) {
             // Present the DocumentDetail
