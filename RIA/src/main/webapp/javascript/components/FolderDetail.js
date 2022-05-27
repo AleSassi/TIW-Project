@@ -47,6 +47,10 @@ function FolderDetail() {
                         // We have the folder data as JSON - show
                         let documentData = JSON.parse(request.responseText);
                         self.pageController.present(2, documentData);
+                    } else if (request.status === 403) {
+                        //Logout
+                        window.sessionStorage.removeItem("username");
+                        window.location.href = "";
                     } else {
                         //Show an error alert
                         let alert = new Alert();

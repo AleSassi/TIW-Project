@@ -19,9 +19,14 @@ function FolderList() {
                 // Show the folder list
                 self.update(folders);
             } else if (request.status === 403) {
-                //TODO: Log the user out and show the login page
+                //Logout
+                window.sessionStorage.removeItem("username");
+                window.location.href = "";
             } else {
-                //TODO: Show an error popup
+                //Show an error popup
+                let alert = new Alert();
+                alert.variantID = 0;
+                alert.present("The server encountered an error while processing the request.\n\n" + request.responseText);
             }
         });
     }
@@ -70,6 +75,10 @@ function FolderList() {
                             // We have the folder data as JSON - show
                             let folderDetailData = JSON.parse(request.responseText);
                             self.pageController.present(1, folderDetailData);
+                        } else if (request.status === 403) {
+                            //Logout
+                            window.sessionStorage.removeItem("username");
+                            window.location.href = "";
                         } else {
                             //Show an error alert
                             let alert = new Alert();

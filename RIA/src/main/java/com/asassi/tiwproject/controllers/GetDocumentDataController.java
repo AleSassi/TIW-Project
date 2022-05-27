@@ -27,7 +27,8 @@ public class GetDocumentDataController extends JSONResponderServlet {
         HttpSession session = req.getSession();
         String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
         if (username == null) {
-            resp.sendRedirect(PageConstants.Default.getRawValue());
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            resp.getWriter().println("Cannot access the service since the user is not logged in");
             return null;
         } else {
             //When the Get is performed, we check if we have a valid document ID, otherwise we redirect to the home page
