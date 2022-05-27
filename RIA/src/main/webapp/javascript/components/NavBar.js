@@ -5,6 +5,7 @@ function NavBar() {
         this.homeButton = document.getElementById("homeButton");
         this.createButton = document.getElementById("createButton");
         this.usernameDisplayer = document.getElementById("usernameDisplayer");
+        this.logoutButton = document.getElementById("logoutButton");
 
         this.homeButton.classList.remove("active");
     }
@@ -13,6 +14,21 @@ function NavBar() {
         //Get the username and display it
         let username = window.sessionStorage.getItem("username");
         this.usernameDisplayer.textContent = "Hi @" + username;
+        this.logoutButton.addEventListener("click", (e) => {
+            //Perform the logout action
+            get("logout", function(request) {
+                if (request.status === 200) {
+                    //Logout
+                    window.sessionStorage.removeItem("username");
+                    window.location.href = "";
+                } else {
+                    //Server error - show alert
+                    let alert = new Alert();
+                    alert.variantID = 0;
+                    alert.present("The server encountered an error while processing the request.\n\n" + request.responseText);
+                }
+            })
+        });
     }
 
     this.update = function(selectedOptionID) {

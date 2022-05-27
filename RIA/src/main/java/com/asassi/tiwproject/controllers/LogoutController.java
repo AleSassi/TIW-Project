@@ -18,6 +18,6 @@ public class LogoutController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         session.removeAttribute(SessionConstants.Username.getRawValue());
-        resp.sendRedirect(PageConstants.Default.getRawValue());
+        resp.setStatus(HttpServletResponse.SC_OK);
     }
 }
