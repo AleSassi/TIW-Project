@@ -9,12 +9,13 @@
     <script src="javascript/components/FolderList.js"></script>
     <script src="javascript/components/FolderDetail.js"></script>
     <script src="javascript/components/DocumentDetail.js"></script>
+    <script src="javascript/components/NavBar.js"></script>
     <script src="javascript/utils/AJAX.js"></script>
 </head>
 <body>
-<ul class="navBar">
-    <li><a class="navBar-element active" href="/home">Home</a></li>
-    <li><a class="navBar-element" href="/create">Create...</a></li>
+<ul class="navBar" id="navBar">
+    <li><a class="navBar-element active" id="homeButton" href="/home">Home</a></li>
+    <li><a class="navBar-element" id="createButton" href="/create">Create...</a></li>
     <li>
         <div class="navBar-element rightAnchor">
             <label class="usernameDisplayer" id="usernameDisplayer">Hi @Username</label>

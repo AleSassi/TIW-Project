@@ -1,4 +1,5 @@
 function PageController() {
+    this.navBar = new NavBar();
     this.folderList = new FolderList();
     this.folderDetail = new FolderDetail();
     this.documentDetail = new DocumentDetail();
@@ -8,6 +9,8 @@ function PageController() {
         this.folderList.init();
         this.folderDetail.init();
         this.documentDetail.init();
+        this.navBar.init();
+        this.navBar.show();
     }
 
     this.present = function() {
@@ -18,10 +21,16 @@ function PageController() {
             this.folderDetail.hide();
             this.documentDetail.hide();
             this.folderList.show();
+            this.navBar.update(0);
         } else if (viewID === 1) {
             // Present the FolderDetail
+            this.navBar.update(-1);
         } else if (viewID === 2) {
             // Present the DocumentDetail
+            this.navBar.update(-1);
+        } else if (viewID === 3) {
+            // Present the Create menu
+            this.navBar.update(1);
         }
     }
 
