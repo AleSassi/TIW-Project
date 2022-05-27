@@ -54,7 +54,7 @@
     max-height: 512px;
 }
 
-label {
+.create_label {
     display: block;
     margin-bottom: 6px;
     text-align: left;

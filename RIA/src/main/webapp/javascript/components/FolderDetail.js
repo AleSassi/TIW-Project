@@ -1,8 +1,9 @@
 function FolderDetail() {
 
-    this.init = function() {
+    this.init = function(pageController) {
         this.container = document.getElementById("documentList");
         this.emptyMessagePar = document.getElementById("emptyMessage");
+        this.pageController = pageController;
     }
 
     this.show = function () {
@@ -10,6 +11,8 @@ function FolderDetail() {
     }
 
     this.update = function(documents) {
+        const self = this;
+
         function createSVG(parent) {
             //Create the SVG icon
             let svgIcon = document.createElement("span");
@@ -35,8 +38,20 @@ function FolderDetail() {
             openLink.setAttribute("href", "#");
             openLink.textContent = "Open";
             openLink.addEventListener("click", (e) => {
-                //TODO: Show the Document Detail
-
+                //Show the Document Detail
+                e.preventDefault();
+                get("getDocumentData?document=" + documentData.documentNumber + "&fid=" + documentData.parentFolderNumber, function(request) {
+                    if (request.status === 200) {
+                        // We have the folder data as JSON - show
+                        let documentData = JSON.parse(request.responseText);
+                        self.pageController.present(2, documentData);
+                    } else {
+                        //Show an error alert
+                        let alert = new Alert();
+                        alert.variantID = 0;
+                        alert.present("The server encountered an error while processing the request.\n\n" + request.responseText);
+                    }
+                })
             })
             parent.appendChild(openLink);
             parent.appendChild(iconSeparator.cloneNode());
@@ -59,7 +74,6 @@ function FolderDetail() {
         if (documents.documents.length > 0) {
             // Show the folder list
             this.container.innerHTML = "";
-            const self = this;
             documents.documents.forEach((documentData) => {
                 let row = document.createElement("li");
                 createDocumentRow(row, documentData);

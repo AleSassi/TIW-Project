@@ -30,7 +30,11 @@ function PageController() {
             this.folderDetail.update(arguments[1]);
             this.navBar.update(-1);
         } else if (viewID === 2) {
-            // Present the DocumentDetail
+            // Present the DocumentDetail - argument 1 will have the content of the document to present
+            this.folderList.hide();
+            this.folderDetail.hide();
+            this.documentDetail.show();
+            this.documentDetail.update(arguments[1]);
             this.navBar.update(-1);
         } else if (viewID === 3) {
             // Present the Create menu

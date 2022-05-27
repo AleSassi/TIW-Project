@@ -2,6 +2,7 @@ package com.asassi.tiwproject.controllers;
 
 import com.asassi.tiwproject.beans.DocumentBean;
 import com.asassi.tiwproject.beans.FolderBean;
+import com.asassi.tiwproject.beans.responses.DocumentResponseBean;
 import com.asassi.tiwproject.constants.*;
 import com.asassi.tiwproject.dao.DocumentDAO;
 import com.asassi.tiwproject.dao.FolderDAO;
@@ -15,24 +16,27 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/show")
-public class DocumentInfoController extends TemplatedServlet {
+@WebServlet("/getDocumentData")
+public class GetDocumentDataController extends JSONResponderServlet {
 
     @Override
-    protected void handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws ServletException, IOException {
+    protected Object handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws ServletException, IOException {
         //If the User is not registered (we cannot find the username in the Session), redirect to the Login page
         HttpSession session = req.getSession();
         String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
         if (username == null) {
             resp.sendRedirect(PageConstants.Default.getRawValue());
+            return null;
         } else {
             //When the Get is performed, we check if we have a valid document ID, otherwise we redirect to the home page
             String documentID = req.getParameter("document");
             boolean hasErrorFindingDocument = true;
             DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
+
+            DocumentResponseBean responseBean = new DocumentResponseBean();
+
             try {
                 int documentIDInt = Integer.parseInt(documentID);
                 int folderIDInt = Integer.parseInt(req.getParameter("fid"));
@@ -43,31 +47,26 @@ public class DocumentInfoController extends TemplatedServlet {
                     List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, document.getParentFolderNumber(), FolderType.Subfolder);
                     if (!folders.isEmpty()) {
                         FolderBean folder = folders.get(0);
-                        ctx.setVariable(DocumentInfoConstants.Username.getRawValue(), username);
-                        ctx.setVariable(DocumentInfoConstants.DocumentName.getRawValue(), document.getName());
-                        ctx.setVariable(DocumentInfoConstants.DocumentExtension.getRawValue(), document.getFileType());
-                        ctx.setVariable(DocumentInfoConstants.DocumentContents.getRawValue(), document.getContents());
-                        ctx.setVariable(DocumentInfoConstants.DocumentCreationDate.getRawValue(), document.getCreationDateString());
-                        ctx.setVariable(DocumentInfoConstants.DocumentOwner.getRawValue(), document.getOwnerUsername());
-                        ctx.setVariable(DocumentInfoConstants.ParentFolder.getRawValue(), folder.getName());
-                        ctx.setVariable(DocumentInfoConstants.ParentFolderNumber.getRawValue(), folderIDInt);
+                        responseBean.setDocument(document);
+                        responseBean.setFolderName(folder.getName());
                         hasErrorFindingDocument = false;
                     }
                 }
             } catch (SQLException e) {
-                throw new ServletException(e.getMessage());
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.getWriter().println("There was an error while getting the data to display");
+                return null;
             } catch (NumberFormatException ignored) {
             }
 
             if (hasErrorFindingDocument) {
-                //Redirect to Home Page
-                resp.sendRedirect(PageConstants.Home.getRawValue());
+                //Keep the Page
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().println("Could not find the specified document");
+                return null;
+            } else {
+                return responseBean;
             }
         }
-    }
-
-    @Override
-    protected String getTemplatePage() {
-        return "/documentPage.html";
     }
 }
