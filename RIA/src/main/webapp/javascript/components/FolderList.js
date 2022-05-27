@@ -7,6 +7,7 @@ function FolderList() {
     }
 
     this.show = function () {
+        this.container.hidden = false;
         const self = this;
         // Get the username from the Browser session
         let username = sessionStorage.getItem("username");
@@ -26,6 +27,7 @@ function FolderList() {
     }
 
     this.update = function(folders) {
+        this.container.innerHTML = "";
         const self = this;
 
         function createSVG(parent) {
@@ -112,9 +114,13 @@ function FolderList() {
         }
     }
 
+    this.unhide = function() {
+        this.container.hidden = false;
+    }
+
     this.hide = function() {
         // Clear the div
-        this.container.innerHTML = "";
+        this.container.hidden = true;
         this.emptyMessagePar.hidden = true;
     }
 }

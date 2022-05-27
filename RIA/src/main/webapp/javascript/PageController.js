@@ -11,17 +11,29 @@ function PageController() {
         this.documentDetail.init(this);
         this.navBar.init(this);
         this.navBar.show();
+        //Get the back button and add the back event
+        const self = this;
+        this.previousViewIDs = [];
+        this.backButton = document.getElementById("backButton");
+        this.backButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            self.presentFromBack(this.previousViewIDs.pop());
+        })
     }
 
     this.present = function() {
         // This function has to have as arguments: a number, representing the ID of the content to show, and the list of params for that
         let viewID = arguments[0];
+        this.previousViewIDs.push(this.currentViewID);
+        this.backButton.hidden = false;
         if (viewID === 0) {
             // Present the FolderList
             this.folderDetail.hide();
             this.documentDetail.hide();
             this.folderList.show();
             this.navBar.update(0);
+            this.currentViewID = 0;
+            this.backButton.hidden = true;
         } else if (viewID === 1) {
             // Present the FolderDetail - argument 1 will have the content of the folder to present
             this.folderList.hide();
@@ -29,6 +41,7 @@ function PageController() {
             this.folderDetail.show();
             this.folderDetail.update(arguments[1]);
             this.navBar.update(-1);
+            this.currentViewID = 1;
         } else if (viewID === 2) {
             // Present the DocumentDetail - argument 1 will have the content of the document to present
             this.folderList.hide();
@@ -36,10 +49,47 @@ function PageController() {
             this.documentDetail.show();
             this.documentDetail.update(arguments[1]);
             this.navBar.update(-1);
+            this.currentViewID = 2;
         } else if (viewID === 3) {
             // Present the Create menu
             this.navBar.update(1);
+            this.currentViewID = 3;
         }
+
     }
 
+    this.presentFromBack = function() {
+        // This function has to have as arguments: a number, representing the ID of the content to show, and the list of params for that
+        let viewID = arguments[0];
+        this.backButton.hidden = false;
+        if (viewID === 0) {
+            // Present the FolderList
+            this.folderDetail.hide();
+            this.documentDetail.hide();
+            this.folderList.unhide();
+            this.navBar.update(0);
+            this.currentViewID = 0;
+            this.backButton.hidden = true;
+        } else if (viewID === 1) {
+            // Present the FolderDetail - argument 1 will have the content of the folder to present
+            this.folderList.hide();
+            this.documentDetail.hide();
+            this.folderDetail.show();
+            this.folderDetail.unhide();
+            this.navBar.update(-1);
+            this.currentViewID = 1;
+        } else if (viewID === 2) {
+            // Present the DocumentDetail - argument 1 will have the content of the document to present
+            this.folderList.hide();
+            this.folderDetail.hide();
+            this.documentDetail.unhide();
+            this.navBar.update(-1);
+            this.currentViewID = 2;
+        } else if (viewID === 3) {
+            // Present the Create menu
+            this.navBar.update(1);
+            this.currentViewID = 3;
+        }
+
+    }
 }

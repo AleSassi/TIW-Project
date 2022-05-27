@@ -6,6 +6,7 @@ function DocumentDetail() {
 
     this.show = function () {
         //Just like FolderDetail, we do nothing
+        this.container.hidden = false;
     }
 
     this.update = function(documentData) {
@@ -32,8 +33,12 @@ function DocumentDetail() {
         createRow("Contents", documentData.document.contents, false);
     }
 
+    this.unhide = function() {
+        this.container.hidden = false;
+    }
+
     this.hide = function() {
         // Clear the div
-        this.container.innerHTML = "";
+        this.container.hidden = true;
     }
 }

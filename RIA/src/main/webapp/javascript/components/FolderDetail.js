@@ -8,9 +8,11 @@ function FolderDetail() {
 
     this.show = function () {
         //We do nothing here, since the rendering is taken care of by the update method and the data is already pre-fetched by the FolderList component
+        this.container.hidden = false;
     }
 
     this.update = function(documents) {
+        this.container.innerHTML = "";
         const self = this;
 
         function createSVG(parent) {
@@ -86,9 +88,13 @@ function FolderDetail() {
         }
     }
 
+    this.unhide = function() {
+        this.container.hidden = false;
+    }
+
     this.hide = function() {
         // Clear the div
-        this.container.innerHTML = "";
+        this.container.hidden = true;
         this.emptyMessagePar.hidden = true;
     }
 }
