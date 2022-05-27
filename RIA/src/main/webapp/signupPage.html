@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
 <head>
     <title>WebDoc Sign Up</title>
     <link rel="stylesheet" type="text/css" href="CSS/globalStyle.css" th:href="@{/CSS/globalStyle.css}">
     <link rel="stylesheet" type="text/css" href="CSS/loginStyle.css" th:href="@{/CSS/loginStyle.css}">
-    <script src="javascript/signupFormChecker.js"></script>
+    <script src="javascript/pages/signupPage.js"></script>
+    <script src="javascript/components/SignupForm.js"></script>
+    <script src="javascript/utils/AJAX.js"></script>
 </head>
 <body>
 <form action="signup" method="post" autocapitalize="none" autocomplete="off" id="signupForm">
@@ -13,23 +15,23 @@
             <label class="title">Create your WebDoc account</label>
             <div>
                 <label for="username">Username:</label>
-                <input type="text" name="username" id="username" class="fullHeightElement textField" placeholder="Enter your Username" th:value="${validatedUsername}" required>
-                <label for="username" class="errorLabel" id="usernameError" th:hidden="${usernameError == null}" th:text="${usernameError}">Username Error goes here</label>
+                <input type="text" name="username" id="username" class="fullHeightElement textField" placeholder="Enter your Username" required>
+                <label for="username" class="errorLabel" id="usernameError">Username Error goes here</label>
             </div>
             <div>
                 <label for="email">Email Address:</label>
-                <input type="text" name="email" id="email" class="fullHeightElement textField" placeholder="Enter your Email" th:value="${validatedEmail}" required>
-                <label for="email" class="errorLabel" id="emailError" th:hidden="${emailError == null}" th:text="${emailError}">Email Error goes here</label>
+                <input type="text" name="email" id="email" class="fullHeightElement textField" placeholder="Enter your Email" required>
+                <label for="email" class="errorLabel" id="emailError">Email Error goes here</label>
             </div>
             <div>
                 <label for="password">Password (at least 8 characters):</label>
                 <input type="password" name="password" id="password" class="fullHeightElement textField" placeholder="Enter your Password" minlength="8" required>
-                <label for="password" class="errorLabel" id="passwordError" th:hidden="${passwordError == null}" th:text="${passwordError}">Password Error goes here</label>
+                <label for="password" class="errorLabel" id="passwordError">Password Error goes here</label>
             </div>
             <div>
                 <label for="passwordRepeat">Repeat Password:</label>
                 <input type="password" name="passwordRepeat" id="passwordRepeat" class="fullHeightElement textField" placeholder="Repeat Password" required>
-                <label for="passwordRepeat" class="errorLabel" id="repeatPasswordError" th:hidden="${passwordRepeatError == null}" th:text="${passwordRepeatError}">Password Repeat Error goes here</label>
+                <label for="passwordRepeat" class="errorLabel" id="repeatPasswordError">Password Repeat Error goes here</label>
             </div>
             <input class="fullHeightElement filledButton" type="submit" id="submit" value="Create Account">
             <label class="registerPrompt">Already registered? <a href="/" class="link">Login now.</a></label>
