@@ -85,7 +85,10 @@ function SignupForm() {
                         sessionStorage.setItem("username", self.usernameField.value);
                         window.location.href = "home";
                     } else if (request.status === 500) {
-                        //TODO: Show an error popup
+                        //Show an error popup
+                        let alert = new Alert();
+                        alert.variantID = 0;
+                        alert.present("The server encountered an error while processing the request.\n\n" + request.responseText);
                     } else {
                         //The response contains a JSON file with the error messages
                         let response = JSON.parse(request.responseText);

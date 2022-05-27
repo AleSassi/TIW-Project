@@ -51,8 +51,6 @@ public class SignUpController extends JSONResponderServlet {
         SignupResponseBean responseBean = new SignupResponseBean();
 
         String error = null;
-        boolean isUsernameValid = false;
-        boolean isEmailValid = false;
         if (username == null) {
             error = "You have to enter a Username to create an account";
             responseBean.setUsernameError(error);
@@ -73,14 +71,10 @@ public class SignUpController extends JSONResponderServlet {
         if (username != null && username.contains(" ")) {
             error = "Usernames must not have Spaces";
             responseBean.setUsernameError(error);
-        } else if (username != null) {
-            isUsernameValid = true;
         }
         if (email != null) {
             Matcher matcher = emailPattern.matcher(email);
-            if (matcher.find()) {
-                isEmailValid = true;
-            } else {
+            if (!matcher.find()) {
                 error = "Invalid Email address";
                 responseBean.setEmailError(error);
             }
@@ -104,7 +98,10 @@ public class SignUpController extends JSONResponderServlet {
                 responseBean.setUsernameError(error);
                 registrationSucceeded = false;
             } catch (SQLException e) {
-                throw new UnavailableException("Couldn't perform command");
+                //Send internal server error
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.getWriter().write("Internal server error occurred. Please try again later.");
+                return;
             }
         } else {
             registrationSucceeded = false;

@@ -46,11 +46,9 @@ public class SignInController extends JSONResponderServlet {
         LoginResponseBean responseBean = new LoginResponseBean();
 
         String error = null;
-        boolean isUsernameValid = true;
         if (username == null) {
             error = "You have to enter a Username to log in";
             responseBean.setUsernameError(error);
-            isUsernameValid = false;
         }
         if (password == null) {
             error = "You have to enter a Password to log in";
@@ -64,7 +62,10 @@ public class SignInController extends JSONResponderServlet {
                 registeredUsername = findRegisteredUser(username, password);
                 loginSucceeded = true;
             } catch (SQLException e) {
-                e.printStackTrace();
+                //Send internal server error
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.getWriter().write("Internal server error occurred. Please try again later.");
+                return;
             } catch (UserNotRegisteredException | IncorrectPasswordException e) {
                 error = "Incorrect username or password";
                 responseBean.setUsernameError(error);
