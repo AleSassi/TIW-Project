@@ -1,11 +1,12 @@
 function NavBar() {
 
-    this.init = function() {
+    this.init = function(pageController) {
         this.container = document.getElementById("navBar");
         this.homeButton = document.getElementById("homeButton");
         this.createButton = document.getElementById("createButton");
         this.usernameDisplayer = document.getElementById("usernameDisplayer");
         this.logoutButton = document.getElementById("logoutButton");
+        this.pageController = pageController;
 
         this.homeButton.classList.remove("active");
     }
@@ -14,6 +15,13 @@ function NavBar() {
         //Get the username and display it
         let username = window.sessionStorage.getItem("username");
         this.usernameDisplayer.textContent = "Hi @" + username;
+
+        const self = this;
+        this.homeButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            //Show the Home page
+            self.pageController.present(0);
+        });
         this.logoutButton.addEventListener("click", (e) => {
             //Perform the logout action
             get("logout", function(request) {
