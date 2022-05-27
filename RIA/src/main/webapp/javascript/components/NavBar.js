@@ -3,7 +3,6 @@ function NavBar() {
     this.init = function(pageController) {
         this.container = document.getElementById("navBar");
         this.homeButton = document.getElementById("homeButton");
-        this.createButton = document.getElementById("createButton");
         this.usernameDisplayer = document.getElementById("usernameDisplayer");
         this.logoutButton = document.getElementById("logoutButton");
         this.pageController = pageController;
@@ -42,13 +41,10 @@ function NavBar() {
     this.update = function(selectedOptionID) {
         if (selectedOptionID === 0) {
             this.homeButton.classList.add("active")
-            this.createButton.classList.remove("active");
         } else if (selectedOptionID === 1) {
             this.homeButton.classList.remove("active")
-            this.createButton.classList.add("active");
         } else {
             this.homeButton.classList.remove("active")
-            this.createButton.classList.remove("active");
         }
     }
 }
