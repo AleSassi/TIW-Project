@@ -49,6 +49,7 @@ body {
 }
 
 .link {
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
     text-decoration: none;
     color: #007aff;
 }
@@ -150,6 +151,9 @@ body {
 }
 
 .errorLabel {
+    display: block;
+    text-align: left;
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
     font-size: 12px;
     margin-top: -8px;
     margin-bottom: 12px;

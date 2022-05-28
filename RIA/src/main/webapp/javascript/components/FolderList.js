@@ -40,21 +40,7 @@ function FolderList() {
             folders.forEach((folder) => {
                 let row = document.createElement("li");
                 self.createFolderRow(row, folder, false);
-                //Add the subfolders
-                let subfolderList = document.createElement("ul");
-                subfolderList.setAttribute("class", "subfolderList")
-                folder.subfolders.forEach((subfolder) => {
-                    let subrow = document.createElement("li");
-                    self.createFolderRow(subrow, subfolder, true);
-                    subfolderList.appendChild(subrow);
-                });
-                row.appendChild(subfolderList);
                 self.container.appendChild(row);
-                //Add the New Subfolder button handler
-                document.getElementById("addSubfolderButton_" + folder.folderNumber).addEventListener("click", function(e) {
-                    e.preventDefault();
-                    self.startCreatingNewFolder(subfolderList, folder.folderNumber);
-                })
             })
         } else {
             // Show the empty message
@@ -64,6 +50,10 @@ function FolderList() {
     }
 
     this.startCreatingNewFolder = function(parentFolderRow, parentFolderID) {
+        let previouslyAddedFolderCreator = document.getElementById("createFolderRow");
+        if (previouslyAddedFolderCreator) {
+            previouslyAddedFolderCreator.remove();
+        }
         const self = this;
         //Create a fake row at the bottom, with an input field
         let inputRow = document.createElement("li");
@@ -192,6 +182,7 @@ function FolderList() {
         let iconSeparator = document.createElement("div");
         iconSeparator.setAttribute("class", "folderIconSeparator")
         parent.appendChild(iconSeparator);
+        let newSubfolderButton;
         if (isSubfolder) {
             let nameLink = document.createElement("a");
             nameLink.setAttribute("class", "link");
@@ -218,12 +209,24 @@ function FolderList() {
                 })
             })
             parent.appendChild(nameLink);
+            parent.appendChild(iconSeparator.cloneNode());
+            let newDocumentButton = document.createElement("a");
+            newDocumentButton.setAttribute("id", "addDocumentButton_" + folder.folderNumber);
+            newDocumentButton.href = "#";
+            newDocumentButton.setAttribute("class", "link");
+            newDocumentButton.textContent = "Add Document";
+            parent.appendChild(newDocumentButton);
+            //Add the event handler
+            newDocumentButton.addEventListener("click", function(e) {
+                e.preventDefault();
+                self.pageController.present(3, folder.folderNumber, nameLink);
+            })
         } else {
             let nameLabel = document.createElement("label");
             nameLabel.textContent = folder.name;
             parent.appendChild(nameLabel);
             parent.appendChild(iconSeparator.cloneNode());
-            let newSubfolderButton = document.createElement("a");
+            newSubfolderButton = document.createElement("a");
             newSubfolderButton.setAttribute("id", "addSubfolderButton_" + folder.folderNumber);
             newSubfolderButton.href = "#";
             newSubfolderButton.setAttribute("class", "link");
@@ -272,6 +275,21 @@ function FolderList() {
                         }
                     })
                 }
+            })
+        } else {
+            //Add the subfolders
+            let subfolderList = document.createElement("ul");
+            subfolderList.setAttribute("class", "subfolderList")
+            folder.subfolders.forEach((subfolder) => {
+                let subrow = document.createElement("li");
+                self.createFolderRow(subrow, subfolder, true);
+                subfolderList.appendChild(subrow);
+            });
+            parent.appendChild(subfolderList);
+            //Add the New Subfolder button handler
+            newSubfolderButton.addEventListener("click", function(e) {
+                e.preventDefault();
+                self.startCreatingNewFolder(subfolderList, folder.folderNumber);
             })
         }
     }

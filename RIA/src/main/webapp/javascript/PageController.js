@@ -3,12 +3,14 @@ function PageController() {
     this.folderList = new FolderList();
     this.folderDetail = new FolderDetail();
     this.documentDetail = new DocumentDetail();
+    this.documentCreate = new CreateDocumentForm();
 
     this.start = function() {
         //Add the required event handlers for the single page
         this.folderList.init(this);
         this.folderDetail.init(this);
         this.documentDetail.init(this);
+        this.documentCreate.init(this);
         this.navBar.init(this);
         this.navBar.show();
         //Get the back button and add the back event
@@ -52,8 +54,8 @@ function PageController() {
             this.navBar.update(-1);
             this.currentViewID = 2;
         } else if (viewID === 3) {
-            // Present the Create menu
-            this.navBar.update(1);
+            // Present the Create Document menu
+            this.documentCreate.show(arguments[1], arguments[2]);
             this.currentViewID = 3;
         }
 
@@ -88,7 +90,7 @@ function PageController() {
             this.currentViewID = 2;
         } else if (viewID === 3) {
             // Present the Create menu
-            this.navBar.update(1);
+            this.documentCreate.hide();
             this.currentViewID = 3;
         }
 

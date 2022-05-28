@@ -92,7 +92,18 @@
 }
 
 .fader {
-    background-color: rgba(0, 0, 0, 0.3);
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    display: inline-block;
+    z-index: 20;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .cancelLink {

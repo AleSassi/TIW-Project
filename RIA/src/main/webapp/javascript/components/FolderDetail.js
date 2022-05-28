@@ -76,7 +76,7 @@ function FolderDetail() {
                 //The FolderList will handle the drop
                 //Cache the document for the drop operation
                 self.draggingDocument = documentData;
-            })
+            });
         }
 
         if (documents.documents.length > 0) {
