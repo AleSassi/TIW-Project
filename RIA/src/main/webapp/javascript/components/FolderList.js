@@ -97,6 +97,46 @@ function FolderList() {
             creationDateLabel.setAttribute("class", "creationDateLabel");
             creationDateLabel.textContent = folder.creationDate;
             parent.appendChild(creationDateLabel);
+            if (isSubfolder) {
+                //Drag & Drop
+                parent.addEventListener("dragover", function(e) {
+                    e.preventDefault()
+                    if (self.pageController.validateDropLocation(folder.folderNumber)) {
+                        parent.classList.remove("dropをできない");
+                        parent.classList.add("dropをしよう");
+                    } else {
+                        parent.classList.add("dropをできない");
+                        parent.classList.remove("dropをしよう");
+                    }
+                })
+                parent.addEventListener("dragleave", function(e) {
+                    e.preventDefault()
+                    parent.classList.remove("dropをできない");
+                    parent.classList.remove("dropをしよう");
+                })
+                parent.addEventListener("drop", function(e) {
+                    parent.classList.remove("dropをできない");
+                    parent.classList.remove("dropをしよう");
+                    if (self.pageController.validateDropLocation(folder.folderNumber)) {
+                        post("MoveDocument?docid=" + self.pageController.draggingItem().documentNumber + "&fid=" + folder.folderNumber, null, function(request) {
+                            if (request.status === 200) {
+                                //Autoclick on this element
+                                let clickEvent = new Event("click");
+                                parent.querySelector("a").dispatchEvent(clickEvent);
+                            } else if (request.status === 403) {
+                                //Logout
+                                window.sessionStorage.removeItem("username");
+                                window.location.href = "";
+                            } else {
+                                //Show an error alert
+                                let alert = new Alert();
+                                alert.variantID = 0;
+                                alert.present("The server encountered an error while processing the request.\n\n" + request.responseText);
+                            }
+                        })
+                    }
+                })
+            }
         }
 
         if (folders.length > 0) {
@@ -121,10 +161,6 @@ function FolderList() {
             this.emptyMessagePar.hidden = false;
             this.emptyMessagePar.textContent = "No folders to show. Create a new folder withe the \"Create\" button at the top of the page";
         }
-    }
-
-    this.markAsDragSource = function(documentData) {
-        let folderID = documentData.parentFolderNumber;
     }
 
     this.unhide = function() {

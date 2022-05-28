@@ -94,10 +94,15 @@ function PageController() {
 
     }
 
-    this.didStartDrag = function() {
-        //Show the FolderList object
-        this.presentFromBack();
-        //On the FolderList object, mark the source folder in red
+    this.draggingItem = function() {
+        return this.folderDetail.draggingDocument;
+    }
 
+    this.validateDropLocation = function(dropLocationID) {
+        return this.folderDetail.draggingDocument.parentFolderNumber !== dropLocationID;
+    }
+
+    this.terminateDragSession = function() {
+        this.folderDetail.terminateDragSession();
     }
 }

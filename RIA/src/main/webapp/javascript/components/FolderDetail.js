@@ -35,6 +35,7 @@ function FolderDetail() {
 
         function createDocumentRow(parent, documentData) {
             parent.setAttribute("class", "folderRow");
+            parent.setAttribute("draggable", true);
             createSVG(parent);
             let iconSeparator = document.createElement("div");
             iconSeparator.setAttribute("class", "folderIconSeparator")
@@ -71,13 +72,11 @@ function FolderDetail() {
             creationDateLabel.textContent = documentData.creationDate;
             parent.appendChild(creationDateLabel);
             //Drag & Drop
-            /*parent.addEventListener("dragstart", function(e) {
+            parent.addEventListener("dragstart", function(e) {
                 //The FolderList will handle the drop
                 //Cache the document for the drop operation
                 self.draggingDocument = documentData;
-                //Make the PageController display the FolderList view in Drag mode
-                self.pageController.didStartDrag();
-            })*/
+            })
         }
 
         if (documents.documents.length > 0) {
@@ -92,6 +91,10 @@ function FolderDetail() {
             this.emptyMessagePar.hidden = false;
             this.emptyMessagePar.textContent = "No documents to show. Create a new document with the \"Create\" button at the top of the page";
         }
+    }
+
+    this.terminateDragSession = function() {
+        this.draggingDocument = null;
     }
 
     this.unhide = function() {
