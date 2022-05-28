@@ -40,10 +40,3 @@ label {
     text-align: center;
     font-size: 15px;
 }
-
-.errorLabel {
-    font-size: 12px;
-    margin-top: -8px;
-    margin-bottom: 12px;
-    color: rgb(255, 59, 48, 1);
-}

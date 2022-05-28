@@ -90,3 +90,11 @@
 .dropをしよう {
     background-color: rgba(112, 255, 125, 0.5);
 }
+
+.fader {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.cancelLink {
+    padding-top: 10px;
+}
