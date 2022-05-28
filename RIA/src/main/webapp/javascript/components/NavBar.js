@@ -22,12 +22,13 @@ function NavBar() {
             self.pageController.present(0);
         });
         this.logoutButton.addEventListener("click", (e) => {
+            e.preventDefault();
             //Perform the logout action
             get("logout", function(request) {
                 if (request.status === 200) {
                     //Logout
                     window.sessionStorage.removeItem("username");
-                    window.location.href = "";
+                    window.location.href = "/";
                 } else {
                     //Server error - show alert
                     let alert = new Alert();
