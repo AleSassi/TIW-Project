@@ -39,15 +39,13 @@ function FolderDetail() {
             let iconSeparator = document.createElement("div");
             iconSeparator.setAttribute("class", "folderIconSeparator")
             parent.appendChild(iconSeparator);
-            let nameLabel = document.createElement("label");
+            let nameLabel = document.createElement("a");
+            nameLabel.setAttribute("class", "link");
+            nameLabel.setAttribute("href", "#");
             nameLabel.textContent = documentData.name;
             parent.appendChild(nameLabel);
             parent.appendChild(iconSeparator);
-            let openLink = document.createElement("a");
-            openLink.setAttribute("class", "link");
-            openLink.setAttribute("href", "#");
-            openLink.textContent = "Open";
-            openLink.addEventListener("click", (e) => {
+            nameLabel.addEventListener("click", (e) => {
                 //Show the Document Detail
                 e.preventDefault();
                 get("getDocumentData?document=" + documentData.documentNumber + "&fid=" + documentData.parentFolderNumber, function(request) {
@@ -67,17 +65,6 @@ function FolderDetail() {
                     }
                 })
             })
-            parent.appendChild(openLink);
-            parent.appendChild(iconSeparator.cloneNode());
-            let moveLink = document.createElement("a");
-            moveLink.setAttribute("class", "link");
-            moveLink.setAttribute("href", "#");
-            moveLink.textContent = "Move";
-            moveLink.addEventListener("click", (e) => {
-                //TODO: Start Moving the Document
-
-            })
-            parent.appendChild(moveLink);
             parent.appendChild(iconSeparator.cloneNode());
             let creationDateLabel = document.createElement("label");
             creationDateLabel.setAttribute("class", "creationDateLabel");
