@@ -1,14 +1,22 @@
 function FolderDetail() {
 
     this.init = function(pageController) {
-        this.container = document.getElementById("documentList");
         this.emptyMessagePar = document.getElementById("emptyMessage");
         this.pageController = pageController;
     }
 
-    this.show = function () {
-        //We do nothing here, since the rendering is taken care of by the update method and the data is already pre-fetched by the FolderList component
-        this.container.hidden = false;
+    this.show = function (hostingFolderRow) {
+        if (this.hostingFolderRow !== hostingFolderRow) {
+            if (this.hostingFolderRow) {
+                //Remove the previous div
+                this.hostingFolderRow.removeChild(this.container);
+            }
+            //Add the new container
+            this.container = document.createElement("ul");
+            this.container.setAttribute("class", "subfolderList");
+            hostingFolderRow.appendChild(this.container)
+            this.hostingFolderRow = hostingFolderRow;
+        }
     }
 
     this.update = function(documents) {
@@ -75,11 +83,18 @@ function FolderDetail() {
             creationDateLabel.setAttribute("class", "creationDateLabel");
             creationDateLabel.textContent = documentData.creationDate;
             parent.appendChild(creationDateLabel);
+            //Drag & Drop
+            /*parent.addEventListener("dragstart", function(e) {
+                //The FolderList will handle the drop
+                //Cache the document for the drop operation
+                self.draggingDocument = documentData;
+                //Make the PageController display the FolderList view in Drag mode
+                self.pageController.didStartDrag();
+            })*/
         }
 
         if (documents.documents.length > 0) {
             // Show the folder list
-            this.container.innerHTML = "";
             documents.documents.forEach((documentData) => {
                 let row = document.createElement("li");
                 createDocumentRow(row, documentData);
@@ -98,7 +113,9 @@ function FolderDetail() {
 
     this.hide = function() {
         // Clear the div
-        this.container.hidden = true;
+        if (this.container) {
+            this.container.hidden = true;
+        }
         this.emptyMessagePar.hidden = true;
     }
 }

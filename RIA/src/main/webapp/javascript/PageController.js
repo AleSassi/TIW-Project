@@ -36,12 +36,13 @@ function PageController() {
             this.backButton.hidden = true;
         } else if (viewID === 1) {
             // Present the FolderDetail - argument 1 will have the content of the folder to present
-            this.folderList.hide();
             this.documentDetail.hide();
-            this.folderDetail.show();
+            //this.folderList.show();
+            this.folderDetail.show(arguments[2]);
             this.folderDetail.update(arguments[1]);
-            this.navBar.update(-1);
+            this.navBar.update(0);
             this.currentViewID = 1;
+            this.backButton.hidden = true;
         } else if (viewID === 2) {
             // Present the DocumentDetail - argument 1 will have the content of the document to present
             this.folderList.hide();
@@ -71,13 +72,13 @@ function PageController() {
             this.currentViewID = 0;
             this.backButton.hidden = true;
         } else if (viewID === 1) {
-            // Present the FolderDetail - argument 1 will have the content of the folder to present
-            this.folderList.hide();
+            // Present the FolderList with detail
             this.documentDetail.hide();
-            this.folderDetail.show();
+            this.folderList.unhide();
             this.folderDetail.unhide();
-            this.navBar.update(-1);
+            this.navBar.update(0);
             this.currentViewID = 1;
+            this.backButton.hidden = true;
         } else if (viewID === 2) {
             // Present the DocumentDetail - argument 1 will have the content of the document to present
             this.folderList.hide();
@@ -90,6 +91,13 @@ function PageController() {
             this.navBar.update(1);
             this.currentViewID = 3;
         }
+
+    }
+
+    this.didStartDrag = function() {
+        //Show the FolderList object
+        this.presentFromBack();
+        //On the FolderList object, mark the source folder in red
 
     }
 }

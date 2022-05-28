@@ -74,7 +74,7 @@ function FolderList() {
                         if (request.status === 200) {
                             // We have the folder data as JSON - show
                             let folderDetailData = JSON.parse(request.responseText);
-                            self.pageController.present(1, folderDetailData);
+                            self.pageController.present(1, folderDetailData, parent);
                         } else if (request.status === 403) {
                             //Logout
                             window.sessionStorage.removeItem("username");
@@ -121,6 +121,10 @@ function FolderList() {
             this.emptyMessagePar.hidden = false;
             this.emptyMessagePar.textContent = "No folders to show. Create a new folder withe the \"Create\" button at the top of the page";
         }
+    }
+
+    this.markAsDragSource = function(documentData) {
+        let folderID = documentData.parentFolderNumber;
     }
 
     this.unhide = function() {
