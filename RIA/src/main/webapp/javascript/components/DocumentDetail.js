@@ -2,11 +2,15 @@ function DocumentDetail() {
 
     this.init = function () {
         this.container = document.getElementById("documentTableBody");
+        this.pageTitle = document.getElementById("pageTitle");
+        this.createFolderButton = document.getElementById("createFolderButton");
     }
 
     this.show = function () {
         //Just like FolderDetail, we do nothing
         this.container.hidden = false;
+        this.pageTitle.textContent = "Document Detail";
+        this.createFolderButton.hidden = true;
     }
 
     this.update = function(documentData) {
@@ -34,6 +38,8 @@ function DocumentDetail() {
     }
 
     this.unhide = function() {
+        this.createFolderButton.hidden = true;
+        this.pageTitle.textContent = "Document Detail";
         this.container.hidden = false;
     }
 

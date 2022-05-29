@@ -2,9 +2,13 @@ function FolderDetail() {
 
     this.init = function(pageController) {
         this.pageController = pageController;
+        this.pageTitle = document.getElementById("pageTitle");
+        this.createFolderButton = document.getElementById("createFolderButton");
     }
 
     this.show = function (hostingFolderRow) {
+        this.createFolderButton.hidden = false;
+        this.pageTitle.textContent = "My Folders   ";
         if (this.hostingFolderRow !== hostingFolderRow) {
             if (this.hostingFolderRow) {
                 //Remove the previous div
@@ -102,6 +106,8 @@ function FolderDetail() {
     }
 
     this.unhide = function() {
+        this.createFolderButton.hidden = false;
+        this.pageTitle.textContent = "My Folders   ";
         this.container.hidden = false;
     }
 

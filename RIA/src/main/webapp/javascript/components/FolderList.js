@@ -3,11 +3,15 @@ function FolderList() {
     this.init = function(pageController) {
         this.container = document.getElementById("folderList");
         this.emptyMessagePar = document.getElementById("emptyMessage");
+        this.pageTitle = document.getElementById("pageTitle");
+        this.createFolderButton = document.getElementById("createFolderButton");
         this.pageController = pageController;
     }
 
     this.show = function () {
         this.container.hidden = false;
+        this.createFolderButton.hidden = false;
+        this.pageTitle.textContent = "My Folders   ";
         const self = this;
         // Get the username from the Browser session
         let username = sessionStorage.getItem("username");
@@ -147,6 +151,8 @@ function FolderList() {
     }
 
     this.unhide = function() {
+        this.createFolderButton.hidden = false;
+        this.pageTitle.textContent = "My Folders   ";
         this.container.hidden = false;
     }
 
