@@ -39,6 +39,7 @@
         <filter-name>NoCacher</filter-name>
         <url-pattern>/</url-pattern>
         <url-pattern>/home</url-pattern>
+        <url-pattern>/homePage.html</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>LoginChecker</filter-name>
@@ -49,6 +50,7 @@
         <url-pattern>/getFolderDetailData</url-pattern>
         <url-pattern>/GetFolderListData</url-pattern>
         <url-pattern>/MoveDocument</url-pattern>
+        <url-pattern>/Delete</url-pattern>
         <url-pattern>/signup</url-pattern>
         <url-pattern>/home</url-pattern>
     </filter-mapping>

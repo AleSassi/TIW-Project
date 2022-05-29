@@ -1,7 +1,6 @@
 function FolderDetail() {
 
     this.init = function(pageController) {
-        this.emptyMessagePar = document.getElementById("emptyMessage");
         this.pageController = pageController;
     }
 
@@ -72,10 +71,12 @@ function FolderDetail() {
             creationDateLabel.textContent = documentData.creationDate;
             parent.appendChild(creationDateLabel);
             //Drag & Drop
+            parent.draggable = true;
             parent.addEventListener("dragstart", function(e) {
                 //The FolderList will handle the drop
                 //Cache the document for the drop operation
                 self.draggingDocument = documentData;
+                self.draggingCell = parent;
             });
         }
 
@@ -88,13 +89,16 @@ function FolderDetail() {
             })
         } else {
             // Show the empty message
-            this.emptyMessagePar.hidden = false;
-            this.emptyMessagePar.textContent = "No documents to show. Create a new document with the \"Create\" button at the top of the page";
+            this.emptyMessagePar = document.createElement("p");
+            this.emptyMessagePar.setAttribute("class", "emptyMessage");
+            this.emptyMessagePar.textContent = "No documents in this folder. Click on \"Add Document\" to add a new document";
+            self.container.appendChild(this.emptyMessagePar)
         }
     }
 
     this.terminateDragSession = function() {
         this.draggingDocument = null;
+        this.draggingCell = null;
     }
 
     this.unhide = function() {
@@ -106,6 +110,8 @@ function FolderDetail() {
         if (this.container) {
             this.container.hidden = true;
         }
-        this.emptyMessagePar.hidden = true;
+        if (this.emptyMessagePar) {
+            this.emptyMessagePar.hidden = true;
+        }
     }
 }

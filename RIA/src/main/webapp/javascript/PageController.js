@@ -4,6 +4,7 @@ function PageController() {
     this.folderDetail = new FolderDetail();
     this.documentDetail = new DocumentDetail();
     this.documentCreate = new CreateDocumentForm();
+    this.trash = new Trash();
 
     this.start = function() {
         //Add the required event handlers for the single page
@@ -97,14 +98,23 @@ function PageController() {
     }
 
     this.draggingItem = function() {
-        return this.folderDetail.draggingDocument;
+        return this.folderDetail.draggingDocument ?? this.folderList.draggingFolder;
+    }
+
+    this.draggingCell = function() {
+        return this.folderDetail.draggingCell ?? this.folderList.draggingCell;
     }
 
     this.validateDropLocation = function(dropLocationID) {
-        return this.folderDetail.draggingDocument.parentFolderNumber !== dropLocationID;
+        let isDocument = true;
+        if (this.draggingItem().folderNumber) {
+            isDocument = false;
+        }
+        return isDocument && this.folderDetail.draggingDocument.parentFolderNumber !== dropLocationID;
     }
 
     this.terminateDragSession = function() {
         this.folderDetail.terminateDragSession();
+        this.folderList.terminateDragSession();
     }
 }

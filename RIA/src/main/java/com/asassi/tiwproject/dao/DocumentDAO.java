@@ -50,9 +50,9 @@ public class DocumentDAO extends DAO {
         String query = "INSERT INTO Documents VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement statement = getDbConnection().prepareStatement(query);
-        statement.setString(1, document.getOwnerUsername());
+        statement.setInt(1, document.getDocumentNumber());
         statement.setInt(2, document.getParentFolderNumber());
-        statement.setInt(3, document.getDocumentNumber());
+        statement.setString(3, document.getOwnerUsername());
         statement.setString(4, document.getName());
         statement.setString(5, document.getFileType());
         statement.setTimestamp(6, Timestamp.valueOf(document.getCreationDate()));
@@ -62,17 +62,22 @@ public class DocumentDAO extends DAO {
     }
 
     public void moveDocument(DocumentBean document, int targetFolderNumber) throws SQLException {
-        String deleteQuery = "DELETE FROM Documents WHERE DocumentNumber = ?";
-
         getDbConnection().setAutoCommit(false);
-        PreparedStatement deleteStatement = getDbConnection().prepareStatement(deleteQuery);
 
-        deleteStatement.setInt(1, document.getDocumentNumber());
-        deleteStatement.executeUpdate();
-        deleteStatement.close();
+        deleteDocument(document.getOwnerUsername(), document.getDocumentNumber());
         document.setParentFolderNumber(targetFolderNumber);
         addDocument(document);
 
         getDbConnection().setAutoCommit(true);
+    }
+
+    public void deleteDocument(String username, int documentID) throws SQLException {
+        String deleteQuery = "DELETE FROM Documents WHERE DocumentNumber = ? AND OwnerUsername = ?";
+        PreparedStatement deleteStatement = getDbConnection().prepareStatement(deleteQuery);
+
+        deleteStatement.setInt(1, documentID);
+        deleteStatement.setString(2, username);
+        deleteStatement.executeUpdate();
+        deleteStatement.close();
     }
 }

@@ -12,7 +12,6 @@ public class NestedFolderBean {
     private int folderNumber;
     private String name;
     private LocalDateTime creationDate;
-    private FolderType folderType;
     private NestedFolderBean[] subfolders;
 
     public NestedFolderBean(FolderBean parent, List<FolderBean> subfolders) {
@@ -20,13 +19,10 @@ public class NestedFolderBean {
         this.folderNumber = parent.getFolderNumber();
         this.name = parent.getName();
         this.creationDate = parent.getCreationDate();
-        if (parent.getFolderType().getRawValue() == FolderType.Main.getRawValue()) {
-            this.folderType = FolderType.Main;
-        } else {
-            this.folderType = FolderType.Subfolder;
-        }
         if (subfolders != null) {
             this.subfolders = subfolders.stream().map((subfolder) -> new NestedFolderBean(subfolder, null)).toList().toArray(new NestedFolderBean[0]);
+        } else {
+            this.subfolders = new NestedFolderBean[0];
         }
     }
 

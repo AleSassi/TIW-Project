@@ -2,6 +2,7 @@ package com.asassi.tiwproject.controllers;
 
 import com.asassi.tiwproject.beans.DocumentBean;
 import com.asassi.tiwproject.beans.FolderBean;
+import com.asassi.tiwproject.beans.responses.NestedFolderBean;
 import com.asassi.tiwproject.constants.*;
 import com.asassi.tiwproject.dao.DocumentDAO;
 import com.asassi.tiwproject.dao.FolderDAO;
@@ -57,9 +58,9 @@ public class CreateFolderController extends JSONResponderServlet {
             FolderDAO folderDAO = new FolderDAO(getDBConnection());
             if (parentFolderID == null) {
                 //Interpret as main folder addition
-                FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), FolderType.Main.getRawValue(), null, null);
+                FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), null);
                 folderDAO.addFolder(folder);
-                sendAsJSON(folder, resp);
+                sendAsJSON(new NestedFolderBean(folder, null), resp);
             } else {
                 //Subfolder addition
                 try {
@@ -71,7 +72,7 @@ public class CreateFolderController extends JSONResponderServlet {
                         resp.getWriter().println("The specified Parent Folder could not be found");
                     } else {
                         //Create the subfolder
-                        FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), FolderType.Subfolder.getRawValue(), username, userFolders.get(0).getFolderNumber());
+                        FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber());
                         folderDAO.addFolder(folder);
                         sendAsJSON(folder, resp);
                     }

@@ -37,6 +37,8 @@ function FolderList() {
         if (folders.length > 0) {
             // Show the folder list
             this.container.innerHTML = "";
+            this.emptyMessagePar.hidden = true;
+            this.createTrashCell();
             folders.forEach((folder) => {
                 let row = document.createElement("li");
                 self.createFolderRow(row, folder, false);
@@ -237,6 +239,13 @@ function FolderList() {
         creationDateLabel.setAttribute("class", "creationDateLabel");
         creationDateLabel.textContent = folder.creationDate;
         parent.appendChild(creationDateLabel);
+        //Drag start events to drag to the trash can
+        parent.draggable = true;
+        parent.addEventListener("dragstart", function(e) {
+            e.stopPropagation();
+            self.draggingFolder = folder;
+            self.draggingCell = parent;
+        });
         if (isSubfolder) {
             //Drag & Drop
             parent.addEventListener("dragover", function(e) {
@@ -292,5 +301,28 @@ function FolderList() {
                 self.startCreatingNewFolder(subfolderList, folder.folderNumber);
             })
         }
+    }
+
+    this.createTrashCell = function() {
+        let trashCell = document.createElement("li");
+        trashCell.setAttribute("class", "folderRow");
+        trashCell.setAttribute("id", "trashCell");
+        this.createSVG(trashCell);
+        let iconSeparator = document.createElement("div");
+        iconSeparator.setAttribute("class", "folderIconSeparator");
+        let label = document.createElement("label");
+        label.textContent = "Trash";
+        trashCell.appendChild(iconSeparator);
+        trashCell.appendChild(label);
+        this.container.appendChild(trashCell);
+        var self = this;
+        this.pageController.trash.init(this.pageController, function() {
+            self.pageController.draggingCell().remove();
+        });
+    }
+
+    this.terminateDragSession = function() {
+        this.draggingFolder = null;
+        this.draggingCell = null;
     }
 }

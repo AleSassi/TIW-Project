@@ -11,21 +11,13 @@ public class FolderBean {
     private int folderNumber;
     private String name;
     private LocalDateTime creationDate;
-    private FolderType folderType;
-    private String parentFolder_username;
     private Integer parentFolder_folderNumber;
 
-    public FolderBean(String username, int folderNumber, String name, LocalDateTime creationDate, int folderType, String parentFolder_username, Integer parentFolder_folderNumber) {
+    public FolderBean(String username, int folderNumber, String name, LocalDateTime creationDate, Integer parentFolder_folderNumber) {
         this.username = username;
         this.folderNumber = folderNumber;
         this.name = name;
         this.creationDate = creationDate;
-        if (folderType == FolderType.Main.getRawValue()) {
-            this.folderType = FolderType.Main;
-        } else {
-            this.folderType = FolderType.Subfolder;
-        }
-        this.parentFolder_username = parentFolder_username;
         this.parentFolder_folderNumber = parentFolder_folderNumber;
     }
 
@@ -68,22 +60,6 @@ public class FolderBean {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public FolderType getFolderType() {
-        return folderType;
-    }
-
-    public void setFolderType(FolderType folderType) {
-        this.folderType = folderType;
-    }
-
-    public String getParentFolder_username() {
-        return parentFolder_username;
-    }
-
-    public void setParentFolder_username(String parentFolder_username) {
-        this.parentFolder_username = parentFolder_username;
     }
 
     public Integer getParentFolder_folderNumber() {
