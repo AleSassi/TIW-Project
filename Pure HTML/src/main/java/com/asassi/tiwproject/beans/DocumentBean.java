@@ -1,9 +1,7 @@
 package com.asassi.tiwproject.beans;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 public class DocumentBean {
 

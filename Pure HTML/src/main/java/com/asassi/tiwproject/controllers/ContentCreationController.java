@@ -29,36 +29,32 @@ public class ContentCreationController extends DBConnectedServlet {
         //If the User is not registered (we cannot find the username in the Session), redirect to the Login page
         HttpSession session = req.getSession();
         String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
-        if (username == null) {
-            resp.sendRedirect(PageConstants.Default.getRawValue());
-        } else {
-            //When the Get is performed, we check if we have a doctype selected, otherwise we send the default page parameters
-            String doctype = req.getParameter(ContentCreationFormField.ContentType.getRawValue());
-            int selectedFileType = UserCreatableFileTypes.Folder.getRawValue();
-            if (doctype != null) {
-                try {
-                    selectedFileType = Integer.parseInt(doctype);
-                } catch (NumberFormatException e) {
-                    // The number is not an int, we use the default value
-                }
-            }
-            //Sanitize the converted in to be within the range
-            selectedFileType = UserCreatableFileTypes.restrictToValidRawValue(selectedFileType);
-            FolderDAO folderDAO = new FolderDAO(getDBConnection());
-            ctx.setVariable(CreateConstants.Username.getRawValue(), username);
-            ctx.setVariable(CreateConstants.FileType.getRawValue(), selectedFileType);
+        //When the Get is performed, we check if we have a doctype selected, otherwise we send the default page parameters
+        String doctype = req.getParameter(ContentCreationFormField.ContentType.getRawValue());
+        int selectedFileType = UserCreatableFileTypes.Folder.getRawValue();
+        if (doctype != null) {
             try {
-                List<FolderBean> mainFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
-                List<List<FolderBean>> subfolderHierarchy = new ArrayList<>();
-                for (FolderBean mainFolder: mainFolders) {
-                    List<FolderBean> subfolders = folderDAO.findSubfoldersOfFolder(username, mainFolder.getFolderNumber());
-                    subfolderHierarchy.add(subfolders);
-                }
-                ctx.setVariable(CreateConstants.MainFolders.getRawValue(), mainFolders);
-                ctx.setVariable(CreateConstants.Subfolders.getRawValue(), subfolderHierarchy);
-            } catch (SQLException e) {
-                throw new ServletException(e.getMessage());
+                selectedFileType = Integer.parseInt(doctype);
+            } catch (NumberFormatException e) {
+                // The number is not an int, we use the default value
             }
+        }
+        //Sanitize the converted in to be within the range
+        selectedFileType = UserCreatableFileTypes.restrictToValidRawValue(selectedFileType);
+        FolderDAO folderDAO = new FolderDAO(getDBConnection());
+        ctx.setVariable(CreateConstants.Username.getRawValue(), username);
+        ctx.setVariable(CreateConstants.FileType.getRawValue(), selectedFileType);
+        try {
+            List<FolderBean> mainFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
+            List<List<FolderBean>> subfolderHierarchy = new ArrayList<>();
+            for (FolderBean mainFolder: mainFolders) {
+                List<FolderBean> subfolders = folderDAO.findSubfoldersOfFolder(username, mainFolder.getFolderNumber());
+                subfolderHierarchy.add(subfolders);
+            }
+            ctx.setVariable(CreateConstants.MainFolders.getRawValue(), mainFolders);
+            ctx.setVariable(CreateConstants.Subfolders.getRawValue(), subfolderHierarchy);
+        } catch (SQLException e) {
+            throw new ServletException(e.getMessage());
         }
     }
 
@@ -113,7 +109,7 @@ public class ContentCreationController extends DBConnectedServlet {
                 }
                 //Create the folder
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), FolderType.Main.getRawValue(), null, null));
+                folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), null));
             }
             case Subfolder -> {
                 //We need to have valid strings from: folderName, parentFolder
@@ -133,7 +129,7 @@ public class ContentCreationController extends DBConnectedServlet {
                         throw new IncorrectFormDataException();
                     }
                     //Create the subfolder
-                    folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), FolderType.Subfolder.getRawValue(), username, userFolders.get(0).getFolderNumber()));
+                    folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber()));
                 } catch (NumberFormatException e) {
                     //Send an error
                     ctx.setVariable(CreateConstants.InvalidParentFolderNameError.getRawValue(), "You must specify a valid parent folder");

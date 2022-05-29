@@ -27,12 +27,7 @@ public class SignInController extends DBConnectedServlet {
 
     @Override
     protected void handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws IOException {
-        //If the User is already logged in, send the user to the Home Page
-        HttpSession session = req.getSession();
-        String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
-        if (username != null) {
-            resp.sendRedirect(PageConstants.Home.getRawValue());
-        }
+        //The filter already redirects to the login page
     }
 
     @Override

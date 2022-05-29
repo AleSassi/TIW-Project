@@ -41,5 +41,5 @@ public class UserDAO extends DAO {
         statement.executeUpdate();
         statement.close();
     }
-    
+
 }
