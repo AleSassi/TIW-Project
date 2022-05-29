@@ -242,7 +242,7 @@ function FolderList() {
         //Drag start events to drag to the trash can
         parent.draggable = true;
         parent.addEventListener("dragstart", function(e) {
-            e.stopPropagation();
+            e.stopPropagation(); //To avoid bubbling, so that we are sure that the drag event is fired only on the lowest compatible element
             self.draggingFolder = folder;
             self.draggingCell = parent;
         });
