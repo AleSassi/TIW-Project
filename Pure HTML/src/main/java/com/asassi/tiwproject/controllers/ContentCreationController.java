@@ -56,6 +56,7 @@ public class ContentCreationController extends DBConnectedServlet {
         } catch (SQLException e) {
             throw new ServletException(e.getMessage());
         }
+        ctx.setVariable("previousURL", req.getHeader("referer"));
     }
 
     @Override
@@ -175,6 +176,5 @@ public class ContentCreationController extends DBConnectedServlet {
                 }
             }
         }
-
     }
 }

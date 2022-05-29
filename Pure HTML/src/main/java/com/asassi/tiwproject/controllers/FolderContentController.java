@@ -28,6 +28,7 @@ public class FolderContentController extends DBConnectedServlet {
         String folderID = req.getParameter("fid");
         boolean hasErrorFindingFolder = true;
         FolderDAO folderDAO = new FolderDAO(getDBConnection());
+        ctx.setVariable("previousURL", req.getHeader("referer"));
         try {
             int folderIDInt = Integer.parseInt(folderID);
             List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, folderIDInt, FolderType.Subfolder);
