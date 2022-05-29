@@ -25,20 +25,8 @@ public class HomeController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //If the User is not registered (we cannot find the username in the Session), redirect to the Login page
-        HttpSession session = req.getSession();
-        String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
-        if (username == null) {
-            resp.sendRedirect(PageConstants.Default.getRawValue());
-        } else {
-            //Serve the plain HTML - JS will handle the rest
-            req.getRequestDispatcher("/homePage.html").forward(req, resp);
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+        //Serve the plain HTML - JS will handle the rest
+        req.getRequestDispatcher("/homePage.html").forward(req, resp);
     }
 
     @Override

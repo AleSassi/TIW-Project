@@ -26,30 +26,24 @@ public class GetFolderListDataController extends JSONResponderServlet {
         // Find the data from the user - the user ID has already been saved in the server session
         HttpSession session = req.getSession();
         String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
-        if (username == null) {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            resp.getWriter().println("Cannot access the service since the user is not logged in");
-            return null;
-        } else {
-            // Fetch the data from the DB
-            try {
-                FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                List<FolderBean> mainFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
-                List<List<FolderBean>> subfolderHierarchy = new ArrayList<>();
-                for (FolderBean mainFolder: mainFolders) {
-                    List<FolderBean> subfolders = folderDAO.findSubfoldersOfFolder(username, mainFolder.getFolderNumber());
-                    subfolderHierarchy.add(subfolders);
-                }
-                List<NestedFolderBean> result = new ArrayList<>();
-                for (int i = 0; i < mainFolders.size(); i++) {
-                    result.add(new NestedFolderBean(mainFolders.get(i), subfolderHierarchy.get(i)));
-                }
-                return result;
-            } catch (SQLException e) {
-                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                resp.getWriter().println("There was an error while getting the data to display");
-                return null;
+        // Fetch the data from the DB
+        try {
+            FolderDAO folderDAO = new FolderDAO(getDBConnection());
+            List<FolderBean> mainFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
+            List<List<FolderBean>> subfolderHierarchy = new ArrayList<>();
+            for (FolderBean mainFolder: mainFolders) {
+                List<FolderBean> subfolders = folderDAO.findSubfoldersOfFolder(username, mainFolder.getFolderNumber());
+                subfolderHierarchy.add(subfolders);
             }
+            List<NestedFolderBean> result = new ArrayList<>();
+            for (int i = 0; i < mainFolders.size(); i++) {
+                result.add(new NestedFolderBean(mainFolders.get(i), subfolderHierarchy.get(i)));
+            }
+            return result;
+        } catch (SQLException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().println("There was an error while getting the data to display");
+            return null;
         }
     }
 

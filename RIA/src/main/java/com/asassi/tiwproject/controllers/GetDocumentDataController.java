@@ -26,48 +26,42 @@ public class GetDocumentDataController extends JSONResponderServlet {
         //If the User is not registered (we cannot find the username in the Session), redirect to the Login page
         HttpSession session = req.getSession();
         String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
-        if (username == null) {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            resp.getWriter().println("Cannot access the service since the user is not logged in");
+        //When the Get is performed, we check if we have a valid document ID, otherwise we redirect to the home page
+        String documentID = req.getParameter("document");
+        boolean hasErrorFindingDocument = true;
+        DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
+
+        DocumentResponseBean responseBean = new DocumentResponseBean();
+
+        try {
+            int documentIDInt = Integer.parseInt(documentID);
+            int folderIDInt = Integer.parseInt(req.getParameter("fid"));
+            List<DocumentBean> documents = documentDAO.findDocument(username, documentIDInt);
+            if (!documents.isEmpty()) {
+                DocumentBean document = documents.get(0);
+                FolderDAO folderDAO = new FolderDAO(getDBConnection());
+                List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, document.getParentFolderNumber(), FolderType.Subfolder);
+                if (!folders.isEmpty()) {
+                    FolderBean folder = folders.get(0);
+                    responseBean.setDocument(document);
+                    responseBean.setFolderName(folder.getName());
+                    hasErrorFindingDocument = false;
+                }
+            }
+        } catch (SQLException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().println("There was an error while getting the data to display");
+            return null;
+        } catch (NumberFormatException ignored) {
+        }
+
+        if (hasErrorFindingDocument) {
+            //Keep the Page
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().println("Could not find the specified document");
             return null;
         } else {
-            //When the Get is performed, we check if we have a valid document ID, otherwise we redirect to the home page
-            String documentID = req.getParameter("document");
-            boolean hasErrorFindingDocument = true;
-            DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
-
-            DocumentResponseBean responseBean = new DocumentResponseBean();
-
-            try {
-                int documentIDInt = Integer.parseInt(documentID);
-                int folderIDInt = Integer.parseInt(req.getParameter("fid"));
-                List<DocumentBean> documents = documentDAO.findDocument(username, documentIDInt);
-                if (!documents.isEmpty()) {
-                    DocumentBean document = documents.get(0);
-                    FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                    List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, document.getParentFolderNumber(), FolderType.Subfolder);
-                    if (!folders.isEmpty()) {
-                        FolderBean folder = folders.get(0);
-                        responseBean.setDocument(document);
-                        responseBean.setFolderName(folder.getName());
-                        hasErrorFindingDocument = false;
-                    }
-                }
-            } catch (SQLException e) {
-                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                resp.getWriter().println("There was an error while getting the data to display");
-                return null;
-            } catch (NumberFormatException ignored) {
-            }
-
-            if (hasErrorFindingDocument) {
-                //Keep the Page
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().println("Could not find the specified document");
-                return null;
-            } else {
-                return responseBean;
-            }
+            return responseBean;
         }
     }
 }

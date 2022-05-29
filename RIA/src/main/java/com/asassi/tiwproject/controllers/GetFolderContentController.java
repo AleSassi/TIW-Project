@@ -26,43 +26,37 @@ public class GetFolderContentController extends JSONResponderServlet {
         //If the User is not registered (we cannot find the username in the Session), redirect to the Login page
         HttpSession session = req.getSession();
         String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
-        if (username == null) {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            resp.getWriter().println("Cannot access the service since the user is not logged in");
+        //When the Get is performed, we check if we have a valid folder ID, otherwise we redirect to the home page
+        String folderID = req.getParameter("fid");
+        boolean hasErrorFindingFolder = true;
+        FolderDAO folderDAO = new FolderDAO(getDBConnection());
+
+        FolderContentResponseBean responseBean = new FolderContentResponseBean();
+        try {
+            int folderIDInt = Integer.parseInt(folderID);
+            List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, folderIDInt, FolderType.Subfolder);
+            if (!folders.isEmpty()) {
+                FolderBean folder = folders.get(0);
+                DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
+                List<DocumentBean> documents = documentDAO.findDocumentsByUserAndFolder(username, folderIDInt);
+                responseBean.setFolderName(folder.getName());
+                responseBean.setDocuments(documents);
+                hasErrorFindingFolder = false;
+            }
+        } catch (SQLException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().println("There was an error while getting the data to display");
+            return null;
+        } catch (NumberFormatException ignored) {
+        }
+
+        if (hasErrorFindingFolder) {
+            //Keep the Page
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().println("Could not find the specified folder");
             return null;
         } else {
-            //When the Get is performed, we check if we have a valid folder ID, otherwise we redirect to the home page
-            String folderID = req.getParameter("fid");
-            boolean hasErrorFindingFolder = true;
-            FolderDAO folderDAO = new FolderDAO(getDBConnection());
-
-            FolderContentResponseBean responseBean = new FolderContentResponseBean();
-            try {
-                int folderIDInt = Integer.parseInt(folderID);
-                List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, folderIDInt, FolderType.Subfolder);
-                if (!folders.isEmpty()) {
-                    FolderBean folder = folders.get(0);
-                    DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
-                    List<DocumentBean> documents = documentDAO.findDocumentsByUserAndFolder(username, folderIDInt);
-                    responseBean.setFolderName(folder.getName());
-                    responseBean.setDocuments(documents);
-                    hasErrorFindingFolder = false;
-                }
-            } catch (SQLException e) {
-                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                resp.getWriter().println("There was an error while getting the data to display");
-                return null;
-            } catch (NumberFormatException ignored) {
-            }
-
-            if (hasErrorFindingFolder) {
-                //Keep the Page
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().println("Could not find the specified folder");
-                return null;
-            } else {
-                return responseBean;
-            }
+            return responseBean;
         }
     }
 }

@@ -32,10 +32,7 @@ public class DeleteController extends JSONResponderServlet {
         String folderIDStr = req.getParameter("fid");
         String documentIDStr = req.getParameter("docid");
         String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
-        if (username == null) {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            resp.getWriter().println("Cannot access the service since the user is not logged in");
-        } else if (folderIDStr == null && documentIDStr == null) {
+        if (folderIDStr == null && documentIDStr == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().println("You must send the folder or document you want to delete");
         } else {

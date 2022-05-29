@@ -29,17 +29,11 @@ public class CreateFolderController extends JSONResponderServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
-        if (username == null) {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } else {
-            try {
-                parseUserFormAndExecuteAction(req, resp);
-            } catch (IOException | SQLException e) {
-                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                resp.getWriter().println("There was an error while getting the data to display");
-            }
+        try {
+            parseUserFormAndExecuteAction(req, resp);
+        } catch (IOException | SQLException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().println("There was an error while getting the data to display");
         }
     }
 

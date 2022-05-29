@@ -37,13 +37,7 @@ public class CreateDocumentController extends JSONResponderServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
-        if (username == null) {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } else {
-            parseUserFormAndExecuteAction(req, resp);
-        }
+        parseUserFormAndExecuteAction(req, resp);
     }
 
     private void parseUserFormAndExecuteAction(HttpServletRequest req, HttpServletResponse resp) {
