@@ -35,7 +35,6 @@ public class GetDocumentDataController extends JSONResponderServlet {
 
         try {
             int documentIDInt = Integer.parseInt(documentID);
-            int folderIDInt = Integer.parseInt(req.getParameter("fid"));
             List<DocumentBean> documents = documentDAO.findDocument(username, documentIDInt);
             if (!documents.isEmpty()) {
                 DocumentBean document = documents.get(0);

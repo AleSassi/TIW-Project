@@ -48,7 +48,7 @@ function FolderDetail() {
             nameLabel.addEventListener("click", (e) => {
                 //Show the Document Detail
                 e.preventDefault();
-                get("getDocumentData?document=" + documentData.documentNumber + "&fid=" + documentData.parentFolderNumber, function(request) {
+                get("getDocumentData?document=" + documentData.documentNumber, function(request) {
                     if (request.status === 200) {
                         // We have the folder data as JSON - show
                         let documentData = JSON.parse(request.responseText);
