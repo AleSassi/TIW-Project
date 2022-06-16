@@ -86,7 +86,7 @@ function CreateDocumentForm() {
             let contentError = document.getElementById("documentContentError");
             let isValid = form.checkValidity();
             if (isValid) {
-                if (nameField.value && /^\S/.test(nameField.value)) {
+                if (nameField.value && /[^ ]/.test(nameField.value)) {
                     nameError.textContent = "";
                 } else {
                     nameError.textContent = "You must enter a valid document name";
@@ -98,7 +98,7 @@ function CreateDocumentForm() {
                     fileExtError.textContent = "You must enter a valid file extension";
                     isValid = false;
                 }
-                if (contentField.value && /^\S/.test(nameField.value)) {
+                if (contentField.value && /[^ ]/.test(nameField.value)) {
                     contentError.textContent = "";
                 } else {
                     contentError.textContent = "You must enter some content";

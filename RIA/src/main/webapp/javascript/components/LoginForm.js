@@ -23,7 +23,7 @@ function LoginForm() {
             let form = e.target.closest("form");
             let isValid = form.checkValidity();
             //Check the username
-            if (!self.usernameField.value || self.usernameField.value.size < 1 || !/^\S/.test(self.usernameField.value)) {
+            if (!self.usernameField.value || self.usernameField.value.size < 1 || !/[^ ]/.test(self.usernameField.value)) {
                 //Show the Error Message for Email
                 self.usernameErrorLabel.textContent = "You must enter your username to sign in";
                 self.usernameErrorLabel.hidden = false;
@@ -33,7 +33,7 @@ function LoginForm() {
                 self.usernameErrorLabel.textContent = "";
             }
             //Check the Password
-            if (!self.passwordField.value || self.passwordField.value.size < 8 || !/^\S/.test(self.usernameField.value)) {
+            if (!self.passwordField.value || self.passwordField.value.size < 8 || !/[^ ]/.test(self.usernameField.value)) {
                 self.passwordErrorLabel.textContent = "You must enter your password";
                 self.passwordErrorLabel.hidden = false;
                 isValid = false;

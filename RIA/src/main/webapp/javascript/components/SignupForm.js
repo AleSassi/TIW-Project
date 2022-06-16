@@ -30,7 +30,7 @@ function SignupForm() {
             e.preventDefault();
             let isValid = self.form.checkValidity();
             //Check the username
-            if (!self.usernameField.value || self.usernameField.value.size < 1 || !/^\S/.test(self.usernameField.value)) {
+            if (!self.usernameField.value || self.usernameField.value.size < 1 || !/[^ ]/.test(self.usernameField.value)) {
                 //Show the Error Message for Email
                 self.usernameErrorLabel.textContent = "You must enter your username to sign in";
                 self.usernameErrorLabel.hidden = false;
@@ -40,7 +40,7 @@ function SignupForm() {
                 self.usernameErrorLabel.textContent = "";
             }
             //Check the email
-            if (!self.emailField.value || self.emailField.value.size < 1 || !/^\S/.test(self.emailField.value)) {
+            if (!self.emailField.value || self.emailField.value.size < 1 || !/[^ ]/.test(self.emailField.value)) {
                 //Show the Error Message for Email
                 self.emailErrorLabel.textContent = "You must enter your email to sign up";
                 self.emailErrorLabel.hidden = false;
@@ -55,7 +55,7 @@ function SignupForm() {
                 self.emailErrorLabel.textContent = "";
             }
             //Check the Password
-            if (!self.passwordField.value || self.passwordField.value.size < 8 || !/^\S/.test(self.passwordField.value)) {
+            if (!self.passwordField.value || self.passwordField.value.size < 8 || !/[^ ]/.test(self.passwordField.value)) {
                 self.passwordErrorLabel.textContent = "You must enter your password (at least 8 characters long)";
                 self.passwordErrorLabel.hidden = false;
                 isValid = false;
@@ -64,7 +64,7 @@ function SignupForm() {
                 self.passwordErrorLabel.textContent = "";
             }
             //Check the Repeat Password
-            if (!self.passwordRepeatField.value || self.passwordRepeatField.value.size < 1 || !/^\S/.test(self.passwordRepeatField.value)) {
+            if (!self.passwordRepeatField.value || self.passwordRepeatField.value.size < 1 || !/[^ ]/.test(self.passwordRepeatField.value)) {
                 self.passwordRepeatErrorLabel.textContent = "You must repeat your Password to sign up";
                 self.passwordRepeatErrorLabel.hidden = false;
                 isValid = false;
