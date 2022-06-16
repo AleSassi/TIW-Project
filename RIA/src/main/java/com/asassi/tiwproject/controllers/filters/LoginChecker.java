@@ -33,6 +33,11 @@ public class LoginChecker implements Filter {
 				res.sendRedirect(PageConstants.Home.getRawValue());
 				return;
 			}
+		} else if (uri.equals("/home") || uri.equals("/logout")) {
+			if (!isLoggedIn) {
+				res.sendRedirect(PageConstants.Default.getRawValue());
+				return;
+			}
 		} else if (s.isNew() || !isLoggedIn) {
 			res.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			return;
