@@ -70,7 +70,6 @@ public class HomeController extends DBConnectedServlet {
                     }
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
                 throw new ServletException("Could not perform query");
             } catch (NumberFormatException ignored) {
             }

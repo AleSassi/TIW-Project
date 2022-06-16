@@ -61,7 +61,7 @@
                         </g>
                     </svg>
                     <div class="folderIconSeparator"></div>
-                    <a href="/folder?fid=" th:href="${documentID == null || srcFolderID == null} ? @{/folder(fid=${subfolder.getFolderNumber()})} : @{/folder(fid=${subfolder.getFolderNumber()}, documentMV=${documentID})}" class="link" th:text="${subfolder.getName()}" th:remove="${documentID != null && srcFolderID != null && subfolder.getFolderNumberStr() == srcFolderID} ? 'all' : 'none'">Subfolder 1</a>
+                    <a href="/moveDoc?fid=" th:href="${documentID == null || srcFolderID == null} ? @{/folder(fid=${subfolder.getFolderNumber()})} : @{/folder(fid=${subfolder.getFolderNumber()}, documentMV=${documentID})}" class="link" th:text="${subfolder.getName()}" th:remove="${documentID != null && srcFolderID != null && subfolder.getFolderNumberStr() == srcFolderID} ? 'all' : 'none'">Subfolder 1</a>
                     <label class="link notClickable" th:remove="${documentID != null && srcFolderID != null && subfolder.getFolderNumberStr() == srcFolderID} ? 'none' : 'all'" th:text="${subfolder.getName()}"></label>
                     <label class="creationDateLabel" th:text="${subfolder.getCreationDateString()}">Creation Date Here</label>
                 </li>

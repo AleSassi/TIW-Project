@@ -78,10 +78,8 @@ public class FolderDAO extends DAO {
         List<FolderBean> subfolders = new ArrayList<>();
         while (result.next()) {
             // Add the root folder, then loop to find the subfolders
-            System.out.println(result.getString("F1.Name"));
             int parentID = result.getInt("F2.ParentFolder_FolderNumber");
             if (result.wasNull()) {
-                System.out.println("CREATE NEW ROOT");
                 if (currentRoot != null) {
                     nestedFolderBeans.add(new NestedFolderBean(currentRoot, subfolders));
                 }
