@@ -22,6 +22,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @WebServlet("/CreateFolder")
 @MultipartConfig
@@ -44,10 +46,11 @@ public class CreateFolderController extends JSONResponderServlet {
         String parentFolderID = StringEscapeUtils.escapeJava(req.getParameter("parentFolderID"));
         String folderName = StringEscapeUtils.escapeJava(req.getParameter("createForm_folderTitle"));
         Random randomizer = new Random();
+        Pattern notOnlyWhitespaces = Pattern.compile("[^ ]");
 
-        if (folderName == null) {
+        if (folderName == null || !notOnlyWhitespaces.matcher(folderName).find()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().println("You must specify a folder number");
+            resp.getWriter().println("You must specify a folder name");
         } else {
             FolderDAO folderDAO = new FolderDAO(getDBConnection());
             if (parentFolderID == null) {

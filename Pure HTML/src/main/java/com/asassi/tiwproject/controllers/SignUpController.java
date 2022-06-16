@@ -39,6 +39,7 @@ public class SignUpController extends DBConnectedServlet {
         String passwordRepeat = req.getParameter("passwordRepeat");
 
         Pattern emailPattern = Pattern.compile("^[A-Za-z0-9._]{1,16}+@[a-z]{1,7}\\.[a-z]{1,3}$");
+        Pattern notOnlyWhitespaces = Pattern.compile("[^ ]");
 
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(req, resp, servletContext, req.getLocale());
@@ -46,19 +47,19 @@ public class SignUpController extends DBConnectedServlet {
         String error = null;
         boolean isUsernameValid = false;
         boolean isEmailValid = false;
-        if (username == null) {
+        if (username == null || !notOnlyWhitespaces.matcher(username).find()) {
             error = "You have to enter a Username to create an account";
             ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
         }
-        if (email == null) {
+        if (email == null || !notOnlyWhitespaces.matcher(email).find()) {
             error = "You have to enter a valid Email address to create an account";
             ctx.setVariable(SignupConstants.EmailErrorInfo.getRawValue(), error);
         }
-        if (password == null) {
+        if (password == null || !notOnlyWhitespaces.matcher(password).find()) {
             error = "You have to enter a Password to create an account";
             ctx.setVariable(SignupConstants.PasswordErrorInfo.getRawValue(), error);
         }
-        if (passwordRepeat == null) {
+        if (passwordRepeat == null || !notOnlyWhitespaces.matcher(passwordRepeat).find()) {
             error = "You have to repeat your Password to create an account";
             ctx.setVariable(SignupConstants.RepeatPasswordErrorInfo.getRawValue(), error);
         }

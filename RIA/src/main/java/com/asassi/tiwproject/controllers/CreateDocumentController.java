@@ -25,6 +25,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @WebServlet("/CreateDocument")
 @MultipartConfig
@@ -53,6 +55,8 @@ public class CreateDocumentController extends JSONResponderServlet {
         FolderDAO folderDAO = new FolderDAO(getDBConnection());
         DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
         CreateDocumentResponseBean responseBean = new CreateDocumentResponseBean();
+        Pattern notOnlyWhitespaces = Pattern.compile("[^ ]");
+        Pattern fileExtPattern = Pattern.compile("^[.][^.\s]+");
         try {
             int parentSubfolderNumber = Integer.parseInt(req.getParameter(ContentCreationFormField.ParentFolderNumber.getRawValue()));
             List<FolderBean> userFolders = folderDAO.findFoldersByUsernameAndFolderNumber(username, parentSubfolderNumber, FolderType.Subfolder);
@@ -61,17 +65,21 @@ public class CreateDocumentController extends JSONResponderServlet {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 responseBean.setDocumentNameError("The specified Parent Folder could not be found");
             } else {
-                if (docName == null) {
+                Matcher matcher = null;
+                if (docName == null || !notOnlyWhitespaces.matcher(docName).find()) {
                     //Send an error
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     responseBean.setDocumentNameError("You must specify a valid Document Name");
                 }
-                if (docExtension == null || !(docExtension.startsWith(".") && docExtension.lastIndexOf(".") == 0) && !docExtension.substring(docExtension.lastIndexOf(".") + 1).isEmpty()) {
+                if (docExtension != null) {
+                    matcher = fileExtPattern.matcher(docExtension);
+                }
+                if (docExtension == null || !matcher.find() || !(docExtension.startsWith(".") && docExtension.lastIndexOf(".") == 0) && !docExtension.substring(docExtension.lastIndexOf(".") + 1).isEmpty()) {
                     //Send an error
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     responseBean.setDocumentExtensionError("You must specify a valid Document Type (file extension, starting with \\\".\\\")");
                 }
-                if (docContent == null) {
+                if (docContent == null || !notOnlyWhitespaces.matcher(docContent).find()) {
                     //Send an error
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     responseBean.setDocumentExtensionError("You must specify a valid Document Content");

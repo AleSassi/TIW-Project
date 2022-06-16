@@ -112,7 +112,7 @@ function FolderList() {
 
         submitButton.addEventListener("click", function(e) {
             e.preventDefault();
-            if (field.value) {
+            if (field.value && /^\S/.test(field.value)) {
                 post("CreateFolder", form, function(request) {
                     if (request.status === 200) {
                         //Create the folder row
