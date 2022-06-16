@@ -26,7 +26,6 @@ public class ContentCreationController extends DBConnectedServlet {
 
     @Override
     protected void handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws ServletException, IOException {
-        //If the User is not registered (we cannot find the username in the Session), redirect to the Login page
         HttpSession session = req.getSession();
         String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
         //When the Get is performed, we check if we have a doctype selected, otherwise we send the default page parameters
@@ -45,14 +44,7 @@ public class ContentCreationController extends DBConnectedServlet {
         ctx.setVariable(CreateConstants.Username.getRawValue(), username);
         ctx.setVariable(CreateConstants.FileType.getRawValue(), selectedFileType);
         try {
-            List<FolderBean> mainFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
-            List<List<FolderBean>> subfolderHierarchy = new ArrayList<>();
-            for (FolderBean mainFolder: mainFolders) {
-                List<FolderBean> subfolders = folderDAO.findSubfoldersOfFolder(username, mainFolder.getFolderNumber());
-                subfolderHierarchy.add(subfolders);
-            }
-            ctx.setVariable(CreateConstants.MainFolders.getRawValue(), mainFolders);
-            ctx.setVariable(CreateConstants.Subfolders.getRawValue(), subfolderHierarchy);
+            ctx.setVariable(CreateConstants.Hierarchy.getRawValue(), folderDAO.findFolderHierarchy(username));
         } catch (SQLException e) {
             throw new ServletException(e.getMessage());
         }

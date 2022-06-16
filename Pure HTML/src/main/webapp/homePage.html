@@ -26,7 +26,7 @@
         <label>". Choose the destination subfolder.</label>
     </div>
     <ul class="folderList" th:remove="all-but-first">
-        <li class="folderRow" th:each="mainFolder, iter : ${mainFolders}">
+        <li class="folderRow" th:each="mainFolder, iter : ${hierarchy}">
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                  width="24" height="24"
                  viewBox="0 0 172 172"
@@ -45,7 +45,7 @@
             <label th:text="${mainFolder.getName()}">Folder 1</label>
             <label class="creationDateLabel" th:text="${mainFolder.getCreationDateString()}">Creation Date Here</label>
             <ul class="subfolderList" th:remove="all-but-first">
-                <li class="folderRow" th:each="subfolder : ${subfolders.get(iter.index)}">
+                <li class="folderRow" th:each="subfolder : ${mainFolder.getSubfolders()}">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                          width="24" height="24"
                          viewBox="0 0 172 172"

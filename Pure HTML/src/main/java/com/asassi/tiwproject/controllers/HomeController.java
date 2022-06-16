@@ -41,14 +41,7 @@ public class HomeController extends DBConnectedServlet {
         //Find the Folders of the User
         try {
             FolderDAO folderDAO = new FolderDAO(getDBConnection());
-            List<FolderBean> mainFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
-            List<List<FolderBean>> subfolderHierarchy = new ArrayList<>();
-            for (FolderBean mainFolder: mainFolders) {
-                List<FolderBean> subfolders = folderDAO.findSubfoldersOfFolder(username, mainFolder.getFolderNumber());
-                subfolderHierarchy.add(subfolders);
-            }
-            ctx.setVariable(HomeConstants.MainFolders.getRawValue(), mainFolders);
-            ctx.setVariable(HomeConstants.Subfolders.getRawValue(), subfolderHierarchy);
+            ctx.setVariable(HomeConstants.Hierarchy.getRawValue(), folderDAO.findFolderHierarchy(username));
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ServletException("Could not perform query");

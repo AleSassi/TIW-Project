@@ -38,7 +38,7 @@
                     <label for="parentFolderSelector">Parent Folder:</label>
                     <select name="parentFolder" id="parentFolderSelector" class="contentTypeSelector" th:required="${selectedContentType != 0}" required>
                         <option value="">Choose a Parent Folder...</option>
-                        <option th:each="folder : ${mainFolders}" th:value="${folder.getFolderNumber()}" th:text="${folder.getName()}">Folder 1</option>
+                        <option th:each="folder : ${hierarchy}" th:value="${folder.getFolderNumber()}" th:text="${folder.getName()}">Folder 1</option>
                     </select>
                     <label for="parentFolderSelector" class="errorLabel" th:hidden="${parentFolderNameError == null}" th:text="${parentFolderNameError}">Parent Folder Name Error goes here</label>
                 </div>
@@ -60,8 +60,8 @@
                 <label for="parentFolderSelector_doc">Parent Folder:</label>
                 <select name="parentFolder" id="parentFolderSelector_doc" class="contentTypeSelector" th:required="${selectedContentType == 2}" required>
                     <option value="">Choose a Parent Folder...</option>
-                    <optgroup label="Optgroup" th:each="folder, iter : ${mainFolders}" th:value="${folder.getFolderNumber()}" th:label="${folder.getName()}" th:remove="${subfolders.get(iter.index).isEmpty()} ? 'all' : 'none'">
-                        <option th:each="subfolder : ${subfolders.get(iter.index)}" th:value="${subfolder.getFolderNumber()}" th:text="${subfolder.getName()}">Folder 1</option>
+                    <optgroup label="Optgroup" th:each="folder, iter : ${hierarchy}" th:value="${folder.getFolderNumber()}" th:label="${folder.getName()}" th:remove="${folder.getSubfolders().isEmpty()} ? 'all' : 'none'">
+                        <option th:each="subfolder : ${folder.getSubfolders()}" th:value="${subfolder.getFolderNumber()}" th:text="${subfolder.getName()}">Folder 1</option>
                     </optgroup>
                 </select>
                 <label for="parentFolderSelector_doc" class="errorLabel" th:hidden="${folderNameError == null}" th:text="${folderNameError}">Parent Folder Name Error goes here</label>

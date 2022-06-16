@@ -3,8 +3,7 @@ package com.asassi.tiwproject.constants;
 public enum HomeConstants {
 
     Username("username"),
-    MainFolders("mainFolders"),
-    Subfolders("subfolders"),
+    Hierarchy("hierarchy"),
     DocToMoveID("documentID"),
     DocToMoveName("documentName"),
     DocToMoveSrcFolderID("srcFolderID"),

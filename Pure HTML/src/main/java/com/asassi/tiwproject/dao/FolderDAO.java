@@ -2,6 +2,7 @@ package com.asassi.tiwproject.dao;
 
 import com.asassi.tiwproject.beans.FolderBean;
 import com.asassi.tiwproject.constants.FolderType;
+import com.asassi.tiwproject.beans.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -64,6 +65,39 @@ public class FolderDAO extends DAO {
         statement.close();
 
         return folders;
+    }
+
+    public List<NestedFolderBean> findFolderHierarchy(String username) throws SQLException {
+        List<NestedFolderBean> nestedFolderBeans = new ArrayList<>();
+        String query = "select * from Folders as F1, Folders as F2 where F1.OwnerUsername = ? and F1.ParentFolder_FolderNumber is null and (F1.OwnerUsername = F2.OwnerUsername and (F2.ParentFolder_FolderNumber = F1.FolderNumber or (F1.ParentFolder_FolderNumber is null and F1.Name = F2.Name))) group by F1.FolderNumber, F2.FolderNumber order by F1.CreationDate, F2.CreationDate";
+
+        PreparedStatement statement = getDbConnection().prepareStatement(query);
+        statement.setString(1, username);
+        ResultSet result = statement.executeQuery();
+        FolderBean currentRoot = null;
+        List<FolderBean> subfolders = new ArrayList<>();
+        while (result.next()) {
+            // Add the root folder, then loop to find the subfolders
+            System.out.println(result.getString("F1.Name"));
+            int parentID = result.getInt("F2.ParentFolder_FolderNumber");
+            if (result.wasNull()) {
+                System.out.println("CREATE NEW ROOT");
+                if (currentRoot != null) {
+                    nestedFolderBeans.add(new NestedFolderBean(currentRoot, subfolders));
+                }
+                currentRoot = new FolderBean(result.getString("F1.OwnerUsername"), result.getInt("F1.FolderNumber"), result.getString("F1.Name"), result.getTimestamp("F1.CreationDate").toLocalDateTime(), result.getInt("F1.ParentFolder_FolderNumber"));
+                subfolders = new ArrayList<>();
+            } else {
+                subfolders.add(new FolderBean(result.getString("F2.OwnerUsername"), result.getInt("F2.FolderNumber"), result.getString("F2.Name"), result.getTimestamp("F2.CreationDate").toLocalDateTime(), result.getInt("F2.ParentFolder_FolderNumber")));
+            }
+        }
+        if (currentRoot != null) {
+            nestedFolderBeans.add(new NestedFolderBean(currentRoot, subfolders));
+        }
+        result.close();
+        statement.close();
+        System.out.println(nestedFolderBeans);
+        return nestedFolderBeans;
     }
 
     public void addFolder(FolderBean folder) throws SQLException {

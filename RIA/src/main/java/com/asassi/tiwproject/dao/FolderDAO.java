@@ -53,7 +53,7 @@ public class FolderDAO extends DAO {
 
     public List<NestedFolderBean> findFolderHierarchy(String username) throws SQLException {
         List<NestedFolderBean> nestedFolderBeans = new ArrayList<>();
-        String query = "select * from Folders as F1, Folders as F2 where F1.OwnerUsername = ? and (F1.OwnerUsername = F2.OwnerUsername and F2.ParentFolder_FolderNumber = F1.FolderNumber) group by F1.FolderNumber, F2.FolderNumber order by F1.CreationDate, F2.CreationDate";
+        String query = "select * from Folders as F1, Folders as F2 where F1.OwnerUsername = 'AleSassi' and F1.ParentFolder_FolderNumber is null and (F1.OwnerUsername = F2.OwnerUsername and (F2.ParentFolder_FolderNumber = F1.FolderNumber or (F1.ParentFolder_FolderNumber is null and F1.Name = F2.Name))) group by F1.FolderNumber, F2.FolderNumber order by F1.CreationDate, F2.CreationDate";
 
         PreparedStatement statement = getDbConnection().prepareStatement(query);
         statement.setString(1, username);
