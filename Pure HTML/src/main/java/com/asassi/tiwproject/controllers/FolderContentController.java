@@ -50,24 +50,6 @@ public class FolderContentController extends DBConnectedServlet {
         if (hasErrorFindingFolder) {
             //Redirect to Home Page
             resp.sendRedirect(PageConstants.Home.getRawValue());
-        } else {
-            // If the query string contains an additional Document parameter, and this parameter is valid, forward to the move servlet which will then give control back to here
-            String documentToMoveID = req.getParameter("documentMV");
-            DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
-            try {
-                int documentID = Integer.parseInt(documentToMoveID);
-                int folderIDInt = Integer.parseInt(folderID);
-                List<DocumentBean> documents = documentDAO.findDocument(username, documentID);
-                if (!documents.isEmpty()) {
-                    DocumentBean document = documents.get(0);
-                    documentDAO.moveDocument(document, folderIDInt);
-                    //Redirect to avoid multiple move operations
-                    resp.sendRedirect(PageConstants.FolderDetail.getRawValue() + "?fid=" + folderIDInt);
-                }
-            } catch (SQLException e) {
-                throw new ServletException(e.getMessage());
-            } catch (NumberFormatException ignored) {
-            }
         }
     }
 

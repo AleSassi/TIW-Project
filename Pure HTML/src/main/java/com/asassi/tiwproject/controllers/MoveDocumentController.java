@@ -49,6 +49,6 @@ public class MoveDocumentController extends DBConnectedServlet {
 
     @Override
     protected String getTemplatePage() {
-        return null;
+        return "homePage.html";
     }
 }

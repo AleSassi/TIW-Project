@@ -43,6 +43,7 @@
         <url-pattern>/create</url-pattern>
         <url-pattern>/signup</url-pattern>
         <url-pattern>/home</url-pattern>
+        <url-pattern>/moveDoc</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>LoginChecker</filter-name>
@@ -52,5 +53,6 @@
         <url-pattern>/create</url-pattern>
         <url-pattern>/signup</url-pattern>
         <url-pattern>/home</url-pattern>
+        <url-pattern>/moveDoc</url-pattern>
     </filter-mapping>
 </web-app>
