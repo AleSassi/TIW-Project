@@ -1,6 +1,7 @@
 package com.asassi.tiwproject.dao;
 
 import com.asassi.tiwproject.beans.FolderBean;
+import com.asassi.tiwproject.beans.responses.NestedFolderBean;
 import com.asassi.tiwproject.constants.FolderType;
 
 import java.sql.*;
@@ -48,6 +49,33 @@ public class FolderDAO extends DAO {
         statement.close();
 
         return folders;
+    }
+
+    public List<NestedFolderBean> findFolderHierarchy(String username) throws SQLException {
+        List<NestedFolderBean> nestedFolderBeans = new ArrayList<>();
+        String query = "select * from Folders as F1, Folders as F2 where F1.OwnerUsername = ? and (F1.OwnerUsername = F2.OwnerUsername and F2.ParentFolder_FolderNumber = F1.FolderNumber) group by F1.FolderNumber, F2.FolderNumber order by F1.CreationDate, F2.CreationDate";
+
+        PreparedStatement statement = getDbConnection().prepareStatement(query);
+        statement.setString(1, username);
+        ResultSet result = statement.executeQuery();
+        FolderBean currentRoot = null;
+        List<FolderBean> subfolders = new ArrayList<>();
+        while (result.next()) {
+            // Add the root folder, then loop to find the subfolders
+            if (currentRoot != null || result.getObject("ParentFolder_FolderNumber", Integer.class) == null) {
+                if (currentRoot != null) {
+                    nestedFolderBeans.add(new NestedFolderBean(currentRoot, subfolders));
+                }
+                currentRoot = new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getTimestamp("CreationDate").toLocalDateTime(), result.getInt("ParentFolder_FolderNumber"));
+                subfolders = new ArrayList<>();
+            } else {
+                subfolders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getTimestamp("CreationDate").toLocalDateTime(), result.getInt("ParentFolder_FolderNumber")));
+            }
+        }
+        result.close();
+        statement.close();
+
+        return nestedFolderBeans;
     }
 
     public List<FolderBean> findSubfoldersOfFolder(String username, int parentFolderNumber) throws SQLException {

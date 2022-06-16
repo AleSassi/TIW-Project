@@ -39,9 +39,12 @@ public class MoveDocumentController extends DBConnectedServlet {
                     documentDAO.moveDocument(document, folderID);
                     //Redirect to avoid multiple move operations
                     resp.setStatus(HttpServletResponse.SC_OK);
+                } else if (documents.isEmpty()) {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getWriter().println("Could not perform the operation since you don't own the document to be moved");
                 } else {
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    resp.getWriter().println("Could not perform the operation since you don't own either the document or the target folder");
+                    resp.getWriter().println("Could not perform the operation since you don't own the target folder");
                 }
             } catch (SQLException e) {
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

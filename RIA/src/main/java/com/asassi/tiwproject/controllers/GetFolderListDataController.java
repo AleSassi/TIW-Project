@@ -29,17 +29,7 @@ public class GetFolderListDataController extends JSONResponderServlet {
         // Fetch the data from the DB
         try {
             FolderDAO folderDAO = new FolderDAO(getDBConnection());
-            List<FolderBean> mainFolders = folderDAO.findFoldersByUsername(username, FolderType.Main);
-            List<List<FolderBean>> subfolderHierarchy = new ArrayList<>();
-            for (FolderBean mainFolder: mainFolders) {
-                List<FolderBean> subfolders = folderDAO.findSubfoldersOfFolder(username, mainFolder.getFolderNumber());
-                subfolderHierarchy.add(subfolders);
-            }
-            List<NestedFolderBean> result = new ArrayList<>();
-            for (int i = 0; i < mainFolders.size(); i++) {
-                result.add(new NestedFolderBean(mainFolders.get(i), subfolderHierarchy.get(i)));
-            }
-            return result;
+            return folderDAO.findFolderHierarchy(username);
         } catch (SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println("There was an error while getting the data to display");
