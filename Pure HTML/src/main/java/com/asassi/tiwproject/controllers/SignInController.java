@@ -13,6 +13,7 @@ import org.thymeleaf.context.WebContext;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.servlet.*;
@@ -28,6 +29,20 @@ public class SignInController extends DBConnectedServlet {
     @Override
     protected void handleGet(HttpServletRequest req, HttpServletResponse resp, WebContext ctx, ServletContext servletContext) throws IOException {
         //The filter already redirects to the login page
+        String usernameErrorID = req.getParameter("usrError");
+        String passwordErrorID = req.getParameter("pwdError");
+
+        if (Objects.equals(usernameErrorID, "1")) {
+            ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), "You have to enter a Username to log in");
+        } else if (Objects.equals(usernameErrorID, "2")) {
+            ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), "The Username could not be found");
+        }
+
+        if (Objects.equals(passwordErrorID, "1")) {
+            ctx.setVariable(SignupConstants.PasswordErrorInfo.getRawValue(), "You have to enter a Password to log in");
+        } else if (Objects.equals(passwordErrorID, "2")) {
+            ctx.setVariable(SignupConstants.PasswordErrorInfo.getRawValue(), "The Password is incorrect");
+        }
     }
 
     @Override
@@ -35,35 +50,26 @@ public class SignInController extends DBConnectedServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
 
-        ServletContext servletContext = getServletContext();
-        final WebContext ctx = new WebContext(req, resp, servletContext, req.getLocale());
-
-        String error = null;
-        boolean isUsernameValid = true;
+        String userError = null, passwordError = null;
         if (username == null) {
-            error = "You have to enter a Username to log in";
-            ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
-            isUsernameValid = false;
+            userError = "1";
         }
         if (password == null) {
-            error = "You have to enter a Password to log in";
-            ctx.setVariable(SignupConstants.PasswordErrorInfo.getRawValue(), error);
+            passwordError = "1";
         }
 
         boolean loginSucceeded = false;
         String registeredUsername = null;
-        if (error == null) {
+        if (userError == null || passwordError == null) {
             try {
                 registeredUsername = findRegisteredUser(username, password);
                 loginSucceeded = true;
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (UserNotRegisteredException e) {
-                error = "The Username could not be found";
-                ctx.setVariable(SignupConstants.UsernameErrorInfo.getRawValue(), error);
+                userError = "2";
             } catch (IncorrectPasswordException e) {
-                error = "The Password is incorrect";
-                ctx.setVariable(SignupConstants.PasswordErrorInfo.getRawValue(), error);
+                passwordError = "2";
             }
         }
 
@@ -73,11 +79,20 @@ public class SignInController extends DBConnectedServlet {
             //Forward to the Home Page
             resp.sendRedirect(PageConstants.Home.getRawValue());
         } else {
-            if (isUsernameValid) {
-                ctx.setVariable(SignupConstants.ValidatedUsername.getRawValue(), username);
-            }
             // We show the Signup page with the errors
-            showTemplatePage(ctx, resp);
+            StringBuilder queryString = new StringBuilder(PageConstants.Default.getRawValue());
+            if (userError != null || passwordError != null) {
+                queryString.append("?");
+                if (userError != null) {
+                    queryString.append("usrError=").append(userError);
+                    if (passwordError != null) {
+                        queryString.append("&");
+                    }
+                } else {
+                    queryString.append("pwdError=").append(passwordError);
+                }
+            }
+            resp.sendRedirect(queryString.toString());
         }
     }
 
