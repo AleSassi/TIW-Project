@@ -5,6 +5,7 @@ public enum CreateConstants {
     Username("username"),
     FileType("selectedContentType"),
     Hierarchy("hierarchy"),
+    InvalidObjectTypeError("objectTypeError"),
     InvalidMainFolderNameError("folderNameError"),
     InvalidParentFolderNameError("parentFolderNameError"),
     InvalidDocNameError("docNameError"),

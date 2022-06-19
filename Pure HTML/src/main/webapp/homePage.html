@@ -3,7 +3,7 @@
 <head>
     <title>WebDoc Home Page</title>
     <link rel="stylesheet" type="text/css" href="CSS/globalStyle.css" th:href="@{/CSS/globalStyle.css}">
-    <link rel="stylesheet" type="text/css" href="CSS/homeStyle.css">
+    <link rel="stylesheet" type="text/css" href="CSS/homeStyle.css?v=2">
 </head>
 <body>
 <ul class="navBar">
@@ -17,6 +17,7 @@
     </li>
 </ul>
 <div class="pageContent">
+    <label class="errorLabel" th:remove="${errorMessage == null} ? 'all' : 'none'" th:text="${errorMessage}">Error Message Goes Here</label>
     <label class="pageTitle" th:remove="${documentID == null || srcFolderID == null} ? 'none' : 'all'">My Folders</label>
     <div class="pageTitle-move" th:remove="${documentID == null || srcFolderID == null} ? 'all' : 'none'">
         <label>You are moving the document "</label>

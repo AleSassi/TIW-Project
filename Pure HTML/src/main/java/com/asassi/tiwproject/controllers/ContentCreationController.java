@@ -52,6 +52,27 @@ public class ContentCreationController extends DBConnectedServlet {
             throw new ServletException(e.getMessage());
         }
         ctx.setVariable("previousURL", req.getHeader("referer"));
+
+        //Show the error messages
+        String fullErrorCode = req.getParameter("error");
+        if (fullErrorCode != null) {
+            for (int i = 0; i < fullErrorCode.length(); i++) {
+                char errorCode = fullErrorCode.charAt(i);
+                if (errorCode == '0') {
+                    ctx.setVariable(CreateConstants.InvalidObjectTypeError.getRawValue(), "Invalid object type");
+                } else if (errorCode == '1') {
+                    ctx.setVariable(CreateConstants.InvalidMainFolderNameError.getRawValue(), "You must specify a valid, non-empty name for the new Folder");
+                } else if (errorCode == '2') {
+                    ctx.setVariable(CreateConstants.InvalidParentFolderNameError.getRawValue(), "The specified Parent Folder could not be found: it may not exist or you may not have the permission to view it");
+                } else if (errorCode == '3') {
+                    ctx.setVariable(CreateConstants.InvalidDocNameError.getRawValue(), "You must specify a valid, non-empty Document Name");
+                } else if (errorCode == '4') {
+                    ctx.setVariable(CreateConstants.InvalidDocTypeError.getRawValue(), "You must specify a valid Document Type (file extension, starting with \".\")");
+                } else if (errorCode == '5') {
+                    ctx.setVariable(CreateConstants.InvalidDocContentError.getRawValue(), "You must specify a valid Document Content");
+                }
+            }
+        }
     }
 
     @Override
@@ -69,23 +90,14 @@ public class ContentCreationController extends DBConnectedServlet {
         }
         //If the file type is incorrect, we reload the page (we might have incorrect parameter fields)
         if (selectedFileType < 0 || selectedFileType > 2) {
-            resp.sendRedirect(PageConstants.Create.getRawValue());
+            resp.sendRedirect(PageConstants.Create.getRawValue() + "?error=0");
         } else {
             try {
                 parseUserFormAndExecuteAction(req, resp, ctx, selectedFileType);
-                resp.sendRedirect(PageConstants.Create.getRawValue());
+                resp.sendRedirect(PageConstants.Create.getRawValue() + "?" + ContentCreationFormField.ContentType.getRawValue() + "=" + doctype);
             } catch (IncorrectFormDataException e) {
                 //Show the Template with error strings
-                HttpSession session = req.getSession();
-                String username = (String) session.getAttribute(SessionConstants.Username.getRawValue());
-                ctx.setVariable(CreateConstants.FileType.getRawValue(), selectedFileType);
-                ctx.setVariable(CreateConstants.Username.getRawValue(), username);
-                try {
-                    ctx.setVariable(CreateConstants.Hierarchy.getRawValue(), new FolderDAO(getDBConnection()).findFolderHierarchy(username));
-                } catch (SQLException e2) {
-                    throw new ServletException(e2.getMessage());
-                }
-                showTemplatePage(ctx, resp);
+                resp.sendRedirect(PageConstants.Create.getRawValue() + "?" + ContentCreationFormField.ContentType.getRawValue() + "=" + doctype + "&error=" + e.getMessage());
             } catch (Exception e) {
                 throw new ServletException(e.getMessage());
             }
@@ -106,8 +118,7 @@ public class ContentCreationController extends DBConnectedServlet {
                 String folderName = req.getParameter(ContentCreationFormField.FolderName.getRawValue());
                 if (folderName == null || !notOnlyWhitespaces.matcher(folderName).find()) {
                     //Send an error
-                    ctx.setVariable(CreateConstants.InvalidMainFolderNameError.getRawValue(), "You must specify a name for the new Folder");
-                    throw new IncorrectFormDataException();
+                    throw new IncorrectFormDataException("1");
                 }
                 //Create the folder
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
@@ -117,25 +128,26 @@ public class ContentCreationController extends DBConnectedServlet {
                 //We need to have valid strings from: folderName, parentFolder
                 String folderName = req.getParameter(ContentCreationFormField.FolderName.getRawValue());
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
+                String errorCode = "";
                 if (folderName == null || !notOnlyWhitespaces.matcher(folderName).find()) {
                     //Send an error
-                    ctx.setVariable(CreateConstants.InvalidMainFolderNameError.getRawValue(), "You must specify a name for the new Folder");
-                    throw new IncorrectFormDataException();
+                    errorCode = errorCode + "1";
                 }
                 try {
                     int parentFolderNumber = Integer.parseInt(req.getParameter(ContentCreationFormField.ParentFolderNumber.getRawValue()));
                     List<FolderBean> userFolders = folderDAO.findFoldersByUsernameAndFolderNumber(username, parentFolderNumber, FolderType.Main);
                     if (userFolders.isEmpty()) {
                         //Send an error
-                        ctx.setVariable(CreateConstants.InvalidMainFolderNameError.getRawValue(), "The specified Parent Folder could not be found");
-                        throw new IncorrectFormDataException();
+                        errorCode = errorCode + "2";
                     }
                     //Create the subfolder
                     folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber()));
                 } catch (NumberFormatException e) {
                     //Send an error
-                    ctx.setVariable(CreateConstants.InvalidParentFolderNameError.getRawValue(), "You must specify a valid parent folder");
-                    throw new IncorrectFormDataException();
+                    errorCode = errorCode + "2";
+                }
+                if (!errorCode.equals("")) {
+                    throw new IncorrectFormDataException(errorCode);
                 }
             }
             case Document -> {
@@ -145,6 +157,7 @@ public class ContentCreationController extends DBConnectedServlet {
                 String docName = req.getParameter(ContentCreationFormField.DocumentName.getRawValue());
                 String docExtension = req.getParameter(ContentCreationFormField.DocumentFileType.getRawValue());
                 String docContent = req.getParameter(ContentCreationFormField.DocumentContent.getRawValue());
+                String errorCode = "";
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
                 DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
                 try {
@@ -152,8 +165,7 @@ public class ContentCreationController extends DBConnectedServlet {
                     List<FolderBean> userFolders = folderDAO.findFoldersByUsernameAndFolderNumber(username, parentSubfolderNumber, FolderType.Subfolder);
                     if (userFolders.isEmpty()) {
                         //Send an error
-                        ctx.setVariable(CreateConstants.InvalidMainFolderNameError.getRawValue(), "The specified Parent Folder could not be found");
-                        throw new IncorrectFormDataException();
+                        errorCode += "2";
                     }
                     Matcher matcher = null;
                     if (docName != null) {
@@ -161,30 +173,30 @@ public class ContentCreationController extends DBConnectedServlet {
                     }
                     if (docName == null || !matcher.find()) {
                         //Send an error
-                        ctx.setVariable(CreateConstants.InvalidDocNameError.getRawValue(), "You must specify a valid Document Name");
-                        throw new IncorrectFormDataException();
+                        errorCode += "3";
                     }
                     if (docExtension != null) {
                         matcher = fileExtPattern.matcher(docExtension);
                     }
                     if (docExtension == null || !matcher.find()) {
                         //Send an error
-                        ctx.setVariable(CreateConstants.InvalidDocTypeError.getRawValue(), "You must specify a valid Document Type (file extension, starting with \".\")");
-                        throw new IncorrectFormDataException();
+                        errorCode += "4";
                     } else {
                         docExtension = matcher.group();
                     }
                     if (docContent == null) {
                         //Send an error
-                        ctx.setVariable(CreateConstants.InvalidDocContentError.getRawValue(), "You must specify a valid Document Content");
-                        throw new IncorrectFormDataException();
+                        errorCode += "5";
                     }
                     //Create the Document
                     documentDAO.addDocument(new DocumentBean(username, parentSubfolderNumber, randomizer.nextInt(0, Integer.MAX_VALUE), docName, docExtension, LocalDateTime.now(), docContent));
                 } catch (NumberFormatException e) {
                     //Send an error
-                    ctx.setVariable(CreateConstants.InvalidMainFolderNameError.getRawValue(), "You must specify a valid parent Folder");
-                    throw new IncorrectFormDataException();
+                    errorCode += "2";
+                }
+
+                if (!errorCode.equals("")) {
+                    throw new IncorrectFormDataException(errorCode);
                 }
             }
         }

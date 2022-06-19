@@ -7,7 +7,8 @@ public enum HomeConstants {
     DocToMoveID("documentID"),
     DocToMoveName("documentName"),
     DocToMoveSrcFolderID("srcFolderID"),
-    DocToMoveSrcFolderName("srcFolderName");
+    DocToMoveSrcFolderName("srcFolderName"),
+    ErrorMessage("errorMessage");
 
     private final String rawValue;
 

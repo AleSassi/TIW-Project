@@ -44,7 +44,7 @@ public class MoveDocumentController extends DBConnectedServlet {
             throw new ServletException(e.getMessage());
         } catch (NumberFormatException ignored) {
         }
-        resp.sendRedirect(PageConstants.Home.getRawValue());
+        resp.sendRedirect(PageConstants.Home.getRawValue() + "?error=3");
     }
 
     @Override

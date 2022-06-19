@@ -58,7 +58,7 @@ public class DocumentInfoController extends DBConnectedServlet {
         ctx.setVariable("previousURL", req.getHeader("referer"));
         if (hasErrorFindingDocument) {
             //Redirect to Home Page
-            resp.sendRedirect(PageConstants.Home.getRawValue());
+            resp.sendRedirect(PageConstants.Home.getRawValue() + "?error=2");
         }
     }
 

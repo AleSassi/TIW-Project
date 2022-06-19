@@ -82,3 +82,14 @@
 .notClickable {
     color: darkred;
 }
+
+.errorLabel {
+    display: block;
+    text-align: center;
+    font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 15px;
+    padding-top: 10px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    color: rgb(255, 59, 48, 1);
+}

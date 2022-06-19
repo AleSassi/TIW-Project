@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @WebServlet("/home")
 public class HomeController extends DBConnectedServlet {
@@ -49,6 +50,7 @@ public class HomeController extends DBConnectedServlet {
         //Check the additional parameters for the Move operation
         String documentIDToMove = req.getParameter("document");
         String srcFolderID = req.getParameter("fid");
+        String errorCode = req.getParameter("error");
         if (documentIDToMove != null && srcFolderID != null) {
             //Validate the parameters
             try {
@@ -68,11 +70,24 @@ public class HomeController extends DBConnectedServlet {
                         ctx.setVariable(HomeConstants.DocToMoveSrcFolderID.getRawValue(), folderID);
                         ctx.setVariable(HomeConstants.DocToMoveSrcFolderName.getRawValue(), parentFolder.getName());
                     }
+                } else {
+                    errorCode = "4";
                 }
             } catch (SQLException e) {
                 throw new ServletException("Could not perform query");
             } catch (NumberFormatException ignored) {
+                errorCode = "4";
             }
+        }
+        //Add error message for error codes
+        if (Objects.equals(errorCode, "1")) {
+            ctx.setVariable(HomeConstants.ErrorMessage.getRawValue(), "An error occurred while opening the folder. The folder you attempted to open does not exist, or you don't have permission to view it");
+        } else if (Objects.equals(errorCode, "2")) {
+            ctx.setVariable(HomeConstants.ErrorMessage.getRawValue(), "An error occurred while opening the document. The document you attempted to open does not exist, or you don't have permission to view it");
+        } else if (Objects.equals(errorCode, "3")) {
+            ctx.setVariable(HomeConstants.ErrorMessage.getRawValue(), "An error occurred while moving the document. Either the target folder or the document you attempted to move does not exist, or you don't have permission to view it");
+        } else if (Objects.equals(errorCode, "4")) {
+            ctx.setVariable(HomeConstants.ErrorMessage.getRawValue(), "An error occurred while moving the document. Either the source folder or the document you attempted to move does not exist, or you don't have permission to view it");
         }
     }
 

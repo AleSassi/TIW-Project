@@ -49,7 +49,7 @@ public class FolderContentController extends DBConnectedServlet {
 
         if (hasErrorFindingFolder) {
             //Redirect to Home Page
-            resp.sendRedirect(PageConstants.Home.getRawValue());
+            resp.sendRedirect(PageConstants.Home.getRawValue() + "?error=1");
         }
     }
 

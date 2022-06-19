@@ -27,6 +27,7 @@
                 <option value="1" th:selected="${selectedContentType == 1}">Subfolder</option>
                 <option value="2" th:selected="${selectedContentType == 2}">Document</option>
             </select>
+            <label for="contentTypeSelector" class="errorLabel" th:remove="${objectTypeError == null} ? 'all' : 'none'" th:text="${objectTypeError}">Content Type Error Goes Here</label>
             <input type="submit" class="filledButton contentTypeFormButton" value="Submit">
         </form>
         <div th:remove="${selectedContentType == 2} ? 'all' : 'none'">
@@ -64,7 +65,7 @@
                         <option th:each="subfolder : ${folder.getSubfolders()}" th:value="${subfolder.getFolderNumber()}" th:text="${subfolder.getName()}">Folder 1</option>
                     </optgroup>
                 </select>
-                <label for="parentFolderSelector_doc" class="errorLabel" th:hidden="${folderNameError == null}" th:text="${folderNameError}">Parent Folder Name Error goes here</label>
+                <label for="parentFolderSelector_doc" class="errorLabel" th:hidden="${parentFolderNameError == null}" th:text="${parentFolderNameError}">Parent Folder Name Error goes here</label>
                 <input type="hidden" name="contentType" th:value="${selectedContentType}">
                 <input type="submit" class="filledButton contentTypeFormButton" value="Create Document">
             </form>
