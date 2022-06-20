@@ -41,14 +41,27 @@ public class DeleteController extends JSONResponderServlet {
                     //Delete a folder
                     int folderID = Integer.parseInt(folderIDStr);
                     FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                    folderDAO.deleteFolderRecursive(username, folderID);
+                    List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, folderID, null);
+                    if (folders.isEmpty()) {
+                        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        resp.getWriter().println("Could not find the folder to delete. It may be because it does not exist, or you don't have the permission to access it");
+                    } else {
+                        folderDAO.deleteFolderRecursive(username, folderID);
+                        resp.setStatus(HttpServletResponse.SC_OK);
+                    }
                 } else {
                     //Delete a document
                     int documentID = Integer.parseInt(documentIDStr);
                     DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
-                    documentDAO.deleteDocument(username, documentID);
+                    List<DocumentBean> documents = documentDAO.findDocument(username, documentID);
+                    if (documents.isEmpty()) {
+                        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        resp.getWriter().println("Could not find the document to delete. It may be because it does not exist, or you don't have the permission to access it");
+                    } else {
+                        documentDAO.deleteDocument(username, documentID);
+                        resp.setStatus(HttpServletResponse.SC_OK);
+                    }
                 }
-                resp.setStatus(HttpServletResponse.SC_OK);
             } catch (NumberFormatException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().println("Invalid IDs");

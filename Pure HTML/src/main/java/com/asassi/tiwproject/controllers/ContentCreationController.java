@@ -132,19 +132,21 @@ public class ContentCreationController extends DBConnectedServlet {
                 if (folderName == null || !notOnlyWhitespaces.matcher(folderName).find()) {
                     //Send an error
                     errorCode = errorCode + "1";
-                }
-                try {
-                    int parentFolderNumber = Integer.parseInt(req.getParameter(ContentCreationFormField.ParentFolderNumber.getRawValue()));
-                    List<FolderBean> userFolders = folderDAO.findFoldersByUsernameAndFolderNumber(username, parentFolderNumber, FolderType.Main);
-                    if (userFolders.isEmpty()) {
+                } else {
+                    try {
+                        int parentFolderNumber = Integer.parseInt(req.getParameter(ContentCreationFormField.ParentFolderNumber.getRawValue()));
+                        List<FolderBean> userFolders = folderDAO.findFoldersByUsernameAndFolderNumber(username, parentFolderNumber, FolderType.Main);
+                        if (userFolders.isEmpty()) {
+                            //Send an error
+                            errorCode = errorCode + "2";
+                        } else {
+                            //Create the subfolder
+                            folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber()));
+                        }
+                    } catch (NumberFormatException e) {
                         //Send an error
                         errorCode = errorCode + "2";
                     }
-                    //Create the subfolder
-                    folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber()));
-                } catch (NumberFormatException e) {
-                    //Send an error
-                    errorCode = errorCode + "2";
                 }
                 if (!errorCode.equals("")) {
                     throw new IncorrectFormDataException(errorCode);
@@ -188,8 +190,10 @@ public class ContentCreationController extends DBConnectedServlet {
                         //Send an error
                         errorCode += "5";
                     }
-                    //Create the Document
-                    documentDAO.addDocument(new DocumentBean(username, parentSubfolderNumber, randomizer.nextInt(0, Integer.MAX_VALUE), docName, docExtension, LocalDateTime.now(), docContent));
+                    if (errorCode.equals("")) {
+                        //Create the Document
+                        documentDAO.addDocument(new DocumentBean(username, parentSubfolderNumber, randomizer.nextInt(0, Integer.MAX_VALUE), docName, docExtension, LocalDateTime.now(), docContent));
+                    }
                 } catch (NumberFormatException e) {
                     //Send an error
                     errorCode += "2";

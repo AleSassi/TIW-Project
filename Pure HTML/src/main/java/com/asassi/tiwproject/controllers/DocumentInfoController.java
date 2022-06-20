@@ -38,7 +38,7 @@ public class DocumentInfoController extends DBConnectedServlet {
                 DocumentBean document = documents.get(0);
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
                 List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, document.getParentFolderNumber(), FolderType.Subfolder);
-                if (!folders.isEmpty()) {
+                if (!folders.isEmpty() && document.getParentFolderNumber() == folderIDInt) {
                     FolderBean folder = folders.get(0);
                     ctx.setVariable(DocumentInfoConstants.Username.getRawValue(), username);
                     ctx.setVariable(DocumentInfoConstants.DocumentName.getRawValue(), document.getName());

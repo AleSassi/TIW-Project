@@ -41,16 +41,15 @@ public class DocumentDAO extends DAO {
     }
 
     public void addDocument(DocumentBean document) throws SQLException {
-        String query = "INSERT INTO Documents VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Documents VALUES (default, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement statement = getDbConnection().prepareStatement(query);
-        statement.setInt(1, document.getDocumentNumber());
-        statement.setInt(2, document.getParentFolderNumber());
-        statement.setString(3, document.getOwnerUsername());
-        statement.setString(4, document.getName());
-        statement.setString(5, document.getFileType());
-        statement.setTimestamp(6, Timestamp.valueOf(document.getCreationDate()));
-        statement.setString(7, document.getContents());
+        statement.setInt(1, document.getParentFolderNumber());
+        statement.setString(2, document.getOwnerUsername());
+        statement.setString(3, document.getName());
+        statement.setString(4, document.getFileType());
+        statement.setTimestamp(5, Timestamp.valueOf(document.getCreationDate()));
+        statement.setString(6, document.getContents());
         statement.executeUpdate();
         statement.close();
     }

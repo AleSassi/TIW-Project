@@ -92,7 +92,7 @@ function CreateDocumentForm() {
                     nameError.textContent = "You must enter a valid document name";
                     isValid = false;
                 }
-                if (fileExtField.value && /^[.][^.s]+/.test(fileExtField.value)) {
+                if (fileExtField.value && /^[.][^\s]+/.test(fileExtField.value)) {
                     fileExtError.textContent = "";
                 } else {
                     fileExtError.textContent = "You must enter a valid file extension";

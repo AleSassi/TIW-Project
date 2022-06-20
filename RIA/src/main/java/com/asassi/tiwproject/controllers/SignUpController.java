@@ -102,9 +102,9 @@ public class SignUpController extends JSONResponderServlet {
 
         if (registrationSucceeded) {
             HttpSession session = req.getSession(true);
-            session.setAttribute(registeredUsername, SessionConstants.Username.getRawValue());
+            session.setAttribute(SessionConstants.Username.getRawValue(), registeredUsername);
             //Forward to the Home Page
-            resp.sendRedirect(PageConstants.Home.getRawValue());
+            resp.setStatus(HttpServletResponse.SC_OK);
         } else {
             //Respond with the appropriate status code and a JSON description of all errors
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

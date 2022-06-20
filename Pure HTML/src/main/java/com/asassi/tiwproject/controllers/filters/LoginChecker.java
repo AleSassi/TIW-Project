@@ -26,6 +26,7 @@ public class LoginChecker implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 
 		HttpSession s = req.getSession();
+		System.out.println(s.getAttribute("username"));
 		boolean isLoggedIn = s.getAttribute("username") != null;
 		String uri = req.getRequestURI();
 		if (uri.equals("/") || uri.equals("") || uri.equals("/signup")) {

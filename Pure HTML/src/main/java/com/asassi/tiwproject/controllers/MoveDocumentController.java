@@ -29,11 +29,13 @@ public class MoveDocumentController extends DBConnectedServlet {
         String targetFolderID = req.getParameter("fid");
         String documentToMoveID = req.getParameter("documentMV");
         DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
+        FolderDAO folderDAO = new FolderDAO(getDBConnection());
         try {
             int documentID = Integer.parseInt(documentToMoveID);
             int folderIDInt = Integer.parseInt(targetFolderID);
             List<DocumentBean> documents = documentDAO.findDocument(username, documentID);
-            if (!documents.isEmpty()) {
+            List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, folderIDInt, FolderType.Subfolder);
+            if (!documents.isEmpty() && !folders.isEmpty()) {
                 DocumentBean document = documents.get(0);
                 documentDAO.moveDocument(document, folderIDInt);
                 //Redirect to avoid multiple move operations

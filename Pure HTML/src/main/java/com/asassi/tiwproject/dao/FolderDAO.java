@@ -99,18 +99,17 @@ public class FolderDAO extends DAO {
     }
 
     public void addFolder(FolderBean folder) throws SQLException {
-        String query = "INSERT INTO Folders VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Folders VALUES (default, ?, ?, ?, ?)";
 
         PreparedStatement statement = getDbConnection().prepareStatement(query);
-        statement.setInt(1, folder.getFolderNumber());
-        statement.setString(2, folder.getUsername());
-        statement.setString(3, folder.getName());
-        statement.setTimestamp(4, Timestamp.valueOf(folder.getCreationDate()));
+        statement.setString(1, folder.getUsername());
+        statement.setString(2, folder.getName());
+        statement.setTimestamp(3, Timestamp.valueOf(folder.getCreationDate()));
         Integer parentFolder_number = folder.getParentFolder_folderNumber();
         if (parentFolder_number == null) {
-            statement.setNull(5, Types.INTEGER);
+            statement.setNull(4, Types.INTEGER);
         } else {
-            statement.setInt(5, parentFolder_number);
+            statement.setInt(4, parentFolder_number);
         }
         statement.executeUpdate();
         statement.close();

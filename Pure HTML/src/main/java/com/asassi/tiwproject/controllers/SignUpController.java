@@ -107,7 +107,7 @@ public class SignUpController extends DBConnectedServlet {
 
         boolean registrationSucceeded = true;
         String registeredUsername = null;
-        if (usernameError != null && emailError != null && passwordError != null && repeatPasswordError != null) {
+        if (usernameError == null && emailError == null && passwordError == null && repeatPasswordError == null) {
             try {
                 registeredUsername = registerUser(username, password, email);
             } catch (UserAlreadyRegisteredException e) {
@@ -121,8 +121,8 @@ public class SignUpController extends DBConnectedServlet {
         }
 
         if (registrationSucceeded) {
-            HttpSession session = req.getSession(true);
-            session.setAttribute(registeredUsername, SessionConstants.Username.getRawValue());
+            HttpSession session = req.getSession();
+            session.setAttribute(SessionConstants.Username.getRawValue(), registeredUsername);
             //Forward to the Home Page
             resp.sendRedirect(PageConstants.Home.getRawValue());
         } else {

@@ -68,7 +68,7 @@ public class SignInController extends JSONResponderServlet {
             HttpSession session = req.getSession(true);
             session.setAttribute(SessionConstants.Username.getRawValue(), registeredUsername);
             //Forward to the Home Page
-            resp.sendRedirect(PageConstants.Home.getRawValue());
+            resp.setStatus(HttpServletResponse.SC_OK);
         } else {
             // Send the JSON with errors
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
