@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/show")
@@ -33,20 +32,18 @@ public class DocumentInfoController extends DBConnectedServlet {
         try {
             int documentIDInt = Integer.parseInt(documentID);
             int folderIDInt = Integer.parseInt(req.getParameter("fid"));
-            List<DocumentBean> documents = documentDAO.findDocument(username, documentIDInt);
-            if (!documents.isEmpty()) {
-                DocumentBean document = documents.get(0);
+            DocumentBean document = documentDAO.findDocument(username, documentIDInt);
+            if (document != null) {
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, document.getParentFolderNumber(), FolderType.Subfolder);
-                if (!folders.isEmpty() && document.getParentFolderNumber() == folderIDInt) {
-                    FolderBean folder = folders.get(0);
+                FolderBean parentFolder = folderDAO.findFolderByUsernameAndFolderNumber(username, document.getParentFolderNumber(), FolderType.Subfolder);
+                if (parentFolder != null && document.getParentFolderNumber() == folderIDInt) {
                     ctx.setVariable(DocumentInfoConstants.Username.getRawValue(), username);
                     ctx.setVariable(DocumentInfoConstants.DocumentName.getRawValue(), document.getName());
                     ctx.setVariable(DocumentInfoConstants.DocumentExtension.getRawValue(), document.getFileType());
                     ctx.setVariable(DocumentInfoConstants.DocumentContents.getRawValue(), document.getContents());
                     ctx.setVariable(DocumentInfoConstants.DocumentCreationDate.getRawValue(), document.getCreationDateString());
                     ctx.setVariable(DocumentInfoConstants.DocumentOwner.getRawValue(), document.getOwnerUsername());
-                    ctx.setVariable(DocumentInfoConstants.ParentFolder.getRawValue(), folder.getName());
+                    ctx.setVariable(DocumentInfoConstants.ParentFolder.getRawValue(), parentFolder.getName());
                     ctx.setVariable(DocumentInfoConstants.ParentFolderNumber.getRawValue(), folderIDInt);
                     hasErrorFindingDocument = false;
                 }

@@ -3,7 +3,6 @@ package com.asassi.tiwproject.controllers;
 import com.asassi.tiwproject.beans.DocumentBean;
 import com.asassi.tiwproject.beans.FolderBean;
 import com.asassi.tiwproject.constants.FolderType;
-import com.asassi.tiwproject.constants.HomeConstants;
 import com.asassi.tiwproject.constants.PageConstants;
 import com.asassi.tiwproject.constants.SessionConstants;
 import com.asassi.tiwproject.dao.DocumentDAO;
@@ -33,10 +32,9 @@ public class MoveDocumentController extends DBConnectedServlet {
         try {
             int documentID = Integer.parseInt(documentToMoveID);
             int folderIDInt = Integer.parseInt(targetFolderID);
-            List<DocumentBean> documents = documentDAO.findDocument(username, documentID);
-            List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, folderIDInt, FolderType.Subfolder);
-            if (!documents.isEmpty() && !folders.isEmpty()) {
-                DocumentBean document = documents.get(0);
+            DocumentBean document = documentDAO.findDocument(username, documentID);
+            FolderBean folder = folderDAO.findFolderByUsernameAndFolderNumber(username, folderIDInt, FolderType.Subfolder);
+            if (document != null && folder != null) {
                 documentDAO.moveDocument(document, folderIDInt);
                 //Redirect to avoid multiple move operations
                 resp.sendRedirect(PageConstants.FolderDetail.getRawValue() + "?fid=" + folderIDInt);

@@ -63,14 +63,14 @@ public class CreateFolderController extends JSONResponderServlet {
                 //Subfolder addition
                 try {
                     int parentFolderNumber = Integer.parseInt(parentFolderID);
-                    List<FolderBean> userFolders = folderDAO.findFoldersByUsernameAndFolderNumber(username, parentFolderNumber, FolderType.Main);
-                    if (userFolders.isEmpty()) {
+                    FolderBean userFolder = folderDAO.findFolderByUsernameAndFolderNumber(username, parentFolderNumber, FolderType.Main);
+                    if (userFolder == null) {
                         //Send an error
                         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                         resp.getWriter().println("The specified Parent Folder could not be found");
                     } else {
                         //Create the subfolder
-                        FolderBean folder = new FolderBean(username, 0, folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber());
+                        FolderBean folder = new FolderBean(username, 0, folderName, LocalDateTime.now(), userFolder.getFolderNumber());
                         if (folderDAO.noFolderWithSameNameAtSameHierarchyLevel(folder)) {
                             folder.setFolderNumber(folderDAO.addFolder(folder));
                             sendAsJSON(folder, resp);

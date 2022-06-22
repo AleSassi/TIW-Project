@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,17 +56,17 @@ public class HomeController extends DBConnectedServlet {
                 int folderID = Integer.parseInt(srcFolderID);
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
                 DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
-                List<DocumentBean> ownedDocsWithSameID = documentDAO.findDocument(username, documentID);
-                List<FolderBean> parentFolders = folderDAO.findFoldersByUsernameAndFolderNumber(username, folderID, FolderType.Subfolder);
-                if (!ownedDocsWithSameID.isEmpty() && !parentFolders.isEmpty()) {
+                DocumentBean ownedDocWithSameID = documentDAO.findDocument(username, documentID);
+                FolderBean parentFolder = folderDAO.findFolderByUsernameAndFolderNumber(username, folderID, FolderType.Subfolder);
+                if (ownedDocWithSameID != null && parentFolder != null) {
                     //Check that the folder is the same
-                    DocumentBean document = ownedDocsWithSameID.get(0);
-                    FolderBean parentFolder = parentFolders.get(0);
-                    if (document.getParentFolderNumber() == folderID) {
+                    if (ownedDocWithSameID.getParentFolderNumber() == folderID) {
                         ctx.setVariable(HomeConstants.DocToMoveID.getRawValue(), documentID);
-                        ctx.setVariable(HomeConstants.DocToMoveName.getRawValue(), document.getName());
+                        ctx.setVariable(HomeConstants.DocToMoveName.getRawValue(), ownedDocWithSameID.getName());
                         ctx.setVariable(HomeConstants.DocToMoveSrcFolderID.getRawValue(), folderID);
                         ctx.setVariable(HomeConstants.DocToMoveSrcFolderName.getRawValue(), parentFolder.getName());
+                    } else {
+                        errorCode = "4";
                     }
                 } else {
                     errorCode = "4";
@@ -77,6 +75,9 @@ public class HomeController extends DBConnectedServlet {
                 throw new ServletException("Could not perform query");
             } catch (NumberFormatException ignored) {
                 errorCode = "4";
+            }
+            if (Objects.equals(errorCode, "4")) {
+                resp.sendRedirect(PageConstants.Home.getRawValue() + "?error=" + errorCode);
             }
         }
         //Add error message for error codes

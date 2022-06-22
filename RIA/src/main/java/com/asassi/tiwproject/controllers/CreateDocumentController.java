@@ -4,12 +4,10 @@ import com.asassi.tiwproject.beans.DocumentBean;
 import com.asassi.tiwproject.beans.FolderBean;
 import com.asassi.tiwproject.beans.responses.CreateDocumentResponseBean;
 import com.asassi.tiwproject.constants.ContentCreationFormField;
-import com.asassi.tiwproject.constants.CreateConstants;
 import com.asassi.tiwproject.constants.FolderType;
 import com.asassi.tiwproject.constants.SessionConstants;
 import com.asassi.tiwproject.dao.DocumentDAO;
 import com.asassi.tiwproject.dao.FolderDAO;
-import com.asassi.tiwproject.exceptions.IncorrectFormDataException;
 import org.apache.commons.text.StringEscapeUtils;
 import org.thymeleaf.context.WebContext;
 
@@ -59,8 +57,8 @@ public class CreateDocumentController extends JSONResponderServlet {
         Pattern fileExtPattern = Pattern.compile("^[.][^.\s]+");
         try {
             int parentSubfolderNumber = Integer.parseInt(req.getParameter(ContentCreationFormField.ParentFolderNumber.getRawValue()));
-            List<FolderBean> userFolders = folderDAO.findFoldersByUsernameAndFolderNumber(username, parentSubfolderNumber, FolderType.Subfolder);
-            if (userFolders.isEmpty()) {
+            FolderBean userFolder = folderDAO.findFolderByUsernameAndFolderNumber(username, parentSubfolderNumber, FolderType.Subfolder);
+            if (userFolder == null) {
                 //Send an error
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 responseBean.setDocumentNameError("The specified Parent Folder could not be found");

@@ -14,26 +14,8 @@ public class FolderDAO extends DAO {
         super(connection);
     }
 
-    public List<FolderBean> findFoldersByUsername(String username, FolderType folderType) throws SQLException {
-        List<FolderBean> folders = new ArrayList<>();
-        String query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND ParentFolder_FolderNumber is null ORDER BY CreationDate";
-        if (folderType == FolderType.Subfolder) {
-            query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND ParentFolder_FolderNumber is not null ORDER BY CreationDate";
-        }
-        PreparedStatement statement = getDbConnection().prepareStatement(query);
-        statement.setString(1, username);
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            folders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getTimestamp("CreationDate").toLocalDateTime(), result.getInt("ParentFolder_FolderNumber")));
-        }
-        result.close();
-        statement.close();
-
-        return folders;
-    }
-
-    public List<FolderBean> findFoldersByUsernameAndFolderNumber(String username, int folderNumber, FolderType folderType) throws SQLException {
-        List<FolderBean> folders = new ArrayList<>();
+    public FolderBean findFolderByUsernameAndFolderNumber(String username, int folderNumber, FolderType folderType) throws SQLException {
+        FolderBean folder = null;
         String query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND FolderNumber = ? AND ParentFolder_FolderNumber is null ORDER BY CreationDate";
         if (folderType == FolderType.Subfolder) {
             query = "SELECT * FROM Folders WHERE OwnerUsername = ? AND FolderNumber = ? AND ParentFolder_FolderNumber is not null ORDER BY CreationDate";
@@ -42,29 +24,13 @@ public class FolderDAO extends DAO {
         statement.setString(1, username);
         statement.setInt(2, folderNumber);
         ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            folders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getTimestamp("CreationDate").toLocalDateTime(), result.getInt("ParentFolder_FolderNumber")));
+        if (result.next()) {
+            folder = new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getTimestamp("CreationDate").toLocalDateTime(), result.getInt("ParentFolder_FolderNumber"));
         }
         result.close();
         statement.close();
 
-        return folders;
-    }
-
-    public List<FolderBean> findSubfoldersOfFolder(String username, int parentFolderNumber) throws SQLException {
-        List<FolderBean> folders = new ArrayList<>();
-        String query = "SELECT * FROM Folders WHERE ParentFolder_FolderNumber = ? AND OwnerUsername = ? ORDER BY CreationDate";
-        PreparedStatement statement = getDbConnection().prepareStatement(query);
-        statement.setInt(1, parentFolderNumber);
-        statement.setString(2, username);
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            folders.add(new FolderBean(result.getString("OwnerUsername"), result.getInt("FolderNumber"), result.getString("Name"), result.getTimestamp("CreationDate").toLocalDateTime(), result.getInt("ParentFolder_FolderNumber")));
-        }
-        result.close();
-        statement.close();
-
-        return folders;
+        return folder;
     }
 
     public List<NestedFolderBean> findFolderHierarchy(String username) throws SQLException {
@@ -98,8 +64,7 @@ public class FolderDAO extends DAO {
     }
 
     public boolean noFolderWithSameNameAtSameHierarchyLevel(FolderBean folderBean) throws SQLException {
-        List<FolderBean> folders = new ArrayList<>();
-        PreparedStatement statement = null;
+        PreparedStatement statement;
         if (folderBean.getParentFolder_folderNumber() == null) {
             String query = "SELECT * FROM Folders WHERE ParentFolder_FolderNumber is null AND OwnerUsername = ? AND Name = ? ORDER BY CreationDate";
             statement = getDbConnection().prepareStatement(query);

@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 import java.time.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -149,13 +148,13 @@ public class ContentCreationController extends DBConnectedServlet {
                 } else {
                     try {
                         int parentFolderNumber = Integer.parseInt(req.getParameter(ContentCreationFormField.ParentFolderNumber.getRawValue()));
-                        List<FolderBean> userFolders = folderDAO.findFoldersByUsernameAndFolderNumber(username, parentFolderNumber, FolderType.Main);
-                        if (userFolders.isEmpty()) {
+                        FolderBean userFolder = folderDAO.findFolderByUsernameAndFolderNumber(username, parentFolderNumber, FolderType.Main);
+                        if (userFolder == null) {
                             //Send an error
                             errorCode = errorCode + "2";
                         } else {
                             //Create the subfolder
-                            FolderBean folder = new FolderBean(username, 0, folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber());
+                            FolderBean folder = new FolderBean(username, 0, folderName, LocalDateTime.now(), userFolder.getFolderNumber());
                             if (folderDAO.noFolderWithSameNameAtSameHierarchyLevel(folder)) {
                                 folderDAO.addFolder(folder);
                             } else {
@@ -183,8 +182,8 @@ public class ContentCreationController extends DBConnectedServlet {
                 DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
                 try {
                     int parentSubfolderNumber = Integer.parseInt(req.getParameter(ContentCreationFormField.ParentFolderNumber.getRawValue()));
-                    List<FolderBean> userFolders = folderDAO.findFoldersByUsernameAndFolderNumber(username, parentSubfolderNumber, FolderType.Subfolder);
-                    if (userFolders.isEmpty()) {
+                    FolderBean userFolder = folderDAO.findFolderByUsernameAndFolderNumber(username, parentSubfolderNumber, FolderType.Subfolder);
+                    if (userFolder == null) {
                         //Send an error
                         errorCode += "2";
                     }

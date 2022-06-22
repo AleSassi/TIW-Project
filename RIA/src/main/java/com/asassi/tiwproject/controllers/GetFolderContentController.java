@@ -34,9 +34,8 @@ public class GetFolderContentController extends JSONResponderServlet {
         FolderContentResponseBean responseBean = new FolderContentResponseBean();
         try {
             int folderIDInt = Integer.parseInt(folderID);
-            List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, folderIDInt, FolderType.Subfolder);
-            if (!folders.isEmpty()) {
-                FolderBean folder = folders.get(0);
+            FolderBean folder = folderDAO.findFolderByUsernameAndFolderNumber(username, folderIDInt, FolderType.Subfolder);
+            if (folder != null) {
                 DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
                 List<DocumentBean> documents = documentDAO.findDocumentsByUserAndFolder(username, folderIDInt);
                 responseBean.setFolderName(folder.getName());

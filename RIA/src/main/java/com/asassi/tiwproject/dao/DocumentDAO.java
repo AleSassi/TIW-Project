@@ -15,17 +15,24 @@ public class DocumentDAO extends DAO {
         super(connection);
     }
 
-    public List<DocumentBean> findDocument(String username, int documentNumber) throws SQLException {
+    public DocumentBean findDocument(String username, int documentNumber) throws SQLException {
         String query = "SELECT * FROM Documents WHERE OwnerUsername = ? AND DocumentNumber = ? ORDER BY CreationDate";
-        return executeFindQuery(username, documentNumber, query);
+        DocumentBean document = null;
+        PreparedStatement statement = getDbConnection().prepareStatement(query);
+        statement.setString(1, username);
+        statement.setInt(2, documentNumber);
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            document = new DocumentBean(result.getString("OwnerUsername"), result.getInt("ParentFolderNumber"), result.getInt("DocumentNumber"), result.getString("Name"), result.getString("FileType"), result.getTimestamp("CreationDate").toLocalDateTime(), result.getString("Contents"));
+        }
+        result.close();
+        statement.close();
+
+        return document;
     }
 
     public List<DocumentBean> findDocumentsByUserAndFolder(String username, int folderNumber) throws SQLException {
         String query = "SELECT * FROM Documents WHERE OwnerUsername = ? AND ParentFolderNumber = ? ORDER BY CreationDate";
-        return executeFindQuery(username, folderNumber, query);
-    }
-
-    private List<DocumentBean> executeFindQuery(String username, int folderNumber, String query) throws SQLException {
         List<DocumentBean> documents = new ArrayList<>();
 
         PreparedStatement statement = getDbConnection().prepareStatement(query);
@@ -77,13 +84,13 @@ public class DocumentDAO extends DAO {
     }
 
     public void moveDocument(DocumentBean document, int targetFolderNumber) throws SQLException {
-        getDbConnection().setAutoCommit(false);
+        String query = "UPDATE Documents SET ParentFolderNumber = ? WHERE DocumentNumber = ?";
 
-        deleteDocument(document.getOwnerUsername(), document.getDocumentNumber());
-        document.setParentFolderNumber(targetFolderNumber);
-        addDocument(document);
-
-        getDbConnection().setAutoCommit(true);
+        PreparedStatement statement = getDbConnection().prepareStatement(query);
+        statement.setInt(1, targetFolderNumber);
+        statement.setInt(2, document.getDocumentNumber());
+        statement.executeUpdate();
+        statement.close();
     }
 
     public void deleteDocument(String username, int documentID) throws SQLException {

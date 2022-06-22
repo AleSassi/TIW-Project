@@ -2,7 +2,6 @@ package com.asassi.tiwproject.controllers;
 
 import com.asassi.tiwproject.beans.DocumentBean;
 import com.asassi.tiwproject.beans.FolderBean;
-import com.asassi.tiwproject.constants.FolderType;
 import com.asassi.tiwproject.constants.SessionConstants;
 import com.asassi.tiwproject.dao.DocumentDAO;
 import com.asassi.tiwproject.dao.FolderDAO;
@@ -41,8 +40,8 @@ public class DeleteController extends JSONResponderServlet {
                     //Delete a folder
                     int folderID = Integer.parseInt(folderIDStr);
                     FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                    List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, folderID, null);
-                    if (folders.isEmpty()) {
+                    FolderBean folder = folderDAO.findFolderByUsernameAndFolderNumber(username, folderID, null);
+                    if (folder == null) {
                         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                         resp.getWriter().println("Could not find the folder to delete. It may be because it does not exist, or you don't have the permission to access it");
                     } else {
@@ -53,8 +52,8 @@ public class DeleteController extends JSONResponderServlet {
                     //Delete a document
                     int documentID = Integer.parseInt(documentIDStr);
                     DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
-                    List<DocumentBean> documents = documentDAO.findDocument(username, documentID);
-                    if (documents.isEmpty()) {
+                    DocumentBean document = documentDAO.findDocument(username, documentID);
+                    if (document == null) {
                         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                         resp.getWriter().println("Could not find the document to delete. It may be because it does not exist, or you don't have the permission to access it");
                     } else {

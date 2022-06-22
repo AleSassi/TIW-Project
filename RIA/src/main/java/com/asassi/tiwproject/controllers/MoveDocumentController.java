@@ -8,7 +8,6 @@ import com.asassi.tiwproject.dao.FolderDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,14 +31,13 @@ public class MoveDocumentController extends DBConnectedServlet {
                 int documentID = Integer.parseInt(documentIDToMove);
                 int folderID = Integer.parseInt(srcFolderID);
                 DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
-                List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, folderID, FolderType.Subfolder);
-                List<DocumentBean> documents = documentDAO.findDocument(username, documentID);
-                if (!documents.isEmpty() && !folders.isEmpty()) {
-                    DocumentBean document = documents.get(0);
+                FolderBean folder = folderDAO.findFolderByUsernameAndFolderNumber(username, folderID, FolderType.Subfolder);
+                DocumentBean document = documentDAO.findDocument(username, documentID);
+                if (document != null && folder != null) {
                     documentDAO.moveDocument(document, folderID);
                     //Redirect to avoid multiple move operations
                     resp.setStatus(HttpServletResponse.SC_OK);
-                } else if (documents.isEmpty()) {
+                } else if (document == null) {
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     resp.getWriter().println("Could not perform the operation since you don't own the document to be moved");
                 } else {

@@ -35,13 +35,11 @@ public class GetDocumentDataController extends JSONResponderServlet {
 
         try {
             int documentIDInt = Integer.parseInt(documentID);
-            List<DocumentBean> documents = documentDAO.findDocument(username, documentIDInt);
-            if (!documents.isEmpty()) {
-                DocumentBean document = documents.get(0);
+            DocumentBean document = documentDAO.findDocument(username, documentIDInt);
+            if (document != null) {
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                List<FolderBean> folders = folderDAO.findFoldersByUsernameAndFolderNumber(username, document.getParentFolderNumber(), FolderType.Subfolder);
-                if (!folders.isEmpty()) {
-                    FolderBean folder = folders.get(0);
+                FolderBean folder = folderDAO.findFolderByUsernameAndFolderNumber(username, document.getParentFolderNumber(), FolderType.Subfolder);
+                if (folder != null) {
                     responseBean.setDocument(document);
                     responseBean.setFolderName(folder.getName());
                     hasErrorFindingDocument = false;
