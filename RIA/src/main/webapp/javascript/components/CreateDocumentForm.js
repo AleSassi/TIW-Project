@@ -106,6 +106,7 @@ function CreateDocumentForm() {
                 }
                 if (parentHiddenInput.value !== ("" + parentFolderID)) {
                     isValid = false;
+                    nameError.textContent = "Invalid parent folder ID";
                 }
                 if (isValid) {
                     post("CreateDocument", form, function(request) {

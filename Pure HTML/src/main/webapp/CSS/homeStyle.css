@@ -93,3 +93,7 @@
     margin-bottom: 12px;
     color: rgb(255, 59, 48, 1);
 }
+
+.centeredLabel {
+    width: 100%;
+}
