@@ -98,6 +98,29 @@ public class FolderDAO extends DAO {
         return nestedFolderBeans;
     }
 
+    public boolean noFolderWithSameNameAtSameHierarchyLevel(FolderBean folderBean) throws SQLException {
+        List<FolderBean> folders = new ArrayList<>();
+        PreparedStatement statement = null;
+        if (folderBean.getParentFolder_folderNumber() == null) {
+            String query = "SELECT * FROM Folders WHERE ParentFolder_FolderNumber is null AND OwnerUsername = ? AND Name = ? ORDER BY CreationDate";
+            statement = getDbConnection().prepareStatement(query);
+            statement.setString(1, folderBean.getUsername());
+            statement.setString(2, folderBean.getName());
+        } else {
+            String query = "SELECT * FROM Folders WHERE ParentFolder_FolderNumber = ? AND OwnerUsername = ? AND Name = ? ORDER BY CreationDate";
+            statement = getDbConnection().prepareStatement(query);
+            statement.setInt(1, folderBean.getParentFolder_folderNumber());
+            statement.setString(2, folderBean.getUsername());
+            statement.setString(3, folderBean.getName());
+        }
+        ResultSet result = statement.executeQuery();
+        boolean res = result.next();
+        result.close();
+        statement.close();
+
+        return !res;
+    }
+
     public void addFolder(FolderBean folder) throws SQLException {
         String query = "INSERT INTO Folders VALUES (default, ?, ?, ?, ?)";
 

@@ -40,6 +40,21 @@ public class DocumentDAO extends DAO {
         return documents;
     }
 
+    public boolean noDocumentWithSameNameAtSameHierarchyLevel(DocumentBean documentBean) throws SQLException {
+        List<DocumentBean> folders = new ArrayList<>();
+        String query = "SELECT * FROM Documents WHERE ParentFolderNumber = ? AND OwnerUsername = ? AND Name = ? ORDER BY CreationDate";
+        PreparedStatement statement = getDbConnection().prepareStatement(query);
+        statement.setInt(1, documentBean.getParentFolderNumber());
+        statement.setString(2, documentBean.getOwnerUsername());
+        statement.setString(3, documentBean.getName());
+        ResultSet result = statement.executeQuery();
+        boolean res = result.next();
+        result.close();
+        statement.close();
+
+        return !res;
+    }
+
     public void addDocument(DocumentBean document) throws SQLException {
         String query = "INSERT INTO Documents VALUES (default, ?, ?, ?, ?, ?, ?)";
 

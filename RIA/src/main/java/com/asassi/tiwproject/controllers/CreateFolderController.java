@@ -1,12 +1,9 @@
 package com.asassi.tiwproject.controllers;
 
-import com.asassi.tiwproject.beans.DocumentBean;
 import com.asassi.tiwproject.beans.FolderBean;
 import com.asassi.tiwproject.beans.responses.NestedFolderBean;
 import com.asassi.tiwproject.constants.*;
-import com.asassi.tiwproject.dao.DocumentDAO;
 import com.asassi.tiwproject.dao.FolderDAO;
-import com.asassi.tiwproject.exceptions.IncorrectFormDataException;
 import org.apache.commons.text.StringEscapeUtils;
 import org.thymeleaf.context.WebContext;
 
@@ -22,7 +19,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @WebServlet("/CreateFolder")
@@ -56,8 +52,13 @@ public class CreateFolderController extends JSONResponderServlet {
             if (parentFolderID == null) {
                 //Interpret as main folder addition
                 FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), null);
-                folderDAO.addFolder(folder);
-                sendAsJSON(new NestedFolderBean(folder, null), resp);
+                if (folderDAO.noFolderWithSameNameAtSameHierarchyLevel(folder)) {
+                    folder.setFolderNumber(folderDAO.addFolder(folder));
+                    sendAsJSON(new NestedFolderBean(folder, null), resp);
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getWriter().write("You already own a folder with the same name. Please choose another name");
+                }
             } else {
                 //Subfolder addition
                 try {
@@ -70,8 +71,13 @@ public class CreateFolderController extends JSONResponderServlet {
                     } else {
                         //Create the subfolder
                         FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber());
-                        folderDAO.addFolder(folder);
-                        sendAsJSON(folder, resp);
+                        if (folderDAO.noFolderWithSameNameAtSameHierarchyLevel(folder)) {
+                            folder.setFolderNumber(folderDAO.addFolder(folder));
+                            sendAsJSON(folder, resp);
+                        } else {
+                            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                            resp.getWriter().write("You already own a folder with the same name. Please choose another name");
+                        }
                     }
                 } catch (NumberFormatException e) {
                     //Send an error

@@ -7,6 +7,7 @@ import com.asassi.tiwproject.constants.SignupConstants;
 import com.asassi.tiwproject.crypto.Hasher;
 import com.asassi.tiwproject.dao.UserDAO;
 import com.asassi.tiwproject.exceptions.UserAlreadyRegisteredException;
+import org.apache.commons.text.StringEscapeUtils;
 import org.thymeleaf.context.*;
 
 import java.io.*;
@@ -64,10 +65,10 @@ public class SignUpController extends DBConnectedServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username = req.getParameter("username");
-        String email = req.getParameter("email");
-        String password = req.getParameter("password");
-        String passwordRepeat = req.getParameter("passwordRepeat");
+        String username = StringEscapeUtils.escapeJava(req.getParameter("username"));
+        String email = StringEscapeUtils.escapeJava(req.getParameter("email"));
+        String password = StringEscapeUtils.escapeJava(req.getParameter("password"));
+        String passwordRepeat = StringEscapeUtils.escapeJava(req.getParameter("passwordRepeat"));
 
         Pattern emailPattern = Pattern.compile("^[A-Za-z0-9._]{1,16}+@[a-z]{1,7}\\.[a-z]{1,3}$");
         Pattern notOnlyWhitespaces = Pattern.compile("[^ ]");

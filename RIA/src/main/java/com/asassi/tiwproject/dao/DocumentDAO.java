@@ -4,6 +4,7 @@ import com.asassi.tiwproject.beans.DocumentBean;
 import com.asassi.tiwproject.beans.FolderBean;
 import com.asassi.tiwproject.constants.FolderType;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +41,25 @@ public class DocumentDAO extends DAO {
         return documents;
     }
 
-    public void addDocument(DocumentBean document) throws SQLException {
+    public boolean noDocumentWithSameNameAtSameHierarchyLevel(DocumentBean documentBean) throws SQLException {
+        List<DocumentBean> folders = new ArrayList<>();
+        String query = "SELECT * FROM Documents WHERE ParentFolderNumber = ? AND OwnerUsername = ? AND Name = ? ORDER BY CreationDate";
+        PreparedStatement statement = getDbConnection().prepareStatement(query);
+        statement.setInt(1, documentBean.getParentFolderNumber());
+        statement.setString(2, documentBean.getOwnerUsername());
+        statement.setString(3, documentBean.getName());
+        ResultSet result = statement.executeQuery();
+        boolean res = result.next();
+        result.close();
+        statement.close();
+
+        return !res;
+    }
+
+    public int addDocument(DocumentBean document) throws SQLException {
         String query = "INSERT INTO Documents VALUES (default, ?, ?, ?, ?, ?, ?)";
 
-        PreparedStatement statement = getDbConnection().prepareStatement(query);
+        PreparedStatement statement = getDbConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         statement.setInt(1, document.getParentFolderNumber());
         statement.setString(2, document.getOwnerUsername());
         statement.setString(3, document.getName());
@@ -51,7 +67,13 @@ public class DocumentDAO extends DAO {
         statement.setTimestamp(5, Timestamp.valueOf(document.getCreationDate()));
         statement.setString(6, document.getContents());
         statement.executeUpdate();
+        int generatedKey = -1;
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            generatedKey = generatedKeys.getInt(1);
+        }
         statement.close();
+        return generatedKey;
     }
 
     public void moveDocument(DocumentBean document, int targetFolderNumber) throws SQLException {

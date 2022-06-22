@@ -8,6 +8,7 @@ import com.asassi.tiwproject.crypto.Hasher;
 import com.asassi.tiwproject.dao.UserDAO;
 import com.asassi.tiwproject.exceptions.IncorrectPasswordException;
 import com.asassi.tiwproject.exceptions.UserNotRegisteredException;
+import org.apache.commons.text.StringEscapeUtils;
 import org.thymeleaf.context.WebContext;
 
 import java.io.*;
@@ -47,8 +48,8 @@ public class SignInController extends DBConnectedServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
+        String username = StringEscapeUtils.escapeJava(req.getParameter("username"));
+        String password = StringEscapeUtils.escapeJava(req.getParameter("password"));
 
         String userError = null, passwordError = null;
         if (username == null) {

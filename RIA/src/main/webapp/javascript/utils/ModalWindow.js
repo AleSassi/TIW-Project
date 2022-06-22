@@ -23,7 +23,7 @@ function ModalWindow() {
         modalContent.appendChild(cancelButton)
         this.fader.appendChild(modalContent);
         const self = this;
-        closeButton.addEventListener("click", function(e) {
+        cancelButton.addEventListener("click", function(e) {
             e.preventDefault();
             self.dismiss();
             confirmHandler(false);

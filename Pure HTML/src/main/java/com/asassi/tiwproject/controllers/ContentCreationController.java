@@ -6,6 +6,7 @@ import com.asassi.tiwproject.constants.*;
 import com.asassi.tiwproject.dao.DocumentDAO;
 import com.asassi.tiwproject.dao.FolderDAO;
 import com.asassi.tiwproject.exceptions.IncorrectFormDataException;
+import org.apache.commons.text.StringEscapeUtils;
 import org.thymeleaf.context.WebContext;
 
 import javax.servlet.*;
@@ -70,6 +71,10 @@ public class ContentCreationController extends DBConnectedServlet {
                     ctx.setVariable(CreateConstants.InvalidDocTypeError.getRawValue(), "You must specify a valid Document Type (file extension, starting with \".\")");
                 } else if (errorCode == '5') {
                     ctx.setVariable(CreateConstants.InvalidDocContentError.getRawValue(), "You must specify a valid Document Content");
+                } else if (errorCode == '6') {
+                    ctx.setVariable(CreateConstants.InvalidDocNameError.getRawValue(), "You already own a document with the same name in the subfolder. Please choose a new document name");
+                } else if (errorCode == '7') {
+                    ctx.setVariable(CreateConstants.InvalidMainFolderNameError.getRawValue(), "You already own a folder with the same name. Please choose a new folder name");
                 }
             }
         }
@@ -115,18 +120,23 @@ public class ContentCreationController extends DBConnectedServlet {
         switch (fileType) {
             case Folder -> {
                 //We need to have valid strings from: mainFolderName
-                String folderName = req.getParameter(ContentCreationFormField.FolderName.getRawValue());
+                String folderName = StringEscapeUtils.escapeJava(req.getParameter(ContentCreationFormField.FolderName.getRawValue()));
                 if (folderName == null || !notOnlyWhitespaces.matcher(folderName).find()) {
                     //Send an error
                     throw new IncorrectFormDataException("1");
                 }
                 //Create the folder
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), null));
+                FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), null);
+                if (folderDAO.noFolderWithSameNameAtSameHierarchyLevel(folder)) {
+                    folderDAO.addFolder(folder);
+                } else {
+                    throw new IncorrectFormDataException("7");
+                }
             }
             case Subfolder -> {
                 //We need to have valid strings from: folderName, parentFolder
-                String folderName = req.getParameter(ContentCreationFormField.FolderName.getRawValue());
+                String folderName = StringEscapeUtils.escapeJava(req.getParameter(ContentCreationFormField.FolderName.getRawValue()));
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
                 String errorCode = "";
                 if (folderName == null || !notOnlyWhitespaces.matcher(folderName).find()) {
@@ -141,7 +151,12 @@ public class ContentCreationController extends DBConnectedServlet {
                             errorCode = errorCode + "2";
                         } else {
                             //Create the subfolder
-                            folderDAO.addFolder(new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber()));
+                            FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber());
+                            if (folderDAO.noFolderWithSameNameAtSameHierarchyLevel(folder)) {
+                                folderDAO.addFolder(folder);
+                            } else {
+                                errorCode = errorCode + "7";
+                            }
                         }
                     } catch (NumberFormatException e) {
                         //Send an error
@@ -156,9 +171,9 @@ public class ContentCreationController extends DBConnectedServlet {
                 //We need to have valid strings from: documentName, documentType, parentFolder, parentSubfolder, documentContent
                 Pattern fileExtPattern = Pattern.compile("^[.][^.\s]+");
 
-                String docName = req.getParameter(ContentCreationFormField.DocumentName.getRawValue());
-                String docExtension = req.getParameter(ContentCreationFormField.DocumentFileType.getRawValue());
-                String docContent = req.getParameter(ContentCreationFormField.DocumentContent.getRawValue());
+                String docName = StringEscapeUtils.escapeJava(req.getParameter(ContentCreationFormField.DocumentName.getRawValue()));
+                String docExtension = StringEscapeUtils.escapeJava(req.getParameter(ContentCreationFormField.DocumentFileType.getRawValue()));
+                String docContent = StringEscapeUtils.escapeJava(req.getParameter(ContentCreationFormField.DocumentContent.getRawValue()));
                 String errorCode = "";
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
                 DocumentDAO documentDAO = new DocumentDAO(getDBConnection());
@@ -192,7 +207,12 @@ public class ContentCreationController extends DBConnectedServlet {
                     }
                     if (errorCode.equals("")) {
                         //Create the Document
-                        documentDAO.addDocument(new DocumentBean(username, parentSubfolderNumber, randomizer.nextInt(0, Integer.MAX_VALUE), docName, docExtension, LocalDateTime.now(), docContent));
+                        DocumentBean document = new DocumentBean(username, parentSubfolderNumber, randomizer.nextInt(0, Integer.MAX_VALUE), docName, docExtension, LocalDateTime.now(), docContent);
+                        if (documentDAO.noDocumentWithSameNameAtSameHierarchyLevel(document)) {
+                            documentDAO.addDocument(document);
+                        } else {
+                            errorCode += "6";
+                        }
                     }
                 } catch (NumberFormatException e) {
                     //Send an error

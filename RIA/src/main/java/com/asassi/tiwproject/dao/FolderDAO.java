@@ -84,6 +84,29 @@ public class FolderDAO extends DAO {
         return nestedFolderBeans;
     }
 
+    public boolean noFolderWithSameNameAtSameHierarchyLevel(FolderBean folderBean) throws SQLException {
+        List<FolderBean> folders = new ArrayList<>();
+        PreparedStatement statement = null;
+        if (folderBean.getParentFolder_folderNumber() == null) {
+            String query = "SELECT * FROM Folders WHERE ParentFolder_FolderNumber is null AND OwnerUsername = ? AND Name = ? ORDER BY CreationDate";
+            statement = getDbConnection().prepareStatement(query);
+            statement.setString(1, folderBean.getUsername());
+            statement.setString(2, folderBean.getName());
+        } else {
+            String query = "SELECT * FROM Folders WHERE ParentFolder_FolderNumber = ? AND OwnerUsername = ? AND Name = ? ORDER BY CreationDate";
+            statement = getDbConnection().prepareStatement(query);
+            statement.setInt(1, folderBean.getParentFolder_folderNumber());
+            statement.setString(2, folderBean.getUsername());
+            statement.setString(3, folderBean.getName());
+        }
+        ResultSet result = statement.executeQuery();
+        boolean res = result.next();
+        result.close();
+        statement.close();
+
+        return !res;
+    }
+
     public List<FolderBean> findSubfoldersOfFolder(String username, int parentFolderNumber) throws SQLException {
         List<FolderBean> folders = new ArrayList<>();
         String query = "SELECT * FROM Folders WHERE ParentFolder_FolderNumber = ? AND OwnerUsername = ? ORDER BY CreationDate";
@@ -100,10 +123,10 @@ public class FolderDAO extends DAO {
         return folders;
     }
 
-    public void addFolder(FolderBean folder) throws SQLException {
+    public int addFolder(FolderBean folder) throws SQLException {
         String query = "INSERT INTO Folders VALUES (default, ?, ?, ?, ?)";
 
-        PreparedStatement statement = getDbConnection().prepareStatement(query);
+        PreparedStatement statement = getDbConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, folder.getUsername());
         statement.setString(2, folder.getName());
         statement.setTimestamp(3, Timestamp.valueOf(folder.getCreationDate()));
@@ -114,7 +137,13 @@ public class FolderDAO extends DAO {
             statement.setInt(4, parentFolder_number);
         }
         statement.executeUpdate();
+        int generatedKey = -1;
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            generatedKey = generatedKeys.getInt(1);
+        }
         statement.close();
+        return generatedKey;
     }
 
     public void deleteFolderRecursive(String username, int folderID) throws SQLException {
