@@ -86,7 +86,7 @@ public class CreateDocumentController extends JSONResponderServlet {
                 }
                 if (resp.getStatus() != HttpServletResponse.SC_BAD_REQUEST) {
                     //Create the Document
-                    DocumentBean document = new DocumentBean(username, parentSubfolderNumber, randomizer.nextInt(0, Integer.MAX_VALUE), docName, docExtension, LocalDateTime.now(), docContent);
+                    DocumentBean document = new DocumentBean(username, parentSubfolderNumber, 0, docName, docExtension, LocalDateTime.now(), docContent);
                     if (documentDAO.noDocumentWithSameNameAtSameHierarchyLevel(document)) {
                         document.setDocumentNumber(documentDAO.addDocument(document));
                     } else {

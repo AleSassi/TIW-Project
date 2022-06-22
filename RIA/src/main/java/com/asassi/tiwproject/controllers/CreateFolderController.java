@@ -51,7 +51,7 @@ public class CreateFolderController extends JSONResponderServlet {
             FolderDAO folderDAO = new FolderDAO(getDBConnection());
             if (parentFolderID == null) {
                 //Interpret as main folder addition
-                FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), null);
+                FolderBean folder = new FolderBean(username, 0, folderName, LocalDateTime.now(), null);
                 if (folderDAO.noFolderWithSameNameAtSameHierarchyLevel(folder)) {
                     folder.setFolderNumber(folderDAO.addFolder(folder));
                     sendAsJSON(new NestedFolderBean(folder, null), resp);
@@ -70,7 +70,7 @@ public class CreateFolderController extends JSONResponderServlet {
                         resp.getWriter().println("The specified Parent Folder could not be found");
                     } else {
                         //Create the subfolder
-                        FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber());
+                        FolderBean folder = new FolderBean(username, 0, folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber());
                         if (folderDAO.noFolderWithSameNameAtSameHierarchyLevel(folder)) {
                             folder.setFolderNumber(folderDAO.addFolder(folder));
                             sendAsJSON(folder, resp);

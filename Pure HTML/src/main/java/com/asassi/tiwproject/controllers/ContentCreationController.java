@@ -131,7 +131,7 @@ public class ContentCreationController extends DBConnectedServlet {
                 }
                 //Create the folder
                 FolderDAO folderDAO = new FolderDAO(getDBConnection());
-                FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), null);
+                FolderBean folder = new FolderBean(username, 0, folderName, LocalDateTime.now(), null);
                 if (folderDAO.noFolderWithSameNameAtSameHierarchyLevel(folder)) {
                     folderDAO.addFolder(folder);
                 } else {
@@ -155,7 +155,7 @@ public class ContentCreationController extends DBConnectedServlet {
                             errorCode = errorCode + "2";
                         } else {
                             //Create the subfolder
-                            FolderBean folder = new FolderBean(username, randomizer.nextInt(0, Integer.MAX_VALUE), folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber());
+                            FolderBean folder = new FolderBean(username, 0, folderName, LocalDateTime.now(), userFolders.get(0).getFolderNumber());
                             if (folderDAO.noFolderWithSameNameAtSameHierarchyLevel(folder)) {
                                 folderDAO.addFolder(folder);
                             } else {
@@ -211,7 +211,7 @@ public class ContentCreationController extends DBConnectedServlet {
                     }
                     if (errorCode.equals("")) {
                         //Create the Document
-                        DocumentBean document = new DocumentBean(username, parentSubfolderNumber, randomizer.nextInt(0, Integer.MAX_VALUE), docName, docExtension, LocalDateTime.now(), docContent);
+                        DocumentBean document = new DocumentBean(username, parentSubfolderNumber, 0, docName, docExtension, LocalDateTime.now(), docContent);
                         if (documentDAO.noDocumentWithSameNameAtSameHierarchyLevel(document)) {
                             documentDAO.addDocument(document);
                         } else {
