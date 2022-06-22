@@ -94,7 +94,6 @@ public class FolderDAO extends DAO {
         }
         result.close();
         statement.close();
-        System.out.println(nestedFolderBeans);
         return nestedFolderBeans;
     }
 
